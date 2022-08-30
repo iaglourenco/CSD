@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>compilaDOR</title>
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <script src="codemirror/lib/codemirror.js"></script>
 </head>
+
 <body>
+    <h1>compilaDOR</h1>
+    
+    <div id="codeeditor">
+        <script>
+            var editor = CodeMirror(document.getElementById("codeeditor"), {
+                value: "Comece a digitar...\n",
+            })
+        </script>
+    </div>
+
 
 </body>
+
 </html>
