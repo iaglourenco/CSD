@@ -9,6 +9,7 @@ function pegaToken(data) {
 
     // Ignora espaços em branco
     if (caracter == " " || caracter == "\t") {
+      if (caracter == "\t") coluna += 1;
       continue;
     }
     // Ignora quebra de linha e incrementa a linha
@@ -41,11 +42,15 @@ function pegaToken(data) {
       while (caracter != undefined && caracter.match(/[0-9]/)) {
         tokenNum += caracter;
         caracter = data[++i];
+        coluna++;
       }
+      // Volta um caracter para não perder o próximo caracter
+      i--;
+      coluna--;
 
       let token = {
         lexema: tokenNum,
-        simbolo: "NUM",
+        simbolo: "Snumero",
       };
       listaTokens.push(token);
       continue;
@@ -57,7 +62,11 @@ function pegaToken(data) {
       while (caracter != undefined && caracter.match(/[a-zA-Z0-9_]/)) {
         tokenId += caracter;
         caracter = data[++i];
+        coluna++;
       }
+      // Volta um caracter para não perder o próximo caracter
+      i--;
+      coluna--;
 
       let token = {
         lexema: tokenId,
@@ -66,6 +75,128 @@ function pegaToken(data) {
       listaTokens.push(token);
       continue;
     }
+
+    // Se o caracter for ":" trata como atribuição ou dois pontos
+    if (caracter == ":") {
+      // Se o caracter seguinte for "=", trata como atribuição
+      if (data[i + 1] == "=") {
+        let token = {
+          lexema: ":=",
+          simbolo: "Satribuicao",
+        };
+        listaTokens.push(token);
+        i++;
+        continue;
+      }
+      // Se não, trata como dois pontos
+      else {
+        let token = {
+          lexema: ":",
+          simbolo: "Sdoispontos",
+        };
+        listaTokens.push(token);
+        continue;
+      }
+    }
+
+    // Se o caracter for "+", "-", "*" trata como operador aritmético
+    if (caracter == "+" || caracter == "-" || caracter == "*") {
+      let token;
+      if (caracter == "+") {
+        token = {
+          lexema: "+",
+          simbolo: "Smais",
+        };
+      } else if (caracter == "-") {
+        token = {
+          lexema: "-",
+          simbolo: "Smenos",
+        };
+      } else if (caracter == "*") {
+        token = {
+          lexema: "*",
+          simbolo: "Smult",
+        };
+      }
+      listaTokens.push(token);
+      continue;
+    }
+
+    // Se o caracter for "!", "<", ">", "=" trata como operador relacional
+    if (
+      caracter == "!" ||
+      caracter == "<" ||
+      caracter == ">" ||
+      caracter == "="
+    ) {
+      let token;
+      if (caracter == "!") {
+        token = {
+          lexema: "!",
+          simbolo: "Snao",
+        };
+      } else if (caracter == "<") {
+        token = {
+          lexema: "<",
+          simbolo: "Smenor",
+        };
+      } else if (caracter == ">") {
+        token = {
+          lexema: ">",
+          simbolo: "Smaior",
+        };
+      } else if (caracter == "=") {
+        token = {
+          lexema: "=",
+          simbolo: "Sigual",
+        };
+      }
+      listaTokens.push(token);
+      continue;
+    }
+
+    // Se o caracter for ";", ",",  "(",  ")", "." trata como pontuação
+    if (
+      caracter == ";" ||
+      caracter == "," ||
+      caracter == "(" ||
+      caracter == ")" ||
+      caracter == "."
+    ) {
+      let token;
+      if (caracter == ";") {
+        token = {
+          lexema: ";",
+          simbolo: "Sponto_virgula",
+        };
+      } else if (caracter == ",") {
+        token = {
+          lexema: ",",
+          simbolo: "Svirgula",
+        };
+      } else if (caracter == "(") {
+        token = {
+          lexema: "(",
+          simbolo: "Sabre_parenteses",
+        };
+      } else if (caracter == ")") {
+        token = {
+          lexema: ")",
+          simbolo: "Sfecha_parenteses",
+        };
+      } else if (caracter == ".") {
+        token = {
+          lexema: ".",
+          simbolo: "Sponto",
+        };
+      }
+      listaTokens.push(token);
+      continue;
+    }
+
+    throw new Error(
+      `Erro léxico: caracter inválido "${caracter}" na linha ${linha} e coluna ${coluna}`
+    );
   }
 
   return listaTokens;
@@ -74,50 +205,49 @@ function pegaToken(data) {
 function identificaSimbolo(token) {
   switch (token) {
     case "programa":
-      return "SPROGRAMA";
+      return "Sprograma";
     case "se":
-      return "SSE";
+      return "Sse";
     case "entao":
-      return "SENTAO";
+      return "Sentao";
     case "senao":
-      return "SSENAO";
+      return "Ssenao";
     case "enquanto":
-      return "SENQUANTO";
+      return "Senquanto";
     case "faca":
-      return "SFACA";
+      return "sfaca";
     case "inicio":
-      return "SINICIO";
+      return "Sinicio";
     case "fim":
-      return "SFIM";
+      return "Sfim";
     case "leia":
-      return "SLEIA";
+      return "Sleia";
     case "escreva":
-      return "SESCREVA";
+      return "Sescreva";
     case "var":
-      return "SVAR";
+      return "Svar";
     case "inteiro":
-      return "SINTEIRO";
+      return "Sinteiro";
     case "booleano":
-      return "SBOOLEANO";
+      return "Sbooleano";
     case "verdadeiro":
-      return "SVERDADEIRO";
+      return "Sverdadeiro";
     case "falso":
-      return "SFALSO";
+      return "Sfalso";
     case "procedimento":
-      return "SPROCEDIMENTO";
+      return "Sprocedimento";
     case "funcao":
-      return "SFUNCAO";
+      return "Sfuncao";
     case "div":
-      return "SDIV";
+      return "Sdiv";
     case "e":
-      return "SE";
+      return "Se";
     case "ou":
-      return "SOU";
+      return "Sou";
     case "nao":
-      return "SNAO";
-
+      return "Snao";
     default:
-      return "SIDENTIFICADOR";
+      return "Sidentificador";
   }
 }
 
