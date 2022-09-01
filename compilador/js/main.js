@@ -48,6 +48,11 @@ window.onload = function () {
     autofocus: true,
     viewportMargin: 150,
   });
+  editor.on("cursorActivity", function () {
+    document.getElementById("posicao").innerHTML = `Ln ${
+      editor.getCursor().line + 1
+    }, Col ${editor.getCursor().ch + 1}`;
+  });
 
   // Carrega o arquivo local
   document.getElementById("upload").addEventListener("click", function () {
@@ -66,12 +71,23 @@ window.onload = function () {
       if (code.length > 0) {
         log.value += `Compilando...\n`;
         // TODO - Implementar captura de tokens
-        lexico.pegaToken(code);
+        const listaToken = lexico.pegaToken(code);
+        log.value += `Tokens: ${JSON.stringify(listaToken)}\n`;
+        console.table(listaToken);
       } else {
         log.value += "Nenhum código para compilar!\n";
       }
     } catch (e) {
-      log.value += e;
+      console.error(e);
+      // Pega a linha e a coluna da string de erro
+      const linha = e.message.match(/linha (\d+)/)[1];
+      const coluna = e.message.match(/coluna (\d+)/)[1];
+
+      // Coloca o cursor na linha e coluna do erro
+      editor.setCursor(linha - 1, coluna - 1);
+      editor.focus();
+
+      log.value += e.message;
     }
   });
 
