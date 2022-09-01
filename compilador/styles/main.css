@@ -1,0 +1,91 @@
+body {
+  overflow-x: hidden;
+}
+
+#menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#menu_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu_btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 4px;
+  font-family: monospace;
+  min-width: 75px;
+  border-radius: 5px;
+  color: white;
+}
+
+#file-input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.menu_btn:hover {
+  background-color: rgba(255, 184, 108, 1);
+  color: #000;
+}
+
+.CodeMirror {
+  resize: vertical;
+  overflow: hidden !important;
+}
+
+#codeeditor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(248, 248, 242, 1) !important;
+  max-width: 1200px;
+  margin: auto;
+}
+
+#codeeditor legend {
+  background-color: rgba(255, 184, 108, 1) !important;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+#console {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(248, 248, 242, 1) !important;
+  min-height: 100px;
+  max-width: 1200px;
+  margin: 20px auto auto auto;
+}
+
+#console legend {
+  background-color: rgba(255, 184, 108, 1) !important;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+#console textarea {
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  border: none;
+  text-decoration: none;
+  resize: none;
+}
+
+#logo {
+  width: 50px;
+  height: 50px;
+  margin: 0px 10px 0px 10px;
+  font-family: monospace;
+}

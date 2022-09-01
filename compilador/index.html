@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+  <head>
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>compilaDOR</title>
+
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dracula-theme.css" />
+
+    <!-- CodeMirror Editor-->
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
+    <script src="codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror/theme/dracula.css" />
+    <script src="codemirror/mode/javascript/javascript.js"></script>
+    <!-- Script imports -->
+    <script type="module" src="js/main.js"></script>
+  </head>
+
+  <body>
+    <div id="menu">
+      <h1 id="logo">compilaDOR</h1>
+      <nav id="menu_container">
+        <div class="menu_btn" id="compilar">
+          <span class="material-icons"> play_arrow </span>
+          <p>Compilar</p>
+        </div>
+        <div class="menu_btn" id="salvar">
+          <span class="material-icons"> save </span>
+          <p>Salvar</p>
+        </div>
+        <div class="menu_btn" id="upload">
+          <span class="material-icons"> upload_file </span>
+          <p>Carregar</p>
+          <input id="file-input" type="file" accept=".txt" />
+        </div>
+      </nav>
+    </div>
+
+    <div id="codeeditor">
+      <legend>Editor</legend>
+    </div>
+
+    <div id="console">
+      <div style="display: flex; justify-content: space-between">
+        <legend>Log</legend>
+        <legend
+          style="cursor: pointer"
+          onclick="document.getElementById('log').value=''"
+        >
+          Limpar
+        </legend>
+      </div>
+      <textarea name="log" id="log" cols="30" rows="10" disabled></textarea>
+    </div>
+  </body>
+</html>
