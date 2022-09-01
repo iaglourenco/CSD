@@ -66,7 +66,9 @@ window.onload = function () {
       if (code.length > 0) {
         log.value += `Compilando...\n`;
         // TODO - Implementar captura de tokens
-        lexico.pegaToken(code);
+        const listaToken = lexico.pegaToken(code);
+        log.value += `Tokens: ${JSON.stringify(listaToken)}\n`;
+        console.table(listaToken);
       } else {
         log.value += "Nenhum código para compilar!\n";
       }
