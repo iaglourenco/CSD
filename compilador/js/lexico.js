@@ -1,3 +1,5 @@
+// Author: Iago Lourenço (iagojlourenco@gmail.com) / lexico.js
+
 function pegaToken(data) {
   let isComment = false;
   let listaTokens = [];
@@ -56,9 +58,10 @@ function pegaToken(data) {
       continue;
     }
 
-    // Se o caracter for uma letra ou "_", trata como identificador
+    // Se o caracter for uma letra, trata como identificador
     if (caracter.match(/[a-zA-Z]/)) {
       let tokenId = "";
+      // Enquanto for letra, "_" ou número
       while (caracter != undefined && caracter.match(/[a-zA-Z0-9_]/)) {
         tokenId += caracter;
         caracter = data[++i];

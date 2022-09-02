@@ -39,6 +39,8 @@ body {
 .CodeMirror {
   resize: vertical;
   overflow: hidden !important;
+  font-family: monospace;
+  font-size: large;
 }
 
 #codeeditor {

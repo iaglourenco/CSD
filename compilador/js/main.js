@@ -1,3 +1,5 @@
+// Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
+
 function loadLocalFile(files, editor) {
   if (files.length == 1) {
     var reader = new FileReader();
@@ -47,6 +49,14 @@ window.onload = function () {
     lineNumbers: true,
     autofocus: true,
     viewportMargin: 150,
+    extraKeys: {
+      F11: function (cm) {
+        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+      },
+      Esc: function (cm) {
+        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+      },
+    },
   });
   editor.on("cursorActivity", function () {
     document.getElementById("posicao").innerHTML = `Ln ${
