@@ -17,17 +17,48 @@
 
     <!-- CodeMirror Editor-->
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-    <script src="codemirror/lib/codemirror.js"></script>
     <link rel="stylesheet" href="codemirror/theme/dracula.css" />
+    <link rel="stylesheet" href="codemirror/addon/dialog/dialog.css" />
+    <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css" />
+
+    <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/mode/javascript/javascript.js"></script>
+    <script src="codemirror/addon/display/fullscreen.js"></script>
+
     <!-- Script imports -->
     <script type="module" src="js/main.js"></script>
   </head>
 
   <body>
-    <div id="menu">
-      <h1 id="logo">compilaDOR</h1>
-      <nav id="menu_container">
+    <script>
+      function openNav() {
+        var x = document.getElementById("nav");
+        if (x.className === "menu") {
+          x.className += " responsive";
+        } else {
+          x.className = "menu";
+        }
+      }
+    </script>
+
+    <div id="nav" class="menu responsive">
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <h1 id="logo">compilaDOR</h1>
+
+        <div onclick="openNav()" class="menu_btn" id="menu_icon">
+          <span class="material-icons"> menu </span>
+          <p>Menu</p>
+        </div>
+      </div>
+
+      <div id="menu_container">
         <div class="menu_btn" id="compilar">
           <span class="material-icons"> play_arrow </span>
           <p>Compilar</p>
@@ -41,7 +72,7 @@
           <p>Carregar</p>
           <input id="file-input" type="file" accept=".txt" />
         </div>
-      </nav>
+      </div>
     </div>
 
     <div id="codeeditor">

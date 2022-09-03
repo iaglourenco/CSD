@@ -1,12 +1,45 @@
+html,
 body {
+  height: 100%;
+  width: 100%;
+  min-width: 270px;
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
 }
 
-#menu {
+#menu_icon {
+  display: none;
+}
+
+@media screen and (max-width: 460px) {
+  #menu_container * {
+    display: none;
+  }
+  div#menu_icon {
+    display: flex;
+  }
+  .menu.responsive {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.menu.responsive #menu_container * {
+  display: flex;
+  transition: 0.5s;
+}
+
+.menu {
   display: flex;
   align-items: center;
+  width: 95%;
+  margin: auto;
   justify-content: space-between;
 }
+
 #menu_container {
   display: flex;
   align-items: center;
@@ -18,7 +51,8 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin: 4px;
+  margin: 2px;
+  padding: 2px;
   font-family: monospace;
   min-width: 75px;
   border-radius: 5px;
@@ -39,6 +73,8 @@ body {
 .CodeMirror {
   resize: vertical;
   overflow: hidden !important;
+  font-family: monospace;
+  font-size: large;
 }
 
 #codeeditor {
@@ -46,6 +82,7 @@ body {
   flex-direction: column;
   border: 1px solid rgba(248, 248, 242, 1) !important;
   max-width: 1200px;
+  width: 95%;
   margin: auto;
 }
 
@@ -69,6 +106,8 @@ body {
   border: 1px solid rgba(248, 248, 242, 1) !important;
   min-height: 100px;
   max-width: 1200px;
+  width: 95%;
+
   margin: 20px auto auto auto;
 }
 
