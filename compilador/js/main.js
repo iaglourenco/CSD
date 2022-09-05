@@ -1,9 +1,13 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
 
+var filename = "myfile.txt";
+
 function loadLocalFile(files, editor) {
   if (files.length == 1) {
     var reader = new FileReader();
     reader.fileName = files[0].name;
+    filename = files[0].name;
+    document.getElementById("filename").innerHTML = filename;
     reader.onload = function (e) {
       editor.setValue(e.target.result);
       document.getElementById(
@@ -18,10 +22,9 @@ function saveTextAsFile(textToWrite) {
   var textFileAsBlob = new Blob([textToWrite], {
     type: "text/plain;charset=utf-8",
   });
-  var fileNameToSaveAs = "myfile.txt";
 
   var downloadLink = document.createElement("a");
-  downloadLink.download = fileNameToSaveAs;
+  downloadLink.download = filename;
   downloadLink.innerHTML = "Download File";
   if (window.webkitURL != null) {
     // Chrome allows the link to be clicked
@@ -56,9 +59,16 @@ window.onload = function () {
       Esc: function (cm) {
         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
       },
+      "Ctrl-S": function (cm) {
+        document.getElementById("salvar").click();
+      },
     },
   });
+  // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
+    if (document.getElementById("filename").value == "") {
+      document.getElementById("filename").value = filename;
+    }
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
     }, Col ${editor.getCursor().ch + 1}`;
@@ -75,34 +85,57 @@ window.onload = function () {
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
     var code = editor.getValue();
-    var log = document.getElementById("log");
+    let log = document.getElementById("log");
     log.value = "";
     try {
+      var start = performance.now();
       if (code.length > 0) {
-        log.value += `Compilando...\n`;
-        // TODO - Implementar captura de tokens
-        const listaToken = lexico.pegaToken(code);
-        log.value += `Tokens: ${JSON.stringify(listaToken)}\n`;
+        logar(`Compilando...`);
+        // Chamada do lexico passando todo o código inserido no editor
+        const listaToken = lexico.tokenizar(code);
+
+        logar(`Tokens: ${JSON.stringify(listaToken)}`);
         console.table(listaToken);
       } else {
-        log.value += "Nenhum código para compilar!\n";
+        throw new Error("Nenhum código inserido!");
       }
     } catch (e) {
       console.error(e);
-      // Pega a linha e a coluna da string de erro
-      const linha = e.message.match(/linha (\d+)/)[1];
-      const coluna = e.message.match(/coluna (\d+)/)[1];
 
-      // Coloca o cursor na linha e coluna do erro
-      editor.setCursor(linha - 1, coluna - 1);
-      editor.focus();
+      if (e.message.includes("Erro léxico")) {
+        // Pega a linha e a coluna da string de erro: `Erro léxico: caracter inválido "${caracter}" na linha ${linha} e coluna ${coluna}`
+        const linha = e.message.match(/linha (\d+)/)[1];
+        const coluna = e.message.match(/coluna (\d+)/)[1];
+        // Coloca o cursor na linha e coluna do erro
+        editor.setCursor(linha - 1, coluna - 1);
+        editor.focus();
+      }
 
-      log.value += e.message;
+      // Printa a mensagem no log
+      logar(e.message);
+    } finally {
+      // Tempo de execução do compilador
+      var end = performance.now();
+      // arrendondar para 2 casas decimais
+      log.value += `\n\n---\nTempo de compilação: ${
+        Math.round((end - start) * 100) / 100
+      }ms`;
     }
   });
 
   // Salva o arquivo
   document.getElementById("salvar").addEventListener("click", function () {
-    saveTextAsFile(editor.getValue());
+    if (editor.getValue().length > 0) {
+      saveTextAsFile(editor.getValue());
+    } else {
+      logar("Nenhum código para salvar!");
+    }
   });
+
+  // Exibe mensagens no log com a hora
+  function logar(msg) {
+    document.getElementById(
+      "log"
+    ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
+  }
 };
