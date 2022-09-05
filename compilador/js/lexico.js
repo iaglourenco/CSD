@@ -1,6 +1,13 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / lexico.js
 
-function pegaToken(data) {
+function tokenizar(data) {
+  /**
+   * Identifica tokens.
+   * @param {string} data Código em LPD a ser identificado.
+   * @returns {lexema:string,simbolo:string} uma lista de tokens identificados em data
+   * @throws {Error} Caso encontre um caractere estranho indicando a linha e coluna do erro
+   */
+
   let isComment = false;
   let listaTokens = [];
   let linha = 1;
@@ -206,6 +213,12 @@ function pegaToken(data) {
 }
 
 function identificaSimbolo(token) {
+  /**
+   * Identifica o símbolo do token
+   * @param {string} token
+   * @returns {string} simbolo
+   * @default "Sidentificador"
+   */
   switch (token) {
     case "programa":
       return "Sprograma";
@@ -256,6 +269,6 @@ function identificaSimbolo(token) {
 
 // Exporta o módulo
 const lexico = {
-  pegaToken,
+  tokenizar,
 };
 export default lexico;
