@@ -50,7 +50,7 @@
           justify-content: space-between;
         "
       >
-        <h1 id="logo">compilaDOR</h1>
+        <h1 id="logo">compi{LPD}ador</h1>
 
         <div onclick="openNav()" class="menu_btn" id="menu_icon">
           <span class="material-icons"> menu </span>
@@ -61,15 +61,15 @@
       <div id="menu_container">
         <div class="menu_btn" id="compilar">
           <span class="material-icons"> play_arrow </span>
-          <p>Compilar</p>
+          <p style="text-align: center">Compilar (F5)</p>
         </div>
         <div class="menu_btn" id="salvar">
           <span class="material-icons"> save </span>
-          <p>Salvar</p>
+          <p style="text-align: center">Salvar (Ctrl+S)</p>
         </div>
-        <div class="menu_btn" id="upload">
+        <div class="menu_btn" id="abrir">
           <span class="material-icons"> upload_file </span>
-          <p>Carregar</p>
+          <p style="text-align: center">Carregar (Ctrl+O)</p>
           <input id="file-input" type="file" accept=".txt" />
         </div>
       </div>
@@ -89,10 +89,11 @@
       <div style="display: flex; justify-content: space-between">
         <legend>Log</legend>
         <legend
+          id="limpar"
           style="cursor: pointer"
           onclick="document.getElementById('log').value=''"
         >
-          Limpar
+          Limpar (Ctrl+L)
         </legend>
       </div>
       <textarea name="log" id="log" cols="30" rows="10" disabled></textarea>

@@ -29,7 +29,6 @@ body {
 
 .menu.responsive #menu_container * {
   display: flex;
-  transition: 0.5s;
 }
 
 .menu {

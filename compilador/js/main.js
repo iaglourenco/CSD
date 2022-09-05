@@ -10,9 +10,7 @@ function loadLocalFile(files, editor) {
     document.getElementById("filename").innerHTML = filename;
     reader.onload = function (e) {
       editor.setValue(e.target.result);
-      document.getElementById(
-        "log"
-      ).value += `Arquivo ${e.target.fileName} carregado com sucesso!\n`;
+      logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
     };
     reader.readAsText(files[0]);
   }
@@ -41,6 +39,13 @@ function saveTextAsFile(textToWrite) {
   downloadLink.click();
 }
 
+// Exibe mensagens no log com a hora
+function logar(msg) {
+  document.getElementById(
+    "log"
+  ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
+}
+
 // Import dos módulos do compilador
 import lexico from "./lexico.js";
 
@@ -59,9 +64,6 @@ window.onload = function () {
       Esc: function (cm) {
         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
       },
-      "Ctrl-S": function (cm) {
-        document.getElementById("salvar").click();
-      },
     },
   });
   // Atualiza os números da linha e coluna na janela
@@ -74,8 +76,32 @@ window.onload = function () {
     }, Col ${editor.getCursor().ch + 1}`;
   });
 
+  // Intercepta pressionamento de teclas na página
+  document.onkeydown = function (e) {
+    // Ctrl + S
+    if (e.ctrlKey && e.keyCode == 83) {
+      e.preventDefault();
+      document.getElementById("salvar").click();
+    }
+    // F5
+    if (e.keyCode == 116) {
+      e.preventDefault();
+      document.getElementById("compilar").click();
+    }
+    // Ctrl + L
+    if (e.ctrlKey && e.keyCode == 76) {
+      e.preventDefault();
+      document.getElementById("limpar").click();
+    }
+    // Ctrl + O
+    if (e.ctrlKey && e.keyCode == 79) {
+      e.preventDefault();
+      document.getElementById("abrir").click();
+    }
+  };
+
   // Carrega o arquivo local
-  document.getElementById("upload").addEventListener("click", function () {
+  document.getElementById("abrir").addEventListener("click", function () {
     document.getElementById("file-input").click();
   });
   document.getElementById("file-input").addEventListener("change", function () {
@@ -117,9 +143,9 @@ window.onload = function () {
       // Tempo de execução do compilador
       var end = performance.now();
       // arrendondar para 2 casas decimais
-      log.value += `\n\n---\nTempo de compilação: ${
+      log.value += `\n\n---\nTempo de execução: ${
         Math.round((end - start) * 100) / 100
-      }ms`;
+      }ms\n`;
     }
   });
 
@@ -131,11 +157,4 @@ window.onload = function () {
       logar("Nenhum código para salvar!");
     }
   });
-
-  // Exibe mensagens no log com a hora
-  function logar(msg) {
-    document.getElementById(
-      "log"
-    ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
-  }
 };
