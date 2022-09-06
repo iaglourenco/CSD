@@ -120,7 +120,9 @@ window.onload = function () {
         // Chamada do lexico passando todo o código inserido no editor
         const listaToken = lexico.tokenizar(code);
 
+        logar(`SUCESSO!`);
         logar(`Tokens: ${JSON.stringify(listaToken)}`);
+        logar(`Qtd. Lexemas: ${listaToken.length}`);
         console.table(listaToken);
       } else {
         throw new Error("Nenhum código inserido!");
@@ -142,7 +144,6 @@ window.onload = function () {
     } finally {
       // Tempo de execução do compilador
       var end = performance.now();
-      // arrendondar para 2 casas decimais
       log.value += `\n\n---\nTempo de execução: ${
         Math.round((end - start) * 100) / 100
       }ms\n`;
