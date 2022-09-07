@@ -8,7 +8,8 @@ function tokenizar(data) {
    * @throws {Error} Caso encontre um caractere estranho indicando a linha e coluna do erro
    */
 
-  let isComment = false;
+  // Controlador de comentário, incrementa a cada "{" lido e decrementa a cada "}" lido
+  let isComment = 0;
   let listaTokens = [];
   let linha = 1;
   let coluna = 1;
@@ -27,185 +28,195 @@ function tokenizar(data) {
       coluna = 1;
       continue;
     }
+    // Se o caracter atual for o início do comentário, incrementa o bloco de comentário
+    if (caracter == "{") {
+      isComment++;
+      continue;
+    } else if (caracter == "}") {
+      // Se o caracter atual for o final do comentário, decrementa o bloco de comentário
+      if (isComment == 0) {
+        throw new Error(
+          `Erro léxico: } sem { correspondente - linha ${linha} e coluna ${coluna}`
+        );
+      }
+      isComment--;
+      continue;
+    }
 
+    console.log(isComment, caracter);
     // Se o bloco de comentário estiver ativo, ignora o caracter
-    if (isComment) {
-      // Se o caracter atual for o final do comentário, desativa o bloco de comentário
-      if (caracter == "}") {
-        isComment = false;
-        continue;
-      } else {
-        continue;
-      }
-    }
-
-    // Se o caracter atual for o início do comentário, ativa o bloco de comentário
-    if (caracter == "{" && !isComment) {
-      isComment = true;
+    if (isComment > 0) {
       continue;
-    }
+    } else {
+      // Se o caracter for um dígito, trata como número
+      if (caracter.match(/[0-9]/)) {
+        let tokenNum = "";
+        while (caracter != undefined && caracter.match(/[0-9]/)) {
+          tokenNum += caracter;
+          caracter = data[++i];
+          coluna++;
+        }
+        // Volta um caracter para não perder o próximo caracter
+        i--;
+        coluna--;
 
-    // Se o caracter for um dígito, trata como número
-    if (caracter.match(/[0-9]/)) {
-      let tokenNum = "";
-      while (caracter != undefined && caracter.match(/[0-9]/)) {
-        tokenNum += caracter;
-        caracter = data[++i];
-        coluna++;
-      }
-      // Volta um caracter para não perder o próximo caracter
-      i--;
-      coluna--;
-
-      let token = {
-        lexema: tokenNum,
-        simbolo: "Snumero",
-      };
-      listaTokens.push(token);
-      continue;
-    }
-
-    // Se o caracter for uma letra, trata como identificador
-    if (caracter.match(/[a-zA-Z]/)) {
-      let tokenId = "";
-      // Enquanto for letra, "_" ou número
-      while (caracter != undefined && caracter.match(/[a-zA-Z0-9_]/)) {
-        tokenId += caracter;
-        caracter = data[++i];
-        coluna++;
-      }
-      // Volta um caracter para não perder o próximo caracter
-      i--;
-      coluna--;
-
-      let token = {
-        lexema: tokenId,
-        simbolo: identificaSimbolo(tokenId),
-      };
-      listaTokens.push(token);
-      continue;
-    }
-
-    // Se o caracter for ":" trata como atribuição ou dois pontos
-    if (caracter == ":") {
-      // Se o caracter seguinte for "=", trata como atribuição
-      if (data[i + 1] == "=") {
         let token = {
-          lexema: ":=",
-          simbolo: "Satribuicao",
-        };
-        listaTokens.push(token);
-        i++;
-        continue;
-      }
-      // Se não, trata como dois pontos
-      else {
-        let token = {
-          lexema: ":",
-          simbolo: "Sdoispontos",
+          lexema: tokenNum,
+          simbolo: "Snumero",
         };
         listaTokens.push(token);
         continue;
       }
-    }
 
-    // Se o caracter for "+", "-", "*" trata como operador aritmético
-    if (caracter == "+" || caracter == "-" || caracter == "*") {
-      let token;
-      if (caracter == "+") {
-        token = {
-          lexema: "+",
-          simbolo: "Smais",
+      // Se o caracter for uma letra, trata como identificador
+      if (caracter.match(/[a-zA-Z]/)) {
+        let tokenId = "";
+        // Enquanto for letra, "_" ou número
+        while (caracter != undefined && caracter.match(/[a-zA-Z0-9_]/)) {
+          tokenId += caracter;
+          caracter = data[++i];
+          coluna++;
+        }
+        // Volta um caracter para não perder o próximo caracter
+        i--;
+        coluna--;
+
+        let token = {
+          lexema: tokenId,
+          simbolo: identificaSimbolo(tokenId),
         };
-      } else if (caracter == "-") {
-        token = {
-          lexema: "-",
-          simbolo: "Smenos",
-        };
-      } else if (caracter == "*") {
-        token = {
-          lexema: "*",
-          simbolo: "Smult",
-        };
+        listaTokens.push(token);
+        continue;
       }
-      listaTokens.push(token);
-      continue;
-    }
 
-    // Se o caracter for "!", "<", ">", "=" trata como operador relacional
-    if (
-      caracter == "!" ||
-      caracter == "<" ||
-      caracter == ">" ||
-      caracter == "="
-    ) {
-      let token;
-      if (caracter == "!") {
-        token = {
-          lexema: "!",
-          simbolo: "Snao",
-        };
-      } else if (caracter == "<") {
-        token = {
-          lexema: "<",
-          simbolo: "Smenor",
-        };
-      } else if (caracter == ">") {
-        token = {
-          lexema: ">",
-          simbolo: "Smaior",
-        };
-      } else if (caracter == "=") {
-        token = {
-          lexema: "=",
-          simbolo: "Sigual",
-        };
+      // Se o caracter for ":" trata como atribuição ou dois pontos
+      if (caracter == ":") {
+        // Se o caracter seguinte for "=", trata como atribuição
+        if (data[i + 1] == "=") {
+          let token = {
+            lexema: ":=",
+            simbolo: "Satribuicao",
+          };
+          listaTokens.push(token);
+          i++;
+          continue;
+        }
+        // Se não, trata como dois pontos
+        else {
+          let token = {
+            lexema: ":",
+            simbolo: "Sdoispontos",
+          };
+          listaTokens.push(token);
+          continue;
+        }
       }
-      listaTokens.push(token);
-      continue;
-    }
 
-    // Se o caracter for ";", ",",  "(",  ")", "." trata como pontuação
-    if (
-      caracter == ";" ||
-      caracter == "," ||
-      caracter == "(" ||
-      caracter == ")" ||
-      caracter == "."
-    ) {
-      let token;
-      if (caracter == ";") {
-        token = {
-          lexema: ";",
-          simbolo: "Sponto_virgula",
-        };
-      } else if (caracter == ",") {
-        token = {
-          lexema: ",",
-          simbolo: "Svirgula",
-        };
-      } else if (caracter == "(") {
-        token = {
-          lexema: "(",
-          simbolo: "Sabre_parenteses",
-        };
-      } else if (caracter == ")") {
-        token = {
-          lexema: ")",
-          simbolo: "Sfecha_parenteses",
-        };
-      } else if (caracter == ".") {
-        token = {
-          lexema: ".",
-          simbolo: "Sponto",
-        };
+      // Se o caracter for "+", "-", "*" trata como operador aritmético
+      if (caracter == "+" || caracter == "-" || caracter == "*") {
+        let token;
+        if (caracter == "+") {
+          token = {
+            lexema: "+",
+            simbolo: "Smais",
+          };
+        } else if (caracter == "-") {
+          token = {
+            lexema: "-",
+            simbolo: "Smenos",
+          };
+        } else if (caracter == "*") {
+          token = {
+            lexema: "*",
+            simbolo: "Smult",
+          };
+        }
+        listaTokens.push(token);
+        continue;
       }
-      listaTokens.push(token);
-      continue;
-    }
 
+      // Se o caracter for "!", "<", ">", "=" trata como operador relacional
+      if (
+        caracter == "!" ||
+        caracter == "<" ||
+        caracter == ">" ||
+        caracter == "="
+      ) {
+        let token;
+        if (caracter == "!") {
+          token = {
+            lexema: "!",
+            simbolo: "Snao",
+          };
+        } else if (caracter == "<") {
+          token = {
+            lexema: "<",
+            simbolo: "Smenor",
+          };
+        } else if (caracter == ">") {
+          token = {
+            lexema: ">",
+            simbolo: "Smaior",
+          };
+        } else if (caracter == "=") {
+          token = {
+            lexema: "=",
+            simbolo: "Sigual",
+          };
+        }
+        listaTokens.push(token);
+        continue;
+      }
+
+      // Se o caracter for ";", ",",  "(",  ")", "." trata como pontuação
+      if (
+        caracter == ";" ||
+        caracter == "," ||
+        caracter == "(" ||
+        caracter == ")" ||
+        caracter == "."
+      ) {
+        let token;
+        if (caracter == ";") {
+          token = {
+            lexema: ";",
+            simbolo: "Sponto_virgula",
+          };
+        } else if (caracter == ",") {
+          token = {
+            lexema: ",",
+            simbolo: "Svirgula",
+          };
+        } else if (caracter == "(") {
+          token = {
+            lexema: "(",
+            simbolo: "Sabre_parenteses",
+          };
+        } else if (caracter == ")") {
+          token = {
+            lexema: ")",
+            simbolo: "Sfecha_parenteses",
+          };
+        } else if (caracter == ".") {
+          token = {
+            lexema: ".",
+            simbolo: "Sponto",
+          };
+        }
+        listaTokens.push(token);
+        continue;
+      }
+
+      throw new Error(
+        `Erro léxico: caracter inválido "${caracter}" - linha ${linha} e coluna ${coluna}`
+      );
+    }
+  }
+
+  // Se o bloco de comentário não estiver fechado, lança um erro
+  if (isComment > 0) {
     throw new Error(
-      `Erro léxico: caracter inválido "${caracter}" na linha ${linha} e coluna ${coluna}`
+      `Erro léxico: comentário não fechado - linha ${linha} e coluna ${coluna}`
     );
   }
 
