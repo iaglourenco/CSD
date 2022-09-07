@@ -1,10 +1,8 @@
 html,
 body {
-  height: 100%;
   width: 100%;
   min-width: 270px;
   margin: 0;
-  padding: 0;
   overflow-x: hidden;
 }
 
@@ -12,13 +10,15 @@ body {
   display: none;
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 520px) {
   #menu_container * {
     display: none;
   }
+
   div#menu_icon {
     display: flex;
   }
+
   .menu.responsive {
     display: flex;
     flex-direction: column;
@@ -44,18 +44,23 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .menu_btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin: 2px;
-  padding: 2px;
-  font-family: monospace;
+  font-family: var(--mono);
   min-width: 75px;
   border-radius: 5px;
-  color: white;
+  color: var(--foreground);
+  margin-bottom: 5px;
+}
+
+.menu_btn .menu_btn_title {
+  margin: 5px;
+  font-size: 0.8rem;
 }
 
 #file-input {
@@ -65,21 +70,21 @@ body {
 }
 
 .menu_btn:hover {
-  background-color: rgba(255, 184, 108, 1);
-  color: #000;
+  background-color: var(--orange);
+  color: var(--background);
 }
 
 .CodeMirror {
   resize: vertical;
-  overflow: hidden !important;
-  font-family: monospace;
+  overflow: hidden;
+  font-family: var(--mono);
   font-size: large;
 }
 
 #codeeditor {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(248, 248, 242, 1) !important;
+  border: 1px solid var(--foreground);
   max-width: 1200px;
   width: 95%;
   margin: auto;
@@ -88,12 +93,13 @@ body {
 #codeeditor #codeeditor_header {
   display: flex;
   align-items: center;
-  background-color: rgba(255, 184, 108, 1) !important;
+  background-color: var(--orange);
   justify-content: space-between;
 }
+
 #codeeditor #codeeditor_header legend {
-  font-family: monospace;
-  color: #000;
+  font-family: var(--mono);
+  color: var(--background);
   font-size: 14px;
   padding: 5px;
   font-weight: bold;
@@ -102,7 +108,7 @@ body {
 #console {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(248, 248, 242, 1) !important;
+  border: 1px solid var(--foreground);
   min-height: 100px;
   max-width: 1200px;
   width: 95%;
@@ -111,25 +117,21 @@ body {
 }
 
 #console legend {
-  background-color: rgba(255, 184, 108, 1) !important;
-  font-family: monospace;
-  font-size: 14px;
+  background-color: var(--orange);
+  font-family: var(--mono);
+  font-size: 13px;
   padding: 5px 10px;
   font-weight: bold;
 }
 
+
+
 #console textarea {
-  color: white;
-  font-family: monospace;
+  color: var(--foreground);
+  font-family: var(--mono);
+  background: var(--current-line);
   font-size: 14px;
   border: none;
   text-decoration: none;
   resize: none;
-}
-
-#logo {
-  width: 50px;
-  height: 50px;
-  margin: 0px 10px 0px 10px;
-  font-family: monospace;
 }

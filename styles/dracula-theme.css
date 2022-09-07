@@ -1,0 +1,176 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap");
+
+@font-face {
+  font-family: "Abril Text";
+  src: url("../public/fonts/AbrilText-Bold.woff2") format("woff2"),
+}
+
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url("../public/fonts/SourceSansPro-Regular.woff2") format("woff2"),
+}
+
+@font-face {
+  font-family: "Abril Text";
+  src: url("../public/fonts/AbrilText-Bold.woff2") format("woff2"), url("../public/fonts/AbrilText-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap
+}
+
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url("../public/fonts/SourceSansPro-Light.woff2") format("woff2"), url("../public/fonts/SourceSansPro-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap
+}
+
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url("../public/fonts/SourceSansPro-Regular.woff2") format("woff2"), url("../public/fonts/SourceSansPro-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap
+}
+
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url("../public/fonts/SourceSansPro-Bold.woff2") format("woff2"), url("../public/fonts/SourceSansPro-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap
+}
+
+
+
+:root {
+  --background: #282a36;
+  --current-line: #44475a;
+  --foreground: #f8f8f2;
+  --comment: #6272a4;
+  --cyan: #8be9fd;
+  --green: #50fa7b;
+  --orange: #ffb86c;
+  --pink: #ff79c6;
+  --purple: #bd93f9;
+  --red: #ff5555;
+  --yellow: #f1fa8c;
+  --title: "Abril Text";
+  --body: "Source Sans Pro";
+  --mono: "Fira Code";
+  --alpha: 0.7;
+}
+
+.logo_snip {
+  color: var(--green);
+}
+
+.logo {
+  color: var(--orange);
+}
+
+html,
+body {
+  background-color: var(--background);
+}
+
+a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: var(--green);
+  text-align: center;
+}
+
+p {
+  color: var(--foreground);
+  font-family: var(--body);
+}
+
+button,
+a.button,
+.button {
+  cursor: pointer;
+  background-color: var(--orange);
+  color: var(--background);
+  font-family: var(--mono);
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px;
+  margin: 5px;
+}
+
+button:hover,
+a.button:hover {
+  opacity: var(--alpha);
+  color: var(--background);
+}
+
+a:hover {
+  color: var(--yellow);
+}
+
+li {
+  margin: 0;
+  color: var(--foreground);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+  color: var(--orange);
+  font-family: var(--title);
+}
+
+table {
+  background-color: var(--background);
+}
+
+code {
+  color: var(--cyan);
+  font-family: var(--mono);
+}
+
+code.comment {
+  color: var(--comment);
+}
+
+.code_container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--current-line);
+  padding: 0 5px 0 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+
+/* Scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--comment);
+  border-radius: 12px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+
+
+}
