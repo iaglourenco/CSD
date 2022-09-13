@@ -1,5 +1,8 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / lexico.js
 
+// Tabela de simbolos
+const tabelaDeSimbolos = {};
+
 function tokenizar(data) {
   /**
    * Identifica tokens.
@@ -43,7 +46,6 @@ function tokenizar(data) {
       continue;
     }
 
-    console.log(isComment, caracter);
     // Se o bloco de comentário estiver ativo, ignora o caracter
     if (isComment > 0) {
       continue;
@@ -281,5 +283,6 @@ function identificaSimbolo(token) {
 // Exporta o módulo
 const lexico = {
   tokenizar,
+  tabelaDeSimbolos,
 };
 export default lexico;

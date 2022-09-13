@@ -51,7 +51,7 @@ import lexico from "./lexico.js";
 
 window.onload = function () {
   var editor = CodeMirror(document.getElementById("codeeditor"), {
-    mode: "javascript",
+    mode: "text/x-pascal",
     theme: "dracula",
     tabSize: 5,
     lineNumbers: true,
