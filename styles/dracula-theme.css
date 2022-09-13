@@ -97,7 +97,7 @@ a.button,
   color: var(--background);
   font-family: var(--mono);
   border-radius: 5px;
-  padding: 5px 15px 5px 15px;
+  padding: 20px 15px 20px 15px;
   margin: 5px;
 }
 
