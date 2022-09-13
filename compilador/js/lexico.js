@@ -7,7 +7,7 @@ function tokenizar(data) {
   /**
    * Identifica tokens.
    * @param {string} data Código em LPD a ser identificado.
-   * @returns {lexema:string,simbolo:string} uma lista de tokens identificados em data
+   * @returns {list({lexema:string,simbolo:string})} uma lista de tokens identificados em data
    * @throws {Error} Caso encontre um caractere estranho indicando a linha e coluna do erro
    */
 
@@ -16,6 +16,7 @@ function tokenizar(data) {
   let listaTokens = [];
   let linha = 1;
   let coluna = 1;
+  let ultimoComentario = { linha: 0, coluna: 0 }; // Armazena a linha e coluna do último comentário aberto
   for (let i = 0; i < data.length; i++) {
     let caracter = data[i];
     coluna++;
@@ -34,6 +35,7 @@ function tokenizar(data) {
     // Se o caracter atual for o início do comentário, incrementa o bloco de comentário
     if (caracter == "{") {
       isComment++;
+      ultimoComentario = { linha, coluna };
       continue;
     } else if (caracter == "}") {
       // Se o caracter atual for o final do comentário, decrementa o bloco de comentário
@@ -146,20 +148,47 @@ function tokenizar(data) {
       ) {
         let token;
         if (caracter == "!") {
-          token = {
-            lexema: "!",
-            simbolo: "Snao",
-          };
+          // Se o caracter seguinte for "=", trata como operador relacional
+          if (data[i + 1] == "=") {
+            token = {
+              lexema: "!=",
+              simbolo: "Sdiferente",
+            };
+            i++;
+          } else {
+            token = {
+              lexema: "!",
+              simbolo: "Snao",
+            };
+          }
         } else if (caracter == "<") {
-          token = {
-            lexema: "<",
-            simbolo: "Smenor",
-          };
+          // Se o caracter seguinte for "=", trata como operador relacional
+          if (data[i + 1] == "=") {
+            token = {
+              lexema: "<=",
+              simbolo: "Smenorig",
+            };
+            i++;
+          } else {
+            token = {
+              lexema: "<",
+              simbolo: "Smenor",
+            };
+          }
         } else if (caracter == ">") {
-          token = {
-            lexema: ">",
-            simbolo: "Smaior",
-          };
+          // Se o caracter seguinte for "=", trata como operador relacional
+          if (data[i + 1] == "=") {
+            token = {
+              lexema: ">=",
+              simbolo: "Smaiorig",
+            };
+            i++;
+          } else {
+            token = {
+              lexema: ">",
+              simbolo: "Smaior",
+            };
+          }
         } else if (caracter == "=") {
           token = {
             lexema: "=",
@@ -218,7 +247,7 @@ function tokenizar(data) {
   // Se o bloco de comentário não estiver fechado, lança um erro
   if (isComment > 0) {
     throw new Error(
-      `Erro léxico: comentário não fechado - linha ${linha} e coluna ${coluna}`
+      `Erro léxico: comentário não fechado - linha ${ultimoComentario.linha} e coluna ${ultimoComentario.coluna}`
     );
   }
 
