@@ -5,6 +5,8 @@ import lexico from "./lexico.js";
 
 // Lista de token gloval
 let listaToken = [];
+// Guarda o ultimo token lido com sucesso
+let lastToken = null;
 
 // Regras de produção:
 function analisaBloco() {
@@ -13,7 +15,16 @@ function analisaBloco() {
    *            [<etapa de declaração de sub-rotinas>]
    *            <comandos>
    */
+  let token = listaToken.shift() ?? lastToken;
+  lastToken = token;
+  analisaDeclaracaoVariaveis();
+  analisaSubrotinas();
+  analisaComandos();
 }
+
+function analisaDeclaracaoVariaveis() {}
+function analisaSubrotinas() {}
+function analisaComandos() {}
 
 // Função de inicialização do sintático, a partir daqui todas as outras funções de análise são chamadas
 function iniciar(data) {
@@ -34,8 +45,7 @@ function iniciar(data) {
   // let rotulo = 1; // A ser usado pelo gerador de código
   // Desempilha o primeiro token
   let token = listaToken.shift();
-  // Guarda o ultimo token lido com sucesso
-  let lastToken = token;
+  lastToken = token;
   if (token && token.simbolo == "Sprograma") {
     token = listaToken.shift() ?? lastToken;
     lastToken = token;
