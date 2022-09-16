@@ -46,12 +46,11 @@ function logar(msg) {
   ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
 }
 
+import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
 // Import dos módulos do compilador
-import lexico from "./lexico.js";
+import sintatico from "./sintatico.js";
 
 window.onload = function () {
-  console.log(CodeMirror);
-
   var editor = CodeMirror(document.getElementById("codeeditor"), {
     mode: "text/x-lpd",
     theme: "dracula",
@@ -119,25 +118,25 @@ window.onload = function () {
       var start = performance.now();
       if (code.length > 0) {
         logar(`Compilando...`);
-        // Chamada do lexico passando todo o código inserido no editor
-        const listaToken = lexico.tokenizar(code);
+        // Chamada do sintático para iniciar a análise
+        const codigo = sintatico.iniciar(code);
 
         logar(`SUCESSO!`);
         // logar(`Tokens: ${JSON.stringify(listaToken)}`);
-        logar(`Qtd. Lexemas: ${listaToken.length}`);
-        console.table(listaToken);
+        // console.table(listaToken);
       } else {
         throw new Error("Nenhum código inserido!");
       }
     } catch (e) {
       console.error(e);
 
-      if (e.message.includes("Erro léxico")) {
-        // Pega a linha e a coluna da string de erro: `Erro léxico: caracter inválido "${caracter}" na linha ${linha} e coluna ${coluna}`
-        const linha = e.message.match(/linha (\d+)/)[1];
-        const coluna = e.message.match(/coluna (\d+)/)[1];
+      if (
+        e instanceof ErroLexico ||
+        e instanceof ErroSintatico ||
+        e instanceof ErroSemantico
+      ) {
         // Coloca o cursor na linha e coluna do erro
-        editor.setCursor(linha - 1, coluna - 1);
+        editor.setCursor(e.linha - 1, e.coluna - 1);
         editor.focus();
       }
 

@@ -1,14 +1,12 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / lexico.js
-
-// Tabela de simbolos
-const tabelaDeSimbolos = {};
+import { ErroLexico } from "./erros.js";
 
 function tokenizar(data) {
   /**
    * Identifica tokens.
    * @param {string} data Código em LPD a ser identificado.
    * @returns {list({lexema:string,simbolo:string})} uma lista de tokens identificados em data
-   * @throws {Error} Caso encontre um caractere estranho indicando a linha e coluna do erro
+   * @throws {ErroLexico} Caso encontre um caractere estranho indicando a linha e coluna do erro
    */
 
   // Controlador de comentário, incrementa a cada "{" lido e decrementa a cada "}" lido
@@ -40,9 +38,7 @@ function tokenizar(data) {
     } else if (caracter == "}") {
       // Se o caracter atual for o final do comentário, decrementa o bloco de comentário
       if (isComment == 0) {
-        throw new Error(
-          `Erro léxico: } sem { correspondente - linha ${linha} e coluna ${coluna}`
-        );
+        throw new ErroLexico("lxl1", caracter, linha, coluna);
       }
       isComment--;
       continue;
@@ -266,16 +262,17 @@ function tokenizar(data) {
         continue;
       }
 
-      throw new Error(
-        `Erro léxico: caracter inválido "${caracter}" - linha ${linha} e coluna ${coluna}`
-      );
+      throw new ErroLexico("lxl2", caracter, linha, coluna);
     }
   }
 
   // Se o bloco de comentário não estiver fechado, lança um erro
   if (isComment > 0) {
-    throw new Error(
-      `Erro léxico: comentário não fechado - linha ${ultimoComentario.linha} e coluna ${ultimoComentario.coluna}`
+    throw new ErroLexico(
+      "lxl3",
+      undefined,
+      ultimoComentario.linha,
+      ultimoComentario.coluna
     );
   }
 
@@ -340,6 +337,5 @@ function identificaSimbolo(token) {
 // Exporta o módulo
 const lexico = {
   tokenizar,
-  tabelaDeSimbolos,
 };
 export default lexico;
