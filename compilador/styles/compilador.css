@@ -74,13 +74,13 @@ body {
   color: var(--background);
 }
 
-.CodeMirror {
+.CodeMirror.cm-s-dracula {
   overflow: hidden;
   resize: vertical;
   font-family: var(--mono);
   font-size: large;
+  height: 100%;
 }
-
 
 #codeeditor {
   display: flex;
@@ -89,6 +89,7 @@ body {
   max-width: 1200px;
   width: 95%;
   margin: auto;
+  height: 62vh;
 }
 
 #codeeditor #codeeditor_header {

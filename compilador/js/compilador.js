@@ -50,10 +50,11 @@ function logar(msg) {
 import lexico from "./lexico.js";
 
 window.onload = function () {
+  console.log(CodeMirror);
+
   var editor = CodeMirror(document.getElementById("codeeditor"), {
-    mode: "text/x-pascal",
+    mode: "text/x-lpd",
     theme: "dracula",
-    tabSize: 5,
     lineNumbers: true,
     autofocus: true,
     viewportMargin: 150,
@@ -66,6 +67,7 @@ window.onload = function () {
       },
     },
   });
+
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
     if (document.getElementById("filename").value == "") {
@@ -121,7 +123,7 @@ window.onload = function () {
         const listaToken = lexico.tokenizar(code);
 
         logar(`SUCESSO!`);
-        logar(`Tokens: ${JSON.stringify(listaToken)}`);
+        // logar(`Tokens: ${JSON.stringify(listaToken)}`);
         logar(`Qtd. Lexemas: ${listaToken.length}`);
         console.table(listaToken);
       } else {

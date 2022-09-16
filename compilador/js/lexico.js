@@ -65,6 +65,8 @@ function tokenizar(data) {
         coluna--;
 
         let token = {
+          linha,
+          coluna,
           lexema: tokenNum,
           simbolo: "Snumero",
         };
@@ -72,7 +74,7 @@ function tokenizar(data) {
         continue;
       }
 
-      // Se o caracter for uma letra, trata como identificador
+      // Se o caracter for uma letra, trata como identificador ou palavra reservada
       if (caracter.match(/[a-zA-Z]/)) {
         let tokenId = "";
         // Enquanto for letra, "_" ou número
@@ -86,6 +88,8 @@ function tokenizar(data) {
         coluna--;
 
         let token = {
+          linha,
+          coluna,
           lexema: tokenId,
           simbolo: identificaSimbolo(tokenId),
         };
@@ -98,6 +102,8 @@ function tokenizar(data) {
         // Se o caracter seguinte for "=", trata como atribuição
         if (data[i + 1] == "=") {
           let token = {
+            linha,
+            coluna,
             lexema: ":=",
             simbolo: "Satribuicao",
           };
@@ -108,6 +114,8 @@ function tokenizar(data) {
         // Se não, trata como dois pontos
         else {
           let token = {
+            linha,
+            coluna,
             lexema: ":",
             simbolo: "Sdoispontos",
           };
@@ -121,16 +129,22 @@ function tokenizar(data) {
         let token;
         if (caracter == "+") {
           token = {
+            linha,
+            coluna,
             lexema: "+",
             simbolo: "Smais",
           };
         } else if (caracter == "-") {
           token = {
+            linha,
+            coluna,
             lexema: "-",
             simbolo: "Smenos",
           };
         } else if (caracter == "*") {
           token = {
+            linha,
+            coluna,
             lexema: "*",
             simbolo: "Smult",
           };
@@ -150,27 +164,25 @@ function tokenizar(data) {
         if (caracter == "!") {
           // Se o caracter seguinte for "=", trata como operador relacional
           if (data[i + 1] == "=") {
-            token = {
-              lexema: "!=",
-              simbolo: "Sdiferente",
-            };
+            token = { linha, coluna, lexema: "!=", simbolo: "Sdiferente" };
             i++;
           } else {
-            token = {
-              lexema: "!",
-              simbolo: "Snao",
-            };
+            token = { linha, coluna, lexema: "!", simbolo: "Snao" };
           }
         } else if (caracter == "<") {
           // Se o caracter seguinte for "=", trata como operador relacional
           if (data[i + 1] == "=") {
             token = {
+              linha,
+              coluna,
               lexema: "<=",
               simbolo: "Smenorig",
             };
             i++;
           } else {
             token = {
+              linha,
+              coluna,
               lexema: "<",
               simbolo: "Smenor",
             };
@@ -179,18 +191,24 @@ function tokenizar(data) {
           // Se o caracter seguinte for "=", trata como operador relacional
           if (data[i + 1] == "=") {
             token = {
+              linha,
+              coluna,
               lexema: ">=",
               simbolo: "Smaiorig",
             };
             i++;
           } else {
             token = {
+              linha,
+              coluna,
               lexema: ">",
               simbolo: "Smaior",
             };
           }
         } else if (caracter == "=") {
           token = {
+            linha,
+            coluna,
             lexema: "=",
             simbolo: "Sigual",
           };
@@ -210,26 +228,36 @@ function tokenizar(data) {
         let token;
         if (caracter == ";") {
           token = {
+            linha,
+            coluna,
             lexema: ";",
             simbolo: "Sponto_virgula",
           };
         } else if (caracter == ",") {
           token = {
+            linha,
+            coluna,
             lexema: ",",
             simbolo: "Svirgula",
           };
         } else if (caracter == "(") {
           token = {
+            linha,
+            coluna,
             lexema: "(",
             simbolo: "Sabre_parenteses",
           };
         } else if (caracter == ")") {
           token = {
+            linha,
+            coluna,
             lexema: ")",
             simbolo: "Sfecha_parenteses",
           };
         } else if (caracter == ".") {
           token = {
+            linha,
+            coluna,
             lexema: ".",
             simbolo: "Sponto",
           };

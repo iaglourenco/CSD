@@ -164,13 +164,10 @@ code.comment {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--comment);
-  border-radius: 12px;
 
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--orange);
-
-
 }
