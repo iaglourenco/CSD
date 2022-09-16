@@ -49,7 +49,61 @@ function analisaDeclaracaoVariaveis() {
 }
 function analisaSubrotinas() {}
 function analisaComandos() {}
-function analisaVariaveis() {}
+function analisaTipo() {}
+function analisaVariaveis() {
+  /**
+   *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
+   */
+  while (lexico.tokenAtual.simbolo != "Sdoispontos") {
+    if (lexico.tokenAtual.simbolo == "Sidentificador") {
+      // TODO condicional de duplicidade de variável
+      // if(pesquisaVariavel(token.lexema)){  /* Pesquisa na tabela de simbolos se a variável já foi declarada */
+
+      //insereTabelaSimbolos(token.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+      lexico.proximoToken();
+      if (
+        lexico.tokenAtual.simbolo == "Svirgula" ||
+        lexico.tokenAtual.simbolo == "Sdoispontos"
+      ) {
+        if (lexico.tokenAtual.simbolo == "Svirgula") {
+          lexico.proximoToken();
+          if (lexico.tokenAtual.simbolo == "Sdoispontos") {
+            // Lança um erro pois é esperado um identificador
+            throw new ErroSintatico(
+              "sxs3",
+              lexico.tokenAtual.lexema,
+              lexico.tokenAtual.linha,
+              lexico.tokenAtual.coluna
+            );
+          }
+        }
+      } else {
+        // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
+        throw new ErroSintatico(
+          "sxs5",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
+
+      // TODO Fim do condicional de duplicidade de variavel
+      // }else{
+      //   // Lança um erro pois a variável já foi declarada
+      // ...
+      // }
+    } else {
+      throw new ErroSintatico(
+        "sxs3",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  }
+  lexico.proximoToken();
+  analisaTipo();
+}
 
 // Função de inicialização do sintático, a partir daqui todas as outras funções de análise são chamadas
 function iniciar(data) {
