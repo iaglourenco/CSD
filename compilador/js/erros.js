@@ -9,7 +9,8 @@ export const messages = {
   sxs1: "Erro sintático: Código após o ponto final",
   sxs2: "Erro sintático: Esperado simbolo 'programa'",
   sxs3: "Erro sintático: Esperado 'identificador'",
-  sxs4: "Erro sintático: Esperado ;",
+  sxs4: "Erro sintático: Esperado ';'",
+  sxs5: "Erro sintático: Esperado ':'",
 };
 
 export class ErroLexico extends Error {
