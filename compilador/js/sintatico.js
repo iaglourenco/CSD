@@ -49,7 +49,25 @@ function analisaDeclaracaoVariaveis() {
 }
 function analisaSubrotinas() {}
 function analisaComandos() {}
-function analisaTipo() {}
+function analisaTipo() {
+  /**
+   * <tipo> ::= (inteiro | booleano)
+   */
+  if (
+    lexico.tokenAtual.simbolo != "Sinteiro" &&
+    lexico.tokenAtual.simbolo != "Sbooleano"
+  ) {
+    throw new ErroSintatico(
+      "sxs6",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  } else {
+    // colocaTipo(lexico.tokenAtual.lexema);
+    lexico.proximoToken();
+  }
+}
 function analisaVariaveis() {
   /**
    *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
@@ -57,9 +75,9 @@ function analisaVariaveis() {
   while (lexico.tokenAtual.simbolo != "Sdoispontos") {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       // TODO condicional de duplicidade de variável
-      // if(pesquisaVariavel(token.lexema)){  /* Pesquisa na tabela de simbolos se a variável já foi declarada */
+      // if(pesquisaVariavel(lexico.tokenAtual.lexema)){  /* Pesquisa na tabela de simbolos se a variável já foi declarada */
 
-      //insereTabelaSimbolos(token.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+      //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
       lexico.proximoToken();
       if (
         lexico.tokenAtual.simbolo == "Svirgula" ||
@@ -128,7 +146,7 @@ function iniciar(data) {
   if (lexico.tokenAtual && lexico.tokenAtual.simbolo == "Sprograma") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // insereTabelaSimbolos(token.lexema, "nomeDePrograma","",""); /* Insere na tabela de simbolos */
+      // insereTabelaSimbolos(lexico.tokenAtual.lexema, "nomeDePrograma","",""); /* Insere na tabela de simbolos */
       lexico.proximoToken();
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
         // Chamada da função de análise do bloco
