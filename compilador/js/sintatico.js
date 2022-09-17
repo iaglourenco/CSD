@@ -47,8 +47,42 @@ function analisaDeclaracaoVariaveis() {
     }
   }
 }
+
 function analisaSubrotinas() {}
-function analisaComandos() {}
+
+function analisaComandos() {
+  /**
+   * <comandos>::= inicio <comando>{;<comando>}[;] fim
+   */
+  if (lexico.tokenAtual.simbolo == "Sinicio") {
+    lexico.proximoToken();
+    analisaComandoSimples();
+    while (lexico.tokenAtual.simbolo != "Sfim") {
+      if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+        lexico.proximoToken();
+        analisaComandoSimples();
+      } else {
+        throw new ErroSintatico(
+          "sxs4",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
+    }
+    lexico.proximoToken();
+  } else {
+    throw new ErroSintatico(
+      "sxs7",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+}
+
+function analisaComandoSimples() {}
+
 function analisaTipo() {
   /**
    * <tipo> ::= (inteiro | booleano)
@@ -68,6 +102,7 @@ function analisaTipo() {
     lexico.proximoToken();
   }
 }
+
 function analisaVariaveis() {
   /**
    *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>

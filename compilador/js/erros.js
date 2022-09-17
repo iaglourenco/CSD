@@ -12,6 +12,7 @@ export const messages = {
   sxs4: "Erro sintático: Esperado ';'",
   sxs5: "Erro sintático: Esperado ':'",
   sxs6: "Erro sintático: Tipo de variável inválido",
+  sxs7: "Erro sintático: Esperado 'inicio'",
 };
 
 export class ErroLexico extends Error {
