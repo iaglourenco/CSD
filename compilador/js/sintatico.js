@@ -81,7 +81,35 @@ function analisaComandos() {
   }
 }
 
-function analisaComandoSimples() {}
+function analisaComandoSimples() {
+  /**
+   * <comando>::=  (<atribuição_chprocedimento>|
+   *                         <comando condicional> |
+   *                         <comando enquanto> |
+   *                         <comando leitura> |
+   *                         <comando escrita> |
+   *                         <comandos>)
+   */
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    analisaAtribuicaoChprocedimento();
+  } else if (lexico.tokenAtual.simbolo == "Sse") {
+    analisaComandoCondicional();
+  } else if (lexico.tokenAtual.simbolo == "Senquanto") {
+    analisaComandoEnquanto();
+  } else if (lexico.tokenAtual.simbolo == "Sleia") {
+    analisaComandoLeitura();
+  } else if (lexico.tokenAtual.simbolo == "Sescreva") {
+    analisaComandoEscrita();
+  } else {
+    analisaComandos();
+  }
+}
+
+function analisaAtribuicaoChprocedimento() {}
+function analisaComandoCondicional() {}
+function analisaComandoEnquanto() {}
+function analisaComandoLeitura() {}
+function analisaComandoEscrita() {}
 
 function analisaTipo() {
   /**
@@ -158,19 +186,8 @@ function analisaVariaveis() {
   analisaTipo();
 }
 
-// Função de inicialização do sintático, a partir daqui todas as outras funções de análise são chamadas
-function iniciar(data) {
+function analisaPrograma() {
   /**
-   * Inicia o analisador sintático.
-   * @param {string} data Código em LPD a ser analisado.
-   * @returns {string} Código em LPD compilado e em linguagem de máquina.
-   */
-
-  // Inicia o analisador léxico
-  lexico = new Lexico(data);
-
-  /**
-   * Inicia o analisador sintático
    * <programa>::= programa <identificador> ; <bloco> .
    */
 
@@ -225,6 +242,21 @@ function iniciar(data) {
       lexico.tokenAtual.coluna
     );
   }
+}
+
+// Função de inicialização do sintático
+function iniciar(data) {
+  /**
+   * Inicia o analisador sintático, que orquestra a análise do código fonte chamando os outros módulos
+   * @param {string} data Código em LPD a ser analisado.
+   * @returns {string} Código em LPD compilado e em linguagem de máquina.
+   */
+
+  // Inicia o analisador léxico
+  lexico = new Lexico(data);
+
+  // Chamada da regra de entrada do sintático
+  analisaPrograma();
 }
 const sintatico = {
   iniciar,
