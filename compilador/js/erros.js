@@ -16,6 +16,7 @@ export const messages = {
   sxs8: "Erro sintático: Esperado 'fim'",
   sxs9: "Erro sintático: Parenteses não fechados",
   sxs10: "Erro sintático: Simbolo não esperado",
+  sxs11: "Erro sintático: Esperado 'entao'",
 };
 
 export class ErroLexico extends Error {

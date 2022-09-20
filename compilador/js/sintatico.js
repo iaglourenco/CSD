@@ -171,7 +171,30 @@ function analisaChamadaProcedimento() {
   lexico.proximoToken();
   // TODO: analisar chamada de procedimento
 }
-function analisaComandoCondicional() {}
+function analisaComandoCondicional() {
+  /**
+   * <comando condicional>::= se <expressão>
+   *                             entao <comando>
+   *                             [senao <comando>]
+   */
+  lexico.proximoToken();
+  analisaExpressao();
+  if (lexico.tokenAtual.simbolo == "Sentao") {
+    lexico.proximoToken();
+    analisaComandoSimples();
+    if (lexico.tokenAtual.simbolo == "Ssenao") {
+      lexico.proximoToken();
+      analisaComandoSimples();
+    }
+  } else {
+    throw new ErroSintatico(
+      "sxs11",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+}
 function analisaComandoEnquanto() {}
 function analisaComandoLeitura() {}
 function analisaComandoEscrita() {}
