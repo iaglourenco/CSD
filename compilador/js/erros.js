@@ -13,6 +13,9 @@ export const messages = {
   sxs5: "Erro sintático: Esperado ':'",
   sxs6: "Erro sintático: Tipo de variável inválido",
   sxs7: "Erro sintático: Esperado 'inicio'",
+  sxs8: "Erro sintático: Esperado 'fim'",
+  sxs9: "Erro sintático: Parenteses não fechados",
+  sxs10: "Erro sintático: Simbolo não esperado",
 };
 
 export class ErroLexico extends Error {
