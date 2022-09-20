@@ -56,11 +56,14 @@ function analisaComandos() {
    */
   if (lexico.tokenAtual.simbolo == "Sinicio") {
     lexico.proximoToken();
-    analisaComandoSimples();
+    analisaComandoSimples(); // PROBLEMA!?
+
     while (lexico.tokenAtual.simbolo != "Sfim") {
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
         lexico.proximoToken();
-        analisaComandoSimples();
+        if (lexico.tokenAtual.simbolo != "Sfim") {
+          analisaComandoSimples();
+        }
       } else {
         throw new ErroSintatico(
           "sxs4",
@@ -105,7 +108,69 @@ function analisaComandoSimples() {
   }
 }
 
-function analisaAtribuicaoChprocedimento() {}
+function analisaAtribuicaoChprocedimento() {
+  /**
+   * <atribuição_chprocedimento>::= (<comando atribuicao>|<chamada de procedimento>)
+   */
+  lexico.proximoToken();
+  if (lexico.tokenAtual.simbolo == "Satribuicao") {
+    analisaComandoAtribuicao();
+  } else {
+    analisaChamadaProcedimento();
+  }
+}
+
+function analisaComandoAtribuicao() {
+  /**
+   * <comando atribuicao>::= identificador := <expressao>
+   */
+  lexico.proximoToken();
+  analisaExpressao();
+}
+function analisaExpressao() {
+  /**
+   * <expressão>::= <expressão simples> [<operador relacional><expressão simples>]
+   */
+  analisaExpressaoSimples();
+  if (
+    lexico.tokenAtual.simbolo == "Smaior" ||
+    lexico.tokenAtual.simbolo == "Smaior_igual" ||
+    lexico.tokenAtual.simbolo == "Smenor" ||
+    lexico.tokenAtual.simbolo == "Smenor_igual" ||
+    lexico.tokenAtual.simbolo == "Sigual" ||
+    lexico.tokenAtual.simbolo == "Sdiferente"
+  ) {
+    lexico.proximoToken();
+    analisaExpressaoSimples();
+  }
+}
+function analisaExpressaoSimples() {
+  /**
+   * <expressão simples> ::= [ + | - ] <termo> {( + | - | ou) <termo> }
+   */
+  if (
+    lexico.tokenAtual.simbolo == "Smais" ||
+    lexico.tokenAtual.simbolo == "Smenos"
+  ) {
+    lexico.proximoToken();
+    analisaTermo();
+  }
+  while (
+    lexico.tokenAtual.simbolo == "Smais" ||
+    lexico.tokenAtual.simbolo == "Smenos" ||
+    lexico.tokenAtual.simbolo == "Sou"
+  ) {
+    lexico.proximoToken();
+    analisaTermo();
+  }
+}
+function analisaChamadaProcedimento() {
+  /**
+   * <chamada de procedimento>::= <identificador>
+   */
+  lexico.proximoToken();
+  // TODO: analisar chamada de procedimento
+}
 function analisaComandoCondicional() {}
 function analisaComandoEnquanto() {}
 function analisaComandoLeitura() {}

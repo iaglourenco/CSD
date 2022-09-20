@@ -4,7 +4,6 @@ import { ErroLexico } from "./erros.js";
 class Lexico {
   constructor(data) {
     this.listaToken = this.tokenizar(data);
-    this.ultimoToken = null;
     this.tokenAtual = null;
   }
   tokenizar(data) {
@@ -352,9 +351,18 @@ class Lexico {
      * Atualiza o token atual e o ultimo token lido com sucesso
      * @returns {object} token
      * */
-    this.tokenAtual = this.listaToken.shift() ?? this.ultimoToken;
-    this.ultimoToken = this.tokenAtual;
-    return this.ultimoToken;
+
+    if (this.listaToken.length == 0) {
+      // Retorna simbolo de final de arquivo, que não é reconhecido pelo analisador sintático causando a falha,
+      // Podemos futuramente tratar isso de outra forma, lançando um erro específico sobre, por exemplo
+      this.tokenAtual = {
+        simbolo: "Sfim_arquivo",
+        lexema: "fim_arquivo",
+        linha: this.tokenAtual.linha,
+        coluna: this.tokenAtual.coluna,
+      };
+    } else this.tokenAtual = this.listaToken.shift();
+    return this.tokenAtual;
   }
 }
 
