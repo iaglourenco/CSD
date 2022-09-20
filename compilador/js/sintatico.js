@@ -169,6 +169,7 @@ function analisaChamadaProcedimento() {
    * <chamada de procedimento>::= <identificador>
    */
   lexico.proximoToken();
+  // TODO: analisar chamada de procedimento
 }
 function analisaComandoCondicional() {}
 function analisaComandoEnquanto() {}
