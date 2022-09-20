@@ -175,6 +175,59 @@ function analisaComandoCondicional() {}
 function analisaComandoEnquanto() {}
 function analisaComandoLeitura() {}
 function analisaComandoEscrita() {}
+function analisaTermo() {}
+function analisaFator() {
+  /**
+   * <fator> ::= (<variável> |
+   *                 <número> |
+   *                 <chamada de função> |
+   *                 (<expressão>) | verdadeiro | falso |
+   *                  nao <fator>)
+   *
+   */
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    //semantico
+    // if (pesquisaTabela(lexico.tokenAtual.lexema, nível, ind)) {
+    //   if (
+    //     tabelaSimbolos[ind].tipo == "funcao int" ||
+    //     tabelaSimbolos[ind].tipo == "funcao booleano"
+    //   ) {
+    //     analisaChamadaFuncao();
+    //   }else lexico.proximoToken();
+    // }
+    // else{ ERRO}
+  } else if (lexico.tokenAtual.simbolo == "Snumero") {
+    lexico.proximoToken();
+  } else if (lexico.tokenAtual.simbolo == "Snao") {
+    lexico.proximoToken();
+    analisaFator();
+  } else if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
+    lexico.proximoToken();
+    analisaExpressao();
+    if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+      lexico.proximoToken();
+    } else {
+      throw new ErroSintatico(
+        "sxs9",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  } else if (
+    lexico.tokenAtual.simbolo == "Sverdadeiro" ||
+    lexico.tokenAtual.simbolo == "Sfalso"
+  ) {
+    lexico.proximoToken();
+  } else {
+    throw new ErroSintatico(
+      "sxs10",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+}
 
 function analisaTipo() {
   /**
