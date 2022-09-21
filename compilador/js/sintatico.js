@@ -196,6 +196,9 @@ function analisaComandoCondicional() {
   }
 }
 function analisaTermo() {
+  /**
+   * <termo>::= <fator> {(\* | div | e) <fator>}
+   */
   analisaFator();
   while (
     lexico.tokenAtual.simbolo == "Smult" ||
