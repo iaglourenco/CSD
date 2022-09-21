@@ -400,7 +400,7 @@ function analisaPrograma() {
             // Caso não haja mais simbolos na lista de tokens, o código está correto
             return "Compilado com sucesso!";
           } else {
-            // Caso haja mais simbolos na lista de tokens, apóes o ponto, lança um erro
+            // Caso haja mais simbolos na lista de tokens, após o ponto, lança um erro
             throw new ErroSintatico(
               "sxs1",
               lexico.tokenAtual.lexema,
@@ -408,6 +408,13 @@ function analisaPrograma() {
               lexico.tokenAtual.coluna
             );
           }
+        } else {
+          throw new ErroSintatico(
+            "sxs14",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
         }
       } else {
         throw new ErroSintatico(

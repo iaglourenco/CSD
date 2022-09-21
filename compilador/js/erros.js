@@ -19,6 +19,7 @@ export const messages = {
   sxs11: "Erro sintático: Esperado 'entao'",
   sxs12: "Erro sintático: Esperado ')' ",
   sxs13: "Erro sintático: Identificador não declarado",
+  sxs14: "Erro sintático: Ponto final não encontrado",
 };
 
 export class ErroLexico extends Error {
