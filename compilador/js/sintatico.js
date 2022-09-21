@@ -111,6 +111,7 @@ function analisaDeclaracaoProcedimento() {
   }
   // Desempilha ou volta nivel
 }
+
 function analisaDeclaracaoFuncao() {
   /**
    * <declaração de função> ::= funcao <identificador>: <tipo>;<bloco>
@@ -238,6 +239,7 @@ function analisaComandoAtribuicao() {
   lexico.proximoToken();
   analisaExpressao();
 }
+
 function analisaExpressao() {
   /**
    * <expressão>::= <expressão simples> [<operador relacional><expressão simples>]
@@ -255,6 +257,7 @@ function analisaExpressao() {
     analisaExpressaoSimples();
   }
 }
+
 function analisaExpressaoSimples() {
   /**
    * <expressão simples> ::= [ + | - ] <termo> {( + | - | ou) <termo> }
@@ -276,6 +279,7 @@ function analisaExpressaoSimples() {
     analisaTermo();
   }
 }
+
 function analisaChamadaProcedimento() {
   /**
    * <chamada de procedimento>::= <identificador>
@@ -283,6 +287,14 @@ function analisaChamadaProcedimento() {
   lexico.proximoToken();
   // TODO: analisar chamada de procedimento
 }
+function analisaChamadaFuncao() {
+  /**
+   * <chamada de função>::= <identificador>
+   */
+  lexico.proximoToken();
+  // TODO: analisar chamada de funcao
+}
+
 function analisaComandoCondicional() {
   /**
    * <comando condicional>::= se <expressão>
@@ -307,6 +319,7 @@ function analisaComandoCondicional() {
     );
   }
 }
+
 function analisaTermo() {
   /**
    * <termo>::= <fator> {(\* | div | e) <fator>}
@@ -360,6 +373,7 @@ function analisaComandoEscrita() {
     }
   }
 }
+
 function analisaFator() {
   /**
    * <fator> ::= (<variável> |
