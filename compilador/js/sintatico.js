@@ -206,8 +206,11 @@ function analisaTermo() {
     analisaFator();
   }
 }
+
 function analisaComandoEnquanto() {}
+
 function analisaComandoLeitura() {}
+
 function analisaComandoEscrita() {
   /**
    * <comando escrita> ::= escreva ( <identificador> )
