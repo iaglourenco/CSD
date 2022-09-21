@@ -1,4 +1,4 @@
-// Author: Iago Lourenço (iagojlourenco@gmail.com) / pascal-mode.js
+// Modified by: Iago Lourenço (iagojlourenco@gmail.com) / lpd-mode.js
 // Modified based on pascal-mode.js
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
