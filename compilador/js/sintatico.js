@@ -335,7 +335,26 @@ function analisaTermo() {
   }
 }
 
-function analisaComandoEnquanto() {}
+function analisaComandoEnquanto() {
+  /**
+   * <comando enquanto> ::= enquanto <expressão> faca <comando>
+   */
+  // TODO: jumps criados na geração de código
+
+  lexico.proximoToken();
+  analisaExpressao();
+  if (lexico.tokenAtual.simbolo == "Sfaca") {
+    lexico.proximoToken();
+    analisaComandoSimples();
+  } else {
+    throw new ErroSintatico(
+      "sxs15",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+}
 
 function analisaComandoLeitura() {}
 
