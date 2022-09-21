@@ -49,7 +49,9 @@
         <h3>Descrição em BNF da linguagem</h3>
         <p>Para a descrição da linguagem LPD, foi utilizado a notação BNF (Backus-Naur Form), que é uma notação para
             especificar gramáticas formais.</p>
-        <p>Espaços, tabulações e quebras de linha são ignorados.</p>
+
+        <p>Espaços, tabulações, caracteres não
+            imprimíveis e quebras de linha são ignorados.</p>
 
         <!-- inserir markdown BNF_LPD-->
         <div class="code_container">
@@ -157,8 +159,28 @@ falso | nao &lt;fator&gt;)</code>
             arquivo &nbsp;<a target="_blank" noreferrer nopener
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
         <h3>Sintático</h3>
-        <p>Em desenvolvimento...</p>
+        <p>
+            Este módulo é responsável por realizar a análise sintática do código fonte, ou seja, a verificação da
+            estrutura
+            gramatical do código fonte. Para isso, o módulo sintático deve realizar a leitura dos tokens gerados pelo
+            módulo
+            léxico e verificar se estes tokens estão de acordo com a gramática definida para a linguagem. Caso o token
+            lido
+            não esteja de acordo com a gramática, um erro deve ser lançado indicando a linha e coluna do mesmo
+        </p>
+        <p>A partir do sintático os outros módulos são requisitados, fazendo com que o sintático seja o "motor" de todo
+            o compilador orquestrando todos os
+            outros módulos, produzindo no final de toda a execução o código em linguagem de máquina.
+        </p>
+        <p style="display: flex;  justify-content: start;">A implementação do módulo sintático pode ser encontrada no
+            arquivo &nbsp;<a target="_blank" noreferrer nopener
+                href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/sintatico.js">sintatico.js</a>.
+        </p>
         <h3>Semântico</h3>
+        <p>Em desenvolvimento...</p>
+        <h3>Geração de código</h3>
+        <p>Em desenvolvimento...</p>
+        <h3>Máquina virtual</h3>
         <p>Em desenvolvimento...</p>
 
     </article>
