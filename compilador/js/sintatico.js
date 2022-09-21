@@ -356,7 +356,41 @@ function analisaComandoEnquanto() {
   }
 }
 
-function analisaComandoLeitura() {}
+function analisaComandoLeitura() {
+  /**
+   * <comando leitura>::= leia (identificador)
+   */
+
+  lexico.proximoToken();
+  if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
+    lexico.proximoToken();
+    if (lexico.tokenAtual.simbolo == "Sidentificador") {
+      // TODO: semantico
+      if (/*pesquisaVariavelFuncao(lexico.tokenAtual.lexema) != null*/ true) {
+        lexico.proximoToken();
+        if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+          lexico.proximoToken();
+        } else {
+          // Fecha parenteses faltando
+          throw new ErroSintatico(
+            "sxs12",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
+        }
+      } else {
+        // Identificador não declarada
+        throw new ErroSintatico(
+          "sxs13",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
+    }
+  }
+}
 
 function analisaComandoEscrita() {
   /**
