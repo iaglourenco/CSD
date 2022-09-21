@@ -48,7 +48,118 @@ function analisaDeclaracaoVariaveis() {
   }
 }
 
-function analisaSubrotinas() {}
+function analisaSubrotinas() {
+  /**
+   * <etapa de declaração de sub-rotinas> ::= (<declaração de procedimento>;|<declaração de função>;)
+   *                                          {<declaração de procedimento>;|<declaração de função>;}
+   */
+  // TODO: semantico
+
+  while (
+    lexico.tokenAtual.simbolo == "Sprocedimento" ||
+    lexico.tokenAtual.simbolo == "Sfuncao"
+  ) {
+    if (lexico.tokenAtual.simbolo == "Sprocedimento") {
+      analisaDeclaracaoProcedimento();
+    } else {
+      analisaDeclaracaoFuncao();
+    }
+    if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+      lexico.proximoToken();
+    } else {
+      throw new ErroSintatico(
+        "sxs4",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  }
+}
+
+function analisaDeclaracaoProcedimento() {
+  /**
+   * <declaração de procedimento> ::= procedimento <identificador>;<bloco>
+   */
+
+  lexico.proximoToken();
+  //TODO: adicionar marca/galho
+
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    // TODO: semantico
+    // Pesquisa na tabela de simbolos se o identificador já foi declarado
+    // Se sim, lança um erro, senão adiciona na tabela de simbolos
+
+    lexico.proximoToken();
+    if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+      analisaBloco();
+    } else {
+      throw new ErroSintatico(
+        "sxs4",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  } else {
+    throw new ErroSintatico(
+      "sxs3",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+  // Desempilha ou volta nivel
+}
+function analisaDeclaracaoFuncao() {
+  /**
+   * <declaração de função> ::= funcao <identificador>: <tipo>;<bloco>
+   */
+
+  lexico.proximoToken();
+  // TODO: adicionar marca/galho
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    // TODO: semantico
+    // Pesquisa na tabela de simbolos se o identificador já foi declarado
+    // Se sim, lança um erro, senão adiciona na tabela de simbolos
+    lexico.proximoToken();
+    if (lexico.tokenAtual.simbolo == "Sdois_pontos") {
+      lexico.proximoToken();
+      if (
+        lexico.tokenAtual.simbolo == "Sinteiro" ||
+        lexico.tokenAtual.simbolo == "Sbooleano"
+      ) {
+        // TODO: semantico
+        // Adicionar na tabela de simbolos o tipo da função
+        lexico.proximoToken();
+        if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+          analisaBloco();
+        }
+      } else {
+        throw new ErroSintatico(
+          "sxs6",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
+    } else {
+      throw new ErroSintatico(
+        "sxs5",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  } else {
+    throw new ErroSintatico(
+      "sxs3",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
+}
 
 function analisaComandos() {
   /**
@@ -400,7 +511,7 @@ function analisaPrograma() {
             // Caso não haja mais simbolos na lista de tokens, o código está correto
             return "Compilado com sucesso!";
           } else {
-            // Caso haja mais simbolos na lista de tokens, apóes o ponto, lança um erro
+            // Caso haja mais simbolos na lista de tokens, após o ponto, lança um erro
             throw new ErroSintatico(
               "sxs1",
               lexico.tokenAtual.lexema,
@@ -408,6 +519,13 @@ function analisaPrograma() {
               lexico.tokenAtual.coluna
             );
           }
+        } else {
+          throw new ErroSintatico(
+            "sxs14",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
         }
       } else {
         throw new ErroSintatico(

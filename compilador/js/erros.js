@@ -11,7 +11,7 @@ export const messages = {
   sxs3: "Erro sintático: Esperado 'identificador'",
   sxs4: "Erro sintático: Esperado ';'",
   sxs5: "Erro sintático: Esperado ':'",
-  sxs6: "Erro sintático: Tipo de variável inválido",
+  sxs6: "Erro sintático: Tipo inválido",
   sxs7: "Erro sintático: Esperado 'inicio'",
   sxs8: "Erro sintático: Esperado 'fim'",
   sxs9: "Erro sintático: Parenteses não fechados",
@@ -19,6 +19,7 @@ export const messages = {
   sxs11: "Erro sintático: Esperado 'entao'",
   sxs12: "Erro sintático: Esperado ')' ",
   sxs13: "Erro sintático: Identificador não declarado",
+  sxs14: "Erro sintático: Ponto final não encontrado",
 };
 
 export class ErroLexico extends Error {
