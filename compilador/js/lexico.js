@@ -362,6 +362,7 @@ class Lexico {
         coluna: this.tokenAtual.coluna,
       };
     } else this.tokenAtual = this.listaToken.shift();
+    console.debug(this.tokenAtual);
     return this.tokenAtual;
   }
 }

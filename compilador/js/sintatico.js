@@ -153,8 +153,9 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smenos"
   ) {
     lexico.proximoToken();
-    analisaTermo();
   }
+  analisaTermo();
+
   while (
     lexico.tokenAtual.simbolo == "Smais" ||
     lexico.tokenAtual.simbolo == "Smenos" ||
