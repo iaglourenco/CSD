@@ -48,7 +48,7 @@ function analisaDeclaracaoVariaveis() {
   }
 }
 
-function analisaSubrotinas() { }
+function analisaSubrotinas() {}
 
 function analisaComandos() {
   /**
@@ -197,13 +197,15 @@ function analisaComandoCondicional() {
 }
 function analisaTermo() {
   analisaFator();
-  while ((lexico.tokenAtual.simbolo == "Smult") ||
-    (lexico.tokenAtual.simbolo == "Sdiv") ||
+  while (
+    lexico.tokenAtual.simbolo == "Smult" ||
+    lexico.tokenAtual.simbolo == "Sdiv" ||
+    lexico.tokenAtual.simbolo == "Se"
+  ) {
     lexico.proximoToken();
-    (lexico.tokenAtual.simbolo == "Se")) {
     analisaFator();
-}
   }
+}
 function analisaComandoEnquanto() {}
 function analisaComandoLeitura() {}
 function analisaComandoEscrita() {
