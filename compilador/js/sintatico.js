@@ -30,6 +30,7 @@ function analisaDeclaracaoVariaveis() {
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
         lexico.proximoToken();
       } else {
+        // Ponto e virgula esperado
         throw new ErroSintatico(
           "sxs4",
           lexico.tokenAtual.lexema,
@@ -38,6 +39,7 @@ function analisaDeclaracaoVariaveis() {
         );
       }
     } else {
+      // Identificador esperado
       throw new ErroSintatico(
         "sxs3",
         lexico.tokenAtual.lexema,
@@ -168,7 +170,7 @@ function analisaComandos() {
    */
   if (lexico.tokenAtual.simbolo == "Sinicio") {
     lexico.proximoToken();
-    analisaComandoSimples(); // PROBLEMA!?
+    analisaComandoSimples();
 
     while (lexico.tokenAtual.simbolo != "Sfim") {
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
@@ -179,9 +181,9 @@ function analisaComandos() {
       } else {
         throw new ErroSintatico(
           "sxs4",
-          lexico.tokenAtual.lexema,
-          lexico.tokenAtual.linha,
-          lexico.tokenAtual.coluna
+          lexico.ultimoTokenLido.lexema,
+          lexico.ultimoTokenLido.linha,
+          lexico.ultimoTokenLido.coluna
         );
       }
     }
@@ -189,9 +191,9 @@ function analisaComandos() {
   } else {
     throw new ErroSintatico(
       "sxs7",
-      lexico.tokenAtual.lexema,
-      lexico.tokenAtual.linha,
-      lexico.tokenAtual.coluna
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
     );
   }
 }
@@ -313,9 +315,9 @@ function analisaComandoCondicional() {
   } else {
     throw new ErroSintatico(
       "sxs11",
-      lexico.tokenAtual.lexema,
-      lexico.tokenAtual.linha,
-      lexico.tokenAtual.coluna
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
     );
   }
 }
@@ -349,9 +351,9 @@ function analisaComandoEnquanto() {
   } else {
     throw new ErroSintatico(
       "sxs15",
-      lexico.tokenAtual.lexema,
-      lexico.tokenAtual.linha,
-      lexico.tokenAtual.coluna
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
     );
   }
 }
@@ -374,9 +376,9 @@ function analisaComandoLeitura() {
           // Fecha parenteses faltando
           throw new ErroSintatico(
             "sxs12",
-            lexico.tokenAtual.lexema,
-            lexico.tokenAtual.linha,
-            lexico.tokenAtual.coluna
+            lexico.ultimoTokenLido.lexema,
+            lexico.ultimoTokenLido.linha,
+            lexico.ultimoTokenLido.coluna
           );
         }
       } else {
@@ -388,7 +390,23 @@ function analisaComandoLeitura() {
           lexico.tokenAtual.coluna
         );
       }
+    } else {
+      // Identificador faltando
+      throw new ErroSintatico(
+        "sxs3",
+        lexico.ultimoTokenLido.lexema,
+        lexico.ultimoTokenLido.linha,
+        lexico.ultimoTokenLido.coluna
+      );
     }
+  } else {
+    // Abre parenteses faltando
+    throw new ErroSintatico(
+      "sxs16",
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
+    );
   }
 }
 
@@ -409,9 +427,9 @@ function analisaComandoEscrita() {
           // Fecha parenteses faltando
           throw new ErroSintatico(
             "sxs12",
-            lexico.tokenAtual.lexema,
-            lexico.tokenAtual.linha,
-            lexico.tokenAtual.coluna
+            lexico.ultimoTokenLido.lexema,
+            lexico.ultimoTokenLido.linha,
+            lexico.ultimoTokenLido.coluna
           );
         }
       } else {
@@ -423,7 +441,24 @@ function analisaComandoEscrita() {
           lexico.tokenAtual.coluna
         );
       }
+    } else {
+      // Identificador faltando
+      throw new ErroSintatico(
+        "sxs3",
+        lexico.ultimoTokenLido.lexema,
+        lexico.ultimoTokenLido.linha,
+        lexico.ultimoTokenLido.coluna
+      );
     }
+  } else {
+    // Abre parenteses faltando
+
+    throw new ErroSintatico(
+      "sxs16",
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
+    );
   }
 }
 
@@ -438,15 +473,22 @@ function analisaFator() {
    */
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
     //semantico
-    // if (pesquisaTabela(lexico.tokenAtual.lexema, nível, ind)) {
-    //   if (
-    //     tabelaSimbolos[ind].tipo == "funcao int" ||
-    //     tabelaSimbolos[ind].tipo == "funcao booleano"
-    //   ) {
-    //     analisaChamadaFuncao();
-    //   }else lexico.proximoToken();
-    // }
-    // else{ ERRO}
+    if (/*pesquisaTabela(lexico.tokenAtual.lexema, nível, ind) */ true) {
+      if (
+        /*tabelaSimbolos[ind].tipo == "funcao int" ||
+        tabelaSimbolos[ind].tipo == "funcao booleano" */ false
+      ) {
+        analisaChamadaFuncao();
+      } else lexico.proximoToken();
+    } else {
+      // Identificador não declarada
+      throw new ErroSintatico(
+        "sxs13",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
   } else if (lexico.tokenAtual.simbolo == "Snumero") {
     lexico.proximoToken();
   } else if (lexico.tokenAtual.simbolo == "Snao") {
@@ -460,9 +502,9 @@ function analisaFator() {
     } else {
       throw new ErroSintatico(
         "sxs9",
-        lexico.tokenAtual.lexema,
-        lexico.tokenAtual.linha,
-        lexico.tokenAtual.coluna
+        lexico.ultimoTokenLido.lexema,
+        lexico.ultimoTokenLido.linha,
+        lexico.ultimoTokenLido.coluna
       );
     }
   } else if (
@@ -506,42 +548,39 @@ function analisaVariaveis() {
    */
   while (lexico.tokenAtual.simbolo != "Sdoispontos") {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // TODO condicional de duplicidade de variável
-      // if(pesquisaVariavel(lexico.tokenAtual.lexema)){  /* Pesquisa na tabela de simbolos se a variável já foi declarada */
-
-      //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
-      lexico.proximoToken();
-      if (
-        lexico.tokenAtual.simbolo == "Svirgula" ||
-        lexico.tokenAtual.simbolo == "Sdoispontos"
-      ) {
-        if (lexico.tokenAtual.simbolo == "Svirgula") {
-          lexico.proximoToken();
-          if (lexico.tokenAtual.simbolo == "Sdoispontos") {
-            // Lança um erro pois é esperado um identificador
-            throw new ErroSintatico(
-              "sxs3",
-              lexico.tokenAtual.lexema,
-              lexico.tokenAtual.linha,
-              lexico.tokenAtual.coluna
-            );
+      if (/* pesquisaVariavel(lexico.tokenAtual.lexema) */ true) {
+        // Pesquisa na tabela de simbolos se a variável já foi declarada
+        //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+        lexico.proximoToken();
+        if (
+          lexico.tokenAtual.simbolo == "Svirgula" ||
+          lexico.tokenAtual.simbolo == "Sdoispontos"
+        ) {
+          if (lexico.tokenAtual.simbolo == "Svirgula") {
+            lexico.proximoToken();
+            if (lexico.tokenAtual.simbolo == "Sdoispontos") {
+              // Lança um erro pois é esperado um identificador
+              throw new ErroSintatico(
+                "sxs3",
+                lexico.tokenAtual.lexema,
+                lexico.tokenAtual.linha,
+                lexico.tokenAtual.coluna
+              );
+            }
           }
+        } else {
+          // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
+          throw new ErroSintatico(
+            "sxs5",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
         }
       } else {
-        // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
-        throw new ErroSintatico(
-          "sxs5",
-          lexico.tokenAtual.lexema,
-          lexico.tokenAtual.linha,
-          lexico.tokenAtual.coluna
-        );
+        //   // Lança um erro pois a variável já foi declarada
+        // ...
       }
-
-      // TODO Fim do condicional de duplicidade de variavel
-      // }else{
-      //   // Lança um erro pois a variável já foi declarada
-      // ...
-      // }
     } else {
       throw new ErroSintatico(
         "sxs3",

@@ -21,6 +21,7 @@ export const messages = {
   sxs13: "Erro sintático: Identificador não declarado",
   sxs14: "Erro sintático: Ponto final não encontrado",
   sxs15: "Erro sintático: Esperado 'faca'",
+  sxs16: "Erro sintático: Esperado '('",
 };
 
 export class ErroLexico extends Error {

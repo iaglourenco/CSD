@@ -5,6 +5,7 @@ class Lexico {
   constructor(data) {
     this.listaToken = this.tokenizar(data);
     this.tokenAtual = null;
+    this.ultimoTokenLido = null;
   }
   tokenizar(data) {
     /**
@@ -310,7 +311,7 @@ class Lexico {
       case "enquanto":
         return "Senquanto";
       case "faca":
-        return "sfaca";
+        return "Sfaca";
       case "inicio":
         return "Sinicio";
       case "fim":
@@ -352,6 +353,8 @@ class Lexico {
      * @returns {object} token
      * */
 
+    this.ultimoTokenLido = this.tokenAtual;
+
     if (this.listaToken.length == 0) {
       // Retorna simbolo de final de arquivo, que não é reconhecido pelo analisador sintático causando a falha,
       // Podemos futuramente tratar isso de outra forma, lançando um erro específico sobre, por exemplo
@@ -362,7 +365,7 @@ class Lexico {
         coluna: this.tokenAtual.coluna,
       };
     } else this.tokenAtual = this.listaToken.shift();
-    console.debug(this.tokenAtual);
+
     return this.tokenAtual;
   }
 }
