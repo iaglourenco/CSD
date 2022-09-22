@@ -26,17 +26,19 @@ function analisaDeclaracaoVariaveis() {
   if (lexico.tokenAtual.simbolo == "Svar") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      analisaVariaveis();
-      if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
-        lexico.proximoToken();
-      } else {
-        // Ponto e virgula esperado
-        throw new ErroSintatico(
-          "sxs4",
-          lexico.tokenAtual.lexema,
-          lexico.tokenAtual.linha,
-          lexico.tokenAtual.coluna
-        );
+      while (lexico.tokenAtual.simbolo == "Sidentificador") {
+        analisaVariaveis();
+        if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+          lexico.proximoToken();
+        } else {
+          // Ponto e virgula esperado
+          throw new ErroSintatico(
+            "sxs4",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
+        }
       }
     } else {
       // Identificador esperado
@@ -48,6 +50,58 @@ function analisaDeclaracaoVariaveis() {
       );
     }
   }
+}
+
+function analisaVariaveis() {
+  /**
+   *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
+   */
+  while (lexico.tokenAtual.simbolo != "Sdoispontos") {
+    if (lexico.tokenAtual.simbolo == "Sidentificador") {
+      if (/* pesquisaVariavel(lexico.tokenAtual.lexema) */ true) {
+        // Pesquisa na tabela de simbolos se a variável já foi declarada
+        //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+        lexico.proximoToken();
+        if (
+          lexico.tokenAtual.simbolo == "Svirgula" ||
+          lexico.tokenAtual.simbolo == "Sdoispontos"
+        ) {
+          if (lexico.tokenAtual.simbolo == "Svirgula") {
+            lexico.proximoToken();
+            if (lexico.tokenAtual.simbolo == "Sdoispontos") {
+              // Lança um erro pois é esperado um identificador
+              throw new ErroSintatico(
+                "sxs3",
+                lexico.tokenAtual.lexema,
+                lexico.tokenAtual.linha,
+                lexico.tokenAtual.coluna
+              );
+            }
+          }
+        } else {
+          // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
+          throw new ErroSintatico(
+            "sxs5",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
+        }
+      } else {
+        //   // Lança um erro pois a variável já foi declarada
+        // ...
+      }
+    } else {
+      throw new ErroSintatico(
+        "sxs3",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    }
+  }
+  lexico.proximoToken();
+  analisaTipo();
 }
 
 function analisaSubrotinas() {
@@ -126,7 +180,7 @@ function analisaDeclaracaoFuncao() {
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
     lexico.proximoToken();
-    if (lexico.tokenAtual.simbolo == "Sdois_pontos") {
+    if (lexico.tokenAtual.simbolo == "Sdoispontos") {
       lexico.proximoToken();
       if (
         lexico.tokenAtual.simbolo == "Sinteiro" ||
@@ -286,7 +340,7 @@ function analisaChamadaProcedimento() {
   /**
    * <chamada de procedimento>::= <identificador>
    */
-  lexico.proximoToken();
+  //lexico.proximoToken();
   // TODO: analisar chamada de procedimento
 }
 function analisaChamadaFuncao() {
@@ -540,58 +594,6 @@ function analisaTipo() {
     // colocaTipo(lexico.tokenAtual.lexema);
     lexico.proximoToken();
   }
-}
-
-function analisaVariaveis() {
-  /**
-   *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
-   */
-  while (lexico.tokenAtual.simbolo != "Sdoispontos") {
-    if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      if (/* pesquisaVariavel(lexico.tokenAtual.lexema) */ true) {
-        // Pesquisa na tabela de simbolos se a variável já foi declarada
-        //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
-        lexico.proximoToken();
-        if (
-          lexico.tokenAtual.simbolo == "Svirgula" ||
-          lexico.tokenAtual.simbolo == "Sdoispontos"
-        ) {
-          if (lexico.tokenAtual.simbolo == "Svirgula") {
-            lexico.proximoToken();
-            if (lexico.tokenAtual.simbolo == "Sdoispontos") {
-              // Lança um erro pois é esperado um identificador
-              throw new ErroSintatico(
-                "sxs3",
-                lexico.tokenAtual.lexema,
-                lexico.tokenAtual.linha,
-                lexico.tokenAtual.coluna
-              );
-            }
-          }
-        } else {
-          // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
-          throw new ErroSintatico(
-            "sxs5",
-            lexico.tokenAtual.lexema,
-            lexico.tokenAtual.linha,
-            lexico.tokenAtual.coluna
-          );
-        }
-      } else {
-        //   // Lança um erro pois a variável já foi declarada
-        // ...
-      }
-    } else {
-      throw new ErroSintatico(
-        "sxs3",
-        lexico.tokenAtual.lexema,
-        lexico.tokenAtual.linha,
-        lexico.tokenAtual.coluna
-      );
-    }
-  }
-  lexico.proximoToken();
-  analisaTipo();
 }
 
 function analisaPrograma() {
