@@ -23,7 +23,9 @@
       for (var i = 0; i < words.length; ++i) obj[words[i]] = true;
       return obj;
     }
-    var keywords = words("var inicio fim loop se senao entao ");
+    var keywords = words(
+      "var inicio fim loop se senao entao enquanto faca leia escreva"
+    );
     var atoms = {
       null: true,
       programa: true,
