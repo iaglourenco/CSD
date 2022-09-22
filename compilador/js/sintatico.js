@@ -125,9 +125,9 @@ function analisaSubrotinas() {
     } else {
       throw new ErroSintatico(
         "sxs4",
-        lexico.tokenAtual.lexema,
-        lexico.tokenAtual.linha,
-        lexico.tokenAtual.coluna
+        lexico.ultimoTokenLido.lexema,
+        lexico.ultimoTokenLido.linha,
+        lexico.ultimoTokenLido.coluna
       );
     }
   }
@@ -303,9 +303,9 @@ function analisaExpressao() {
   analisaExpressaoSimples();
   if (
     lexico.tokenAtual.simbolo == "Smaior" ||
-    lexico.tokenAtual.simbolo == "Smaior_igual" ||
+    lexico.tokenAtual.simbolo == "Smaiorig" ||
     lexico.tokenAtual.simbolo == "Smenor" ||
-    lexico.tokenAtual.simbolo == "Smenor_igual" ||
+    lexico.tokenAtual.simbolo == "Smenorig" ||
     lexico.tokenAtual.simbolo == "Sigual" ||
     lexico.tokenAtual.simbolo == "Sdiferente"
   ) {
