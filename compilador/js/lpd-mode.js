@@ -24,7 +24,7 @@
       return obj;
     }
     var keywords = words(
-      "var inicio fim se senao entao enquanto faca leia escreva"
+      "var inicio fim se senao entao enquanto faca leia escreva e nao"
     );
     var atoms = {
       null: true,
