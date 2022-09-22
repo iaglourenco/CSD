@@ -56,6 +56,7 @@ window.onload = function () {
     theme: "dracula",
     lineNumbers: true,
     autofocus: true,
+
     viewportMargin: 150,
     extraKeys: {
       F11: function (cm) {
