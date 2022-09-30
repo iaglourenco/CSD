@@ -126,6 +126,19 @@ body {
   font-weight: bold;
 }
 
+#console #limpar {
+  cursor: pointer;
+  background-color: var(--orange);
+  color: var(--background);
+  font-family: var(--mono);
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+#console #limpar:hover {
+  opacity: .8;
+}
+
 
 
 #console textarea {
