@@ -44,6 +44,9 @@ function logar(msg) {
   document.getElementById(
     "log"
   ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
+  // Faz o scroll na textarea para o fim
+  document.getElementById("log").scrollTop =
+    document.getElementById("log").scrollHeight;
 }
 
 import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
@@ -66,6 +69,16 @@ window.onload = function () {
         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
       },
     },
+  });
+
+  // Animação do logo
+  document.getElementById("logo").addEventListener("mouseover", function () {
+    document.getElementsByClassName("logo_snip")[0].innerHTML = "return";
+  });
+
+  // Animação do logo
+  document.getElementById("logo").addEventListener("mouseout", function () {
+    document.getElementsByClassName("logo_snip")[0].innerHTML = "LPD";
   });
 
   // Atualiza os números da linha e coluna na janela
