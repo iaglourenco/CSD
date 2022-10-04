@@ -3,8 +3,6 @@ html,
 body {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    margin: 0;
     min-width: 270px;
     overflow-x: hidden;
 }
@@ -44,10 +42,13 @@ footer * {
 .menu {
     display: flex;
     align-items: center;
-    width: 100%;
     padding: 10px;
-    justify-content: space-between;
+    width: 99%;
     position: fixed;
+    justify-content: space-between;
+    left: 0;
+    top: 0;
+    margin: auto;
     background-color: var(--background);
 }
 

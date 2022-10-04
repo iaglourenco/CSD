@@ -1,8 +1,8 @@
 html,
 body {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   min-width: 270px;
-  margin: 0;
   overflow-x: hidden;
 }
 
@@ -34,9 +34,9 @@ body {
 .menu {
   display: flex;
   align-items: center;
-  width: 95%;
-  margin: auto;
+  padding: 0px 0px 0px 0px;
   justify-content: space-between;
+  background-color: var(--background);
 }
 
 #menu_container {
@@ -74,11 +74,12 @@ body {
   color: var(--background);
 }
 
-.CodeMirror {
-  resize: vertical;
+.CodeMirror.cm-s-dracula {
   overflow: hidden;
+  resize: vertical;
   font-family: var(--mono);
   font-size: large;
+  height: 100%;
 }
 
 #codeeditor {
@@ -88,6 +89,7 @@ body {
   max-width: 1200px;
   width: 95%;
   margin: auto;
+  height: 62vh;
 }
 
 #codeeditor #codeeditor_header {
@@ -122,6 +124,19 @@ body {
   font-size: 13px;
   padding: 5px 10px;
   font-weight: bold;
+}
+
+#console #limpar {
+  cursor: pointer;
+  background-color: var(--orange);
+  color: var(--background);
+  font-family: var(--mono);
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+#console #limpar:hover {
+  opacity: .8;
 }
 
 

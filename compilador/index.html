@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -20,11 +19,13 @@
   <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css" />
 
   <script src="codemirror/lib/codemirror.js"></script>
-  <script src="codemirror/mode/pascal/pascal.js"></script>
   <script src="codemirror/addon/display/fullscreen.js"></script>
+  <script src="codemirror/addon/hint/show-hint.js"></script>
 
   <!-- Script imports -->
   <script type="module" src="js/compilador.js"></script>
+  <script src="js/lpd-mode.js"></script>
+
 </head>
 
 <body>
@@ -37,12 +38,15 @@
         x.className = "menu";
       }
     }
+
+
   </script>
 
-  <div id="nav" class="menu">
+  <header id="nav" class="menu">
     <div style="display: flex; width: 100%; justify-content: space-between;">
-      <h1 class="logo">compi{<span class="logo_snip">LPD</span>}lador</h1>
-
+      <a id="logo_container" href="/">
+        <h1 id="logo" class="logo">compi{<span class="logo_snip">LPD</span>}lador</h1>
+      </a>
       <div onclick="openNav()" class="menu_btn" id="menu_icon">
         <span class="material-icons"> menu </span>
         <span>Menu</span>
@@ -64,7 +68,7 @@
         <input id="file-input" type="file" accept=".txt" />
       </div>
     </div>
-  </div>
+  </header>
 
   <div id="codeeditor">
     <div id="codeeditor_header">
@@ -79,7 +83,7 @@
   <div id="console">
     <div style="display: flex; justify-content: space-between">
       <legend>Log</legend>
-      <legend id="limpar" style="cursor: pointer" onclick="document.getElementById('log').value=''">
+      <legend id="limpar" onclick="document.getElementById('log').value=''">
         Limpar (Ctrl+L)
       </legend>
     </div>

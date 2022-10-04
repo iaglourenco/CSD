@@ -66,8 +66,17 @@
   color: var(--green);
 }
 
+
+
 .logo {
   color: var(--orange);
+  font-family: var(--mono);
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: translateY(-2px);
+  text-shadow: 0 0 10px var(--orange);
 }
 
 html,
@@ -97,7 +106,7 @@ a.button,
   color: var(--background);
   font-family: var(--mono);
   border-radius: 5px;
-  padding: 5px 15px 5px 15px;
+  padding: 20px 15px 20px 15px;
   margin: 5px;
 }
 
@@ -164,13 +173,10 @@ code.comment {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--comment);
-  border-radius: 12px;
 
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--orange);
-
-
 }
