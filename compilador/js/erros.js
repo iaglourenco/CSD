@@ -22,6 +22,9 @@ export const messages = {
   sxs14: "Erro sintático: Ponto final não encontrado",
   sxs15: "Erro sintático: Esperado 'faca'",
   sxs16: "Erro sintático: Esperado '('",
+  sem1: "Erro semântico: Identificador já declarado no escopo atual",
+  sem2: "Erro semântico: Identificador não declarado",
+  sem3: "Erro semântico: Tipos incompatíveis",
 };
 
 export class ErroLexico extends Error {
