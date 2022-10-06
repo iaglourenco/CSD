@@ -1,9 +1,13 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / sintatico.js
 
-import { ErroSintatico } from "./erros.js";
+import { ErroSemantico, ErroSintatico } from "./erros.js";
 import Lexico from "./lexico.js";
+import Semantico from "./semantico.js";
+import TabelaSimbolos from "./tabelaSimbolos.js";
 
 let lexico;
+let semantico = new Semantico([]);
+let tabelaSimbolos = new TabelaSimbolos();
 
 // Regras de produção:
 function analisaBloco() {
@@ -58,9 +62,14 @@ function analisaVariaveis() {
    */
   while (lexico.tokenAtual.simbolo != "Sdoispontos") {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      if (/* pesquisaVariavel(lexico.tokenAtual.lexema) */ true) {
-        // Pesquisa na tabela de simbolos se a variável já foi declarada
-        //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+      // Pesquisa na tabela de simbolos se a variável já foi declarada
+      if (semantico.pesquisaVariavelDuplicada(lexico.tokenAtual.lexema)) {
+        /* Insere na tabela de simbolos */
+        tabelaSimbolos.pushSimbolo(
+          lexico.tokenAtual.lexema,
+          "variavel",
+          "NOMEM"
+        );
         lexico.proximoToken();
         if (
           lexico.tokenAtual.simbolo == "Svirgula" ||
@@ -88,8 +97,13 @@ function analisaVariaveis() {
           );
         }
       } else {
-        //   // Lança um erro pois a variável já foi declarada
-        // ...
+        // Lança um erro pois a variável já foi declarada
+        throw new ErroSemantico(
+          "sem1",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
       }
     } else {
       throw new ErroSintatico(
@@ -608,7 +622,13 @@ function analisaPrograma() {
   if (lexico.tokenAtual && lexico.tokenAtual.simbolo == "Sprograma") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // insereTabelaSimbolos(lexico.tokenAtual.lexema, "nomeDePrograma","",""); /* Insere na tabela de simbolos */
+      /* Insere na tabela de simbolos */
+      tabelaSimbolos.pushSimbolo(
+        lexico.tokenAtual.lexema,
+        "nomeDePrograma",
+        undefined
+      );
+
       lexico.proximoToken();
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
         // Chamada da função de análise do bloco
@@ -666,11 +686,17 @@ function iniciar(data) {
   /**
    * Inicia o analisador sintático, que orquestra a análise do código fonte chamando os outros módulos
    * @param {string} data Código em LPD a ser analisado.
-   * @returns {string} Código em LPD compilado e em linguagem de máquina.
+   * @returns {string} Código em LPD compilado e em linguagem de montagem.
    */
 
   // Inicia o analisador léxico
   lexico = new Lexico(data);
+
+  // Inicia a tabela de símbolos
+  tabelaSimbolos = new TabelaSimbolos();
+
+  // Inicia o analisador semântico
+  semantico = new Semantico(tabelaSimbolos);
 
   // Chamada da regra de entrada do sintático
   analisaPrograma();
