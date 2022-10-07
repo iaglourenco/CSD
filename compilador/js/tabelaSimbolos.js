@@ -3,7 +3,11 @@
 class TabelaSimbolos {
   constructor() {
     this.tabela = [];
-    this.escopoAtual = 0;
+    this.escopoAtual = "prog";
+  }
+
+  printTabela() {
+    console.table(this.tabela);
   }
 
   pushSimbolo(lexema, tipo, memoria) {
@@ -13,11 +17,32 @@ class TabelaSimbolos {
       tipo,
       memoria,
     });
-    console.table(this.tabela);
+    this.printTabela();
   }
 
   popSimbolo() {
     return this.tabela.pop();
+  }
+
+  colocaTipo(tipo) {
+    for (let i = this.tabela.length - 1; i >= 0; i--) {
+      if (
+        this.tabela[i].tipo === "Svariavel" ||
+        this.tabela[i].tipo === "Sfuncao"
+      ) {
+        this.tabela[i].tipo += " " + tipo;
+      }
+    }
+    this.printTabela();
+  }
+
+  // Desempilha todos os simbolos até que o escopo mude, removendo assim os simbolos do escopo
+  desempilhaEscopo() {
+    while (this.tabela[this.tabela.length - 1].escopo == this.escopoAtual) {
+      this.tabela.pop();
+    }
+    this.escopoAtual = this.tabela[this.tabela.length - 1].lexema;
+    this.printTabela();
   }
 
   getSimbolos(lexema) {
