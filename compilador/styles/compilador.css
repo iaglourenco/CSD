@@ -80,6 +80,7 @@ body {
   font-family: var(--mono);
   font-size: large;
   height: 100%;
+  cursor: text;
 }
 
 #codeeditor {

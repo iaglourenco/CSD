@@ -44,7 +44,7 @@ class Lexico {
       } else if (caracter == "}") {
         // Se o caracter atual for o final do comentário, decrementa o bloco de comentário
         if (isComment == 0) {
-          throw new ErroLexico("lxl1", caracter, linha, coluna);
+          throw new ErroLexico("lxc1", caracter, linha, coluna);
         }
         isComment--;
         continue;
@@ -268,14 +268,14 @@ class Lexico {
           continue;
         }
 
-        throw new ErroLexico("lxl2", caracter, linha, coluna);
+        throw new ErroLexico("lxc2", caracter, linha, coluna);
       }
     }
 
     // Se o bloco de comentário não estiver fechado, lança um erro
     if (isComment > 0) {
       throw new ErroLexico(
-        "lxl3",
+        "lxc3",
         undefined,
         ultimoComentario.linha,
         ultimoComentario.coluna
