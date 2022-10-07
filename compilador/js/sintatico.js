@@ -665,6 +665,7 @@ function analisaPrograma() {
   if (lexico.tokenAtual && lexico.tokenAtual.simbolo == "Sprograma") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
+      tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
       /* Insere na tabela de simbolos */
       tabelaSimbolos.pushSimbolo(
         lexico.tokenAtual.lexema,

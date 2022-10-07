@@ -41,7 +41,7 @@ class TabelaSimbolos {
     while (this.tabela[this.tabela.length - 1].escopo == this.escopoAtual) {
       this.tabela.pop();
     }
-    this.escopoAtual = this.tabela[this.tabela.length - 1].lexema;
+    this.escopoAtual = this.tabela[this.tabela.length - 1].escopo;
     this.printTabela();
   }
 
