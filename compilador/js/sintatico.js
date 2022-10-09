@@ -344,6 +344,8 @@ function analisaComandoAtribuicao() {
   /**
    * <comando atribuicao>::= identificador := <expressao>
    */
+
+  // Deveria analisar se o identificador é valido
   lexico.proximoToken();
   //semantico.pushExpressaoInfixa(lexico.tokenAtual);
   analisaExpressao();

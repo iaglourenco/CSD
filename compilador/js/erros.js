@@ -31,9 +31,14 @@ export class ErroLexico extends Error {
   constructor(messageId, token, linha, coluna) {
     if (messageId == "lxc2")
       super(
-        `${messages[messageId]} "${token}" na linha ${linha} e coluna ${coluna}`
+        `${messages[messageId]} "${token}" na linha ${linha + 1} e coluna ${
+          coluna + 1
+        }`
       );
-    else super(messages[messageId] + ` na linha ${linha} e coluna ${coluna}`);
+    else
+      super(
+        messages[messageId] + ` na linha ${linha + 1} e coluna ${coluna + 1}`
+      );
     this.token = token;
     this.linha = linha;
     this.coluna = coluna;
@@ -42,7 +47,9 @@ export class ErroLexico extends Error {
 
 export class ErroSintatico extends Error {
   constructor(messageId, token, linha, coluna) {
-    super(messages[messageId] + ` na linha ${linha} e coluna ${coluna}`);
+    super(
+      messages[messageId] + ` na linha ${linha + 1} e coluna ${coluna + 1}`
+    );
     this.token = token;
     this.linha = linha;
     this.coluna = coluna;
@@ -53,9 +60,14 @@ export class ErroSemantico extends Error {
   constructor(messageId, token, linha, coluna) {
     if (messageId == "sem1" || messageId == "sem2")
       super(
-        `${messages[messageId]} "${token}" na linha ${linha} e coluna ${coluna}`
+        `${messages[messageId]} "${token}" na linha ${linha + 1} e coluna ${
+          coluna + 1
+        }`
       );
-    else super(messages[messageId] + ` na linha ${linha} e coluna ${coluna}`);
+    else
+      super(
+        messages[messageId] + ` na linha ${linha + 1} e coluna ${coluna + 1}`
+      );
 
     this.token = token;
     this.linha = linha;

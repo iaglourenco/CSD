@@ -59,7 +59,6 @@ window.onload = function () {
     theme: "dracula",
     lineNumbers: true,
     autofocus: true,
-
     viewportMargin: 150,
     extraKeys: {
       F11: function (cm) {
@@ -150,7 +149,7 @@ window.onload = function () {
         e instanceof ErroSemantico
       ) {
         // Coloca o cursor na linha e coluna do erro
-        editor.setCursor(e.linha - 1, e.coluna - 1);
+        editor.setCursor(e.linha, e.coluna);
         editor.focus();
       }
 
