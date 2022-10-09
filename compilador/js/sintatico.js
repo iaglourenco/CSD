@@ -345,7 +345,9 @@ function analisaComandoAtribuicao() {
    * <comando atribuicao>::= identificador := <expressao>
    */
   lexico.proximoToken();
+  //semantico.pushExpressaoInfixa(lexico.tokenAtual);
   analisaExpressao();
+  semantico.posFixa();
 }
 
 function analisaExpressao() {
@@ -361,6 +363,7 @@ function analisaExpressao() {
     lexico.tokenAtual.simbolo == "Sigual" ||
     lexico.tokenAtual.simbolo == "Sdiferente"
   ) {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressaoSimples();
   }
@@ -374,6 +377,11 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smais" ||
     lexico.tokenAtual.simbolo == "Smenos"
   ) {
+    semantico.pushExpressaoInfixa({
+      ...lexico.tokenAtual,
+
+      lexema: lexico.tokenAtual.lexema + "u",
+    });
     lexico.proximoToken();
   }
   analisaTermo();
@@ -383,6 +391,7 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smenos" ||
     lexico.tokenAtual.simbolo == "Sou"
   ) {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaTermo();
   }
@@ -445,6 +454,7 @@ function analisaTermo() {
     lexico.tokenAtual.simbolo == "Sdiv" ||
     lexico.tokenAtual.simbolo == "Se"
   ) {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaFator();
   }
@@ -588,9 +598,15 @@ function analisaFator() {
       const simb = tabelaSimbolos
         .getSimbolos(lexico.tokenAtual.lexema)
         .map((s) => s.tipo);
-      if (simb.includes("funcao int") || simb.includes("funcao booleano")) {
+      if (
+        simb.includes("Sfuncao Sinteiro") ||
+        simb.includes("Sfuncao Sbooleano")
+      ) {
         analisaChamadaFuncao();
-      } else lexico.proximoToken();
+      } else {
+        semantico.pushExpressaoInfixa(lexico.tokenAtual);
+        lexico.proximoToken();
+      }
     } else {
       // Identificador não declarado
       throw new ErroSemantico(
@@ -601,14 +617,17 @@ function analisaFator() {
       );
     }
   } else if (lexico.tokenAtual.simbolo == "Snumero") {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else if (lexico.tokenAtual.simbolo == "Snao") {
     lexico.proximoToken();
     analisaFator();
   } else if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressao();
     if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+      semantico.pushExpressaoInfixa(lexico.tokenAtual);
       lexico.proximoToken();
     } else {
       throw new ErroSintatico(
@@ -622,6 +641,7 @@ function analisaFator() {
     lexico.tokenAtual.simbolo == "Sverdadeiro" ||
     lexico.tokenAtual.simbolo == "Sfalso"
   ) {
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else {
     throw new ErroSintatico(

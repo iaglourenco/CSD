@@ -97,8 +97,8 @@ class Semantico {
       } catch (e) {
         throw new ErroSemantico(
           "sem4",
-          expressao[i].linha,
-          expressao[i].coluna
+          expressao[0].linha,
+          expressao[0].coluna
         );
       }
     }
@@ -106,6 +106,8 @@ class Semantico {
       saida.push(pilha.pop().lexema);
     }
 
+    // Limpa o buffer
+    this.expressaoInfixa = [];
     return saida;
   }
 }
