@@ -38,20 +38,29 @@
 
     <article>
         <h2>Introdução</h2>
-        <p>Este projeto foi feito para a disciplina de Construção de Compiladores da PUC-Campinas.</p>
+        <p>Este projeto foi feito para a disciplina de Construção de Compiladores da PUC-Campinas e consiste na criação
+            de um compilador para a linguagem didádica LPD.</p>
         <p>Foi definida uma linguagem didática e simples para a elaboração do projeto, sendo uma linguagem de
             programação estruturada semelhante
             à
             linguagem de
             programação estruturada PASCAL. Esta linguagem tem o nome de LPD (Linguagem de Programação Didática).
         </p>
-        <p>O compilador desenvolvido para esta linguagem, nomeado CSD (Compilador Simplificado Didático), contém os
+        <p>O compilador desenvolvido para esta linguagem, nomeado CSD (Compilador Simplificado Didático) ou
+            compi{LPD}lador contém os
             módulos léxico,
             sintático e
-            semântico, gerando no final um arquivo com linguagem de máquina.</p>
-        <p>Também foi criado uma máquina virtual onde esse código de máquina (assembly) será interpretado e executado.
+            semântico, que fazem a análise do código, gerando no final um arquivo com linguagem de máquina onde o mesmo
+            será interpretado e executado por uma máquina virtual também criada pela equipe.</p>
         </p>
         <h2>Documentação</h2>
+        <p>Abaixo disponibilizamos a documentação da linguagem e dos conceitos abordados pela disciplina de Construção
+            de Compiladores.
+        </p>
+        </p>
+        <a style="width: fit-content; display: inline-block;"
+            href="https://github.com/iaglourenco/compilaDOR/blob/main/Notas%20de%20Aula%20de%20Compiladores.pdf">Notas
+            de Aula de Compiladores</a>
         <h3>Descrição em BNF da linguagem</h3>
         <p>Para a descrição da linguagem LPD, foi utilizado a notação BNF (Backus-Naur Form), sendo uma notação para
             especificar gramáticas formais.</p>
@@ -161,8 +170,8 @@ falso | nao &lt;fator&gt;)</code>
             <li>Pontuação</li>
             <li>Comentários</li>
         </ul>
-        <p style="display: flex;  justify-content: start;">A implementação do módulo léxico pode ser encontrada no
-            arquivo &nbsp;<a target="_blank" noreferrer nopener
+        <p>A implementação do módulo léxico pode ser encontrada no
+            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
         <h3>Sintático</h3>
         <p>
@@ -178,26 +187,85 @@ falso | nao &lt;fator&gt;)</code>
             o compilador orquestrando todos os
             outros módulos, produzindo no final de toda a execução o código em linguagem de máquina.
         </p>
-        <p style="display: flex;  justify-content: start;">A implementação do módulo sintático pode ser encontrada no
-            arquivo &nbsp;<a target="_blank" noreferrer nopener
+        <p>A implementação do módulo sintático pode ser encontrada no
+            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/sintatico.js">sintatico.js</a>.
         </p>
         <h3>Semântico</h3>
-        <p>Em desenvolvimento...</p>
+        <p>
+            Este módulo é responsável por realizar a análise semântica do código fonte, ou seja, verifica se as
+            sentenças tem um significado coerente do ponto de vista da semântica da linguagem. O módulo possui funções
+            que consultam a tabela de símbolos durante a analise de uma expressão e verifica se a sentença faz sentido
+            verificando a tipagem e significado dos tokens.
+        </p>
+        <p>O módulo possui funções como a conversão para o formato pós-fixo de expressões matemáticas facilitando
+            várias tarefas de verificação como as definidas a seguir, além de controlar a inserção e manutenção da
+            tabela de símbolos.</p>
+        <ul>
+            <li>Verificação da ocorrência da duplicidade na declaração de um identificador</li>
+            <li>Verificação de uso de identificadores não declarados</li>
+            <li>Verificação de compatibilidade de tipos</li>
+            <li>Verificação dos comandos escreva e leia (variável inteira)</li>
+            <li>Verificação de chamadas de procedimento e função</li>
+            <li>Verificação dos operadores unários – , + , nao</li>
+        </ul>
+        <p>É fácil perceber que as chamadas para o analisador semântico não passam de linhas de
+            comandos a serem inseridos no “corpo” do analisador sintático, nos locais apropriados.
+            Vale lembrar que a Linguagem LPD não permite a passagem de parâmetros nos
+            procedimentos e funções. Caso isso fosse permitido, então deveríamos também verificar a
+            consistência no número de argumentos e parâmetros, bem como sua compatibilidade de tipos.</p>
+        <p>A implementação do módulo semântico pode ser encontrada no
+            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
+                href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/semantico.js">semantico.js</a>.
+
+        <h3>Tabela de Símbolos</h3>
+        <p>A tabela de símbolos é uma estrutura de dados contendo um registro para cada
+            identificador, com os campos contendo os atributos do identificador. As informações sobre o
+            identificador são coletadas pelas fases de análise de um compilador e usada pelas fases de
+            síntese de forma a gerar o código-alvo. Durante a Análise Lexical a cadeia de caracteres que
+            forma um identificador é armazenada em uma entrada da tabela de símbolos. As fases
+            seguintes do compilador acrescentam informações a esta entrada. A fase de geração utiliza as
+            informações armazenadas para gerar o código adequado.
+
+        </p>
+        <p>Para este projeto foi utilizado a tabela de símbolos como uma pilha sendo que uma vez terminada a compilação
+            de um procedimento os símbolos locais
+            são descartados. </p>
+        <p>Este modelo para a tabela, usando um vetor, supõe que as buscas serão sequenciais.
+            Isso pode ser proibitivo se o número de símbolos for muito grande. A mesma “lógica” de
+            funcionamento pode ser aplicada a outras organizações de tabela visando a melhoria no tempo
+            de acesso.</p>
+        <p>A implementação da tabela de símbolos pode ser encontrada no
+            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
+                href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/tabelaSimbolos.js">tabelaSimbolos.js</a>.
+        </p>
         <h3>Geração de código</h3>
         <p>Em desenvolvimento...</p>
         <h3>Máquina virtual</h3>
         <p>Em desenvolvimento...</p>
+
+        <h3>Agradecimentos</h3>
+
+        <p>Agradecemos ao professor <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer
+                nopener href="https://www.linkedin.com/in/ricardo-lu%C3%ADs-de-freitas-312b7b169/">Ricardo
+                Luís de
+                Freitas</a> pela oportunidade de participar do projeto e por todo o conhecimento compartilhado
+            durante o
+            desenvolvimento do mesmo.</p>
+        <p>A todos os outros grupos que desenvolveram o mesmo projeto, que contribuiram de alguma forma para o nosso
+            aprendizado.</p>
+        <p>A todas as ferramentas, tecnologias e projetos Open Source utilizados.</p>
 
     </article>
 
 
     <footer id=" footer">
         <div style="display: flex; justify-content: center;"><a target="_blank" noreferrer nopener
-                href="https://github.com/iaglourenco">@iagolourenco</a> &nbsp;
-            <a target="_blank" noreferrer nopener href="https://github.com/fabioirokawa">@fabioirokawa</a>&nbsp;
+                href="https://github.com/iaglourenco">@iagolourenco</a>
+            <a target="_blank" noreferrer nopener href="https://github.com/fabioirokawa">@fabioirokawa</a>
             <a target="_blank" noreferrer nopener href="https://github.com/marcoslelis">@marcoslelis</a>
         </div>
+        <a target="_blank" noreferrer nopener href="https://github.com/iaglourenco/compilaDOR">Ver projeto no GitHub</a>
         <p>© 2022 Todos os direitos reservados.</p>
 
     </footer>
