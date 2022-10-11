@@ -46,21 +46,51 @@
             linguagem de
             programação estruturada PASCAL. Esta linguagem tem o nome de LPD (Linguagem de Programação Didática).
         </p>
-        <p>O compilador desenvolvido para esta linguagem, nomeado CSD (Compilador Simplificado Didático) ou
+        <p>O compilador desenvolvido para esta linguagem, nomeado
             compi{LPD}lador contém os
             módulos léxico,
             sintático e
             semântico, que fazem a análise do código, gerando no final um arquivo com linguagem de máquina onde o mesmo
             será interpretado e executado por uma máquina virtual também criada pela equipe.</p>
         </p>
+        <p>Este projeto foi desenvolvido em JavaScript puro e estilizado em CSS também puro, sem o uso de qualquer
+            framework ou extensão, sendo capaz de rodar em praticamente todos os navegadores!</p>
+
         <h2>Documentação</h2>
         <p>Abaixo disponibilizamos a documentação da linguagem e dos conceitos abordados pela disciplina de Construção
-            de Compiladores.
+            de Compiladores, assim como um resumo de cada módulo e conceito utilizado no compilador.
         </p>
         </p>
         <a style="width: fit-content; display: inline-block;"
             href="https://github.com/iaglourenco/compilaDOR/blob/main/Notas%20de%20Aula%20de%20Compiladores.pdf">Notas
             de Aula de Compiladores</a>
+
+
+        <h2>Módulos do compilador</h2>
+        <h3>Léxico</h3>
+        <p>Este módulo é responsável por realizar a análise léxica do código fonte, ou seja, a leitura do código fonte e
+            a
+            identificação dos tokens. Para isso, o módulo léxico deve realizar a leitura do código fonte e, a cada
+            caractere
+            lido, deve verificar se o mesmo pertence a algum dos conjuntos de caracteres definidos na tabela de
+            símbolos.
+            Caso o caractere pertença a algum conjunto, o mesmo deve ser concatenado a uma lista que representa os
+            tokens
+            identificados no código. Caso o caractere não pertença a nenhum conjunto, um erro deve ser lançado indicando
+            a linha e coluna do mesmo. O módulo léxico deve ser capaz de identificar os seguintes tokens:</p>
+        <ul>
+            <li>Palavras reservadas</li>
+            <li>Identificadores</li>
+            <li>Números</li>
+            <li>Operadores aritméticos</li>
+            <li>Operadores relacionais</li>
+            <li>Pontuação</li>
+            <li>Comentários</li>
+        </ul>
+        <p>A implementação do módulo léxico pode ser encontrada no
+            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
+                href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
+
         <h3>Descrição em BNF da linguagem</h3>
         <p>Para a descrição da linguagem LPD, foi utilizado a notação BNF (Backus-Naur Form), sendo uma notação para
             especificar gramáticas formais.</p>
@@ -68,7 +98,6 @@
         <p>Espaços, tabulações, caracteres não
             imprimíveis e quebras de linha são ignorados.</p>
 
-        <!-- inserir markdown BNF_LPD-->
         <div class="code_container">
 
             <code>&lt;programa&gt;::= programa &lt;identificador&gt; ; &lt;bloco&gt;.</code>
@@ -94,7 +123,7 @@
             <code>&lt;comandos&gt;::= inicio&lt;comando&gt;{;&lt;comando&gt;}[;]fim</code>
             <br>
             <code>&lt;comando&gt;::= (&lt;atribuição_chprocedimento&gt;|&lt;comando condicional&gt; |&lt;comando enquanto&gt; |&lt;comando
-            leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
+                            leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
             <br>
             <code>&lt;atribuição_chprocedimento&gt;::= (&lt;comando atribuicao&gt;|&lt;chamada de procedimento&gt;)</code>
             <br>
@@ -121,7 +150,7 @@
             <code>&lt;termo&gt;::= &lt;fator&gt; {(\* | div | e) &lt;fator&gt;}</code>
             <br>
             <code>&lt;fator&gt; ::= (&lt;variável&gt; | &lt;número&gt; | &lt;chamada de função&gt; | (&lt;expressão&gt;) | verdadeiro |
-falso | nao &lt;fator&gt;)</code>
+                falso | nao &lt;fator&gt;)</code>
             <br>
             <code>&lt;variável&gt; ::= &lt;identificador&gt;</code>
             <br>
@@ -136,43 +165,18 @@ falso | nao &lt;fator&gt;)</code>
             <code>&lt;dígito&gt; ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)</code>
             <br>
             <code>&lt;letra&gt; ::= (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
-            A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
+                            A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
             <br>
             <code class="comment">//Comentários</code>
             <code class="comment">/*Uma vez que os comentários servem apenas como documentação do código fonte, ao realizar
-            a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
-            delimitadores.*/</code>
+                            a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
+                            delimitadores.*/</code>
             <br>
             <code>delimitadores : { }
-            <br><br>
-            </code>
+                            <br><br>
+                            </code>
 
         </div>
-
-        <h2>Módulos do compilador</h2>
-        <h3>Léxico</h3>
-        <p>Este módulo é responsável por realizar a análise léxica do código fonte, ou seja, a leitura do código fonte e
-            a
-            identificação dos tokens. Para isso, o módulo léxico deve realizar a leitura do código fonte e, a cada
-            caractere
-            lido, deve verificar se o mesmo pertence a algum dos conjuntos de caracteres definidos na tabela de
-            símbolos.
-            Caso o caractere pertença a algum conjunto, o mesmo deve ser concatenado a uma lista que representa os
-            tokens
-            identificados no código. Caso o caractere não pertença a nenhum conjunto, um erro deve ser lançado indicando
-            a linha e coluna do mesmo. O módulo léxico deve ser capaz de identificar os seguintes tokens:</p>
-        <ul>
-            <li>Palavras reservadas</li>
-            <li>Identificadores</li>
-            <li>Números</li>
-            <li>Operadores aritméticos</li>
-            <li>Operadores relacionais</li>
-            <li>Pontuação</li>
-            <li>Comentários</li>
-        </ul>
-        <p>A implementação do módulo léxico pode ser encontrada no
-            arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
-                href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
         <h3>Sintático</h3>
         <p>
             Este módulo é responsável por realizar a análise sintática do código fonte, ou seja, a verificação da
@@ -244,8 +248,11 @@ falso | nao &lt;fator&gt;)</code>
         <h3>Máquina virtual</h3>
         <p>Em desenvolvimento...</p>
 
-        <h3>Agradecimentos</h3>
 
+
+
+
+        <h2>Agradecimentos</h2>
         <p>Agradecemos ao professor <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer
                 nopener href="https://www.linkedin.com/in/ricardo-lu%C3%ADs-de-freitas-312b7b169/">Ricardo
                 Luís de
@@ -254,8 +261,6 @@ falso | nao &lt;fator&gt;)</code>
             desenvolvimento do mesmo.</p>
         <p>A todos os outros grupos que desenvolveram o mesmo projeto, que contribuiram de alguma forma para o nosso
             aprendizado.</p>
-        <p>A todas as ferramentas, tecnologias e projetos Open Source utilizados.</p>
-
     </article>
 
 

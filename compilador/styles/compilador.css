@@ -95,14 +95,71 @@ body {
 
 #codeeditor #codeeditor_header {
   display: flex;
-  align-items: center;
-  background-color: var(--orange);
+  flex-direction: column;
+  color: var(--orange);
+  background-color: var(--current-line);
   justify-content: space-between;
 }
 
-#codeeditor #codeeditor_header legend {
+#tabs_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  background-color: var(--current-line);
+  overflow-y: auto;
+}
+
+#tabs_container .tab,
+.tab_c {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  color: var(--foreground);
+  background-color: var(--comment);
+  margin-left: 2px;
+  border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
-  color: var(--background);
+  cursor: pointer;
+}
+
+.tab *,
+tab_c * {
+  margin: 2px;
+}
+
+#tabs_container .tab:hover,
+#tabs_container #new_tab:hover {
+  opacity: 0.8;
+}
+
+#tabs_container .material-icons.close:hover {
+  color: var(--red);
+}
+
+#tabs_container .tab.active,
+.tab:focus {
+  color: var(--foreground);
+  border-bottom: 2px solid var(--orange);
+}
+
+#tabs_container #new_tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  margin-left: 2px;
+  border-radius: 5px 5px 0px 0px;
+  font-family: var(--mono);
+  cursor: pointer;
+  background-color: var(--comment);
+
+}
+
+#posicao,
+#title {
+  color: var(--orange);
+  font-family: var(--mono);
   font-size: 14px;
   padding: 5px;
   font-weight: bold;

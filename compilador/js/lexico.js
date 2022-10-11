@@ -9,7 +9,7 @@ class Lexico {
   }
   tokenizar(data) {
     /**
-     * Identifica tokens.
+     * Identifica tokens em uma cadeia de caracteres de entrada.
      * @param {string} data Código em LPD a ser identificado.
      * @returns {list({lexema:string,simbolo:string})} uma lista de tokens identificados em data
      * @throws {ErroLexico} Caso encontre um caractere estranho indicando a linha e coluna do erro

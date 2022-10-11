@@ -155,7 +155,6 @@ function analisaDeclaracaoProcedimento() {
   lexico.proximoToken();
 
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    // TODO: semantico
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
     if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
@@ -206,7 +205,6 @@ function analisaDeclaracaoFuncao() {
 
   lexico.proximoToken();
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    // TODO: semantico
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
     if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
@@ -345,9 +343,8 @@ function analisaComandoAtribuicao() {
    * <comando atribuicao>::= identificador := <expressao>
    */
 
-  // Deveria analisar se o identificador é valido
+  // Deveria analisar se o identificador é valido e está declarado?
   lexico.proximoToken();
-  //semantico.pushExpressaoInfixa(lexico.tokenAtual);
   analisaExpressao();
   semantico.posFixa();
 }
@@ -365,6 +362,7 @@ function analisaExpressao() {
     lexico.tokenAtual.simbolo == "Sigual" ||
     lexico.tokenAtual.simbolo == "Sdiferente"
   ) {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressaoSimples();
@@ -393,6 +391,7 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smenos" ||
     lexico.tokenAtual.simbolo == "Sou"
   ) {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaTermo();
@@ -414,6 +413,7 @@ function analisaChamadaProcedimento() {
     );
   }
 }
+
 function analisaChamadaFuncao() {
   /**
    * <chamada de função>::= <identificador>
@@ -456,6 +456,7 @@ function analisaTermo() {
     lexico.tokenAtual.simbolo == "Sdiv" ||
     lexico.tokenAtual.simbolo == "Se"
   ) {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaFator();
@@ -606,6 +607,7 @@ function analisaFator() {
       ) {
         analisaChamadaFuncao();
       } else {
+        // Adiciona o token a pilha de expressao infixa
         semantico.pushExpressaoInfixa(lexico.tokenAtual);
         lexico.proximoToken();
       }
@@ -619,16 +621,19 @@ function analisaFator() {
       );
     }
   } else if (lexico.tokenAtual.simbolo == "Snumero") {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else if (lexico.tokenAtual.simbolo == "Snao") {
     lexico.proximoToken();
     analisaFator();
   } else if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressao();
     if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+      // Adiciona o token a pilha de expressao infixa
       semantico.pushExpressaoInfixa(lexico.tokenAtual);
       lexico.proximoToken();
     } else {
@@ -643,6 +648,7 @@ function analisaFator() {
     lexico.tokenAtual.simbolo == "Sverdadeiro" ||
     lexico.tokenAtual.simbolo == "Sfalso"
   ) {
+    // Adiciona o token a pilha de expressao infixa
     semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else {

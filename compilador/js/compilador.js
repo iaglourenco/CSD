@@ -1,16 +1,17 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
 
-var filename = "myfile.txt";
+var filename = "Novo.lpd";
 
 function loadLocalFile(files, editor) {
   if (files.length == 1) {
     var reader = new FileReader();
     reader.fileName = files[0].name;
     filename = files[0].name;
-    document.getElementById("filename").innerHTML = filename;
+
     reader.onload = function (e) {
-      editor.setValue(e.target.result);
       logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
+      createTab(e.target.fileName);
+      editor.setValue(e.target.result);
     };
     reader.readAsText(files[0]);
   }
@@ -52,9 +53,79 @@ function logar(msg) {
 import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
 // Import dos módulos do compilador
 import sintatico from "./sintatico.js";
+// Guarda as abas do editor
+const tabs = [];
+var editor;
+
+// Tabs management functions
+function createTab(name) {
+  tabs.push({
+    doc: CodeMirror.Doc("", "text/x-lpd"),
+    name: name,
+  });
+  reconstructTabs();
+  addTabListeners();
+  activateTab(tabs.length - 1);
+  setTabName(tabs.length - 1, name);
+}
+function reconstructTabs() {
+  document.getElementById("tabs_container").innerHTML = "";
+  for (let i = 0; i < tabs.length; i++) {
+    document.getElementById("tabs_container").innerHTML += `
+  <div class="tab_c">
+    <div class="tab" id="tab${i}">
+      <span class="material-icons">code</span>
+      <span class="tab_title">${tabs[i].name}</span>
+    </div>
+    <span  class="material-icons close" id="tab${i}_close">close</span>
+  </div>`;
+  }
+
+  document.getElementById(
+    "tabs_container"
+  ).innerHTML += `<div id="new_tab"><span class="material-icons">add</span></div>`;
+
+  document.getElementById("new_tab").addEventListener("click", () => {
+    // create a new tab
+    createTab("Novo.lpd");
+  });
+}
+function activateTab(index) {
+  editor.swapDoc(tabs[index].doc);
+  editor.focus();
+  document.getElementById("posicao").innerHTML = `Ln ${
+    editor.getCursor().line + 1
+  }, Col ${editor.getCursor().ch + 1}`;
+
+  for (let j = 0; j < tabs.length; j++) {
+    document.getElementById(`tab${j}`).classList.remove("active");
+  }
+  document.getElementById(`tab${index}`).classList.add("active");
+}
+function setTabName(index, name) {
+  tabs[index].name = name;
+}
+function addTabListeners() {
+  for (let i = 0; i < tabs.length; i++) {
+    document.getElementById(`tab${i}`).addEventListener("click", () => {
+      activateTab(i);
+    });
+    document.getElementById(`tab${i}_close`).addEventListener("click", () => {
+      // Remove tab
+      if (tabs.length > 1) {
+        tabs.splice(i, 1);
+        reconstructTabs();
+        addTabListeners();
+        activateTab(tabs.length - 1);
+      } else {
+        logar("Não é possível fechar a última aba!");
+      }
+    });
+  }
+}
 
 window.onload = function () {
-  var editor = CodeMirror(document.getElementById("codeeditor"), {
+  editor = CodeMirror(document.getElementById("codeeditor"), {
     mode: "text/x-lpd",
     theme: "dracula",
     lineNumbers: true,
@@ -69,6 +140,13 @@ window.onload = function () {
       },
     },
   });
+  tabs.push({ doc: editor.getDoc(), name: "Novo.lpd" });
+  reconstructTabs();
+  addTabListeners();
+  document.getElementById(`tab0`).classList.add("active");
+
+  logar("Bem vindo ao compilador LPD! aka. compi{LPD}lador");
+  logar("Para começar, carregue um arquivo ou digite o código na caixa acima.");
 
   // Animação do logo
   document.getElementById("logo").addEventListener("mouseover", function () {
@@ -82,9 +160,6 @@ window.onload = function () {
 
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
-    if (document.getElementById("filename").value == "") {
-      document.getElementById("filename").value = filename;
-    }
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
     }, Col ${editor.getCursor().ch + 1}`;

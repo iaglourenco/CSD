@@ -4,7 +4,9 @@ import { ErroSemantico } from "./erros.js";
 
 class Semantico {
   constructor(tabelaDeSimbolos) {
+    //Referencia da tabela de simbolos
     this.tabelaDeSimbolos = tabelaDeSimbolos;
+    // Guarda a expressão infixa que sera convertida ao chamar a funcao posFixa
     this.expressaoInfixa = [];
   }
 
@@ -28,13 +30,17 @@ class Semantico {
     return simbolos.length > 0;
   }
 
-  // Adiciona o token na expressão que sera avaliada posteriormente
   pushExpressaoInfixa(token) {
+    /**
+     * Adiciona o token na expressão que sera avaliada posteriormente
+     */
     this.expressaoInfixa.push(token);
   }
 
-  //Converte a expressão infixa previamente construida para pos fixa
   posFixa() {
+    /**
+     * Converte a expressão infixa previamente construida para pos fixa
+     */
     const expressao = this.expressaoInfixa;
     let pilha = [];
     let saida = [];
@@ -109,6 +115,12 @@ class Semantico {
     // Limpa o buffer
     this.expressaoInfixa = [];
     return saida;
+  }
+
+  analisar(posFixo) {
+    /**
+     * Faz a analise semantica da expressão em pos fixo
+     */
   }
 }
 
