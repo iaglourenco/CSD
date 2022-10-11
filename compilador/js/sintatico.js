@@ -343,10 +343,20 @@ function analisaComandoAtribuicao() {
    * <comando atribuicao>::= identificador := <expressao>
    */
 
-  // Deveria analisar se o identificador é valido e está declarado?
-  lexico.proximoToken();
-  analisaExpressao();
-  semantico.posFixa();
+  // Analisa o lado esquerdo da atribuição verificando se o identificador já foi declarado
+  if (semantico.pesquisaTabela(lexico.ultimoTokenLido.lexema)) {
+    lexico.proximoToken();
+    analisaExpressao();
+    console.log(semantico.posFixa());
+  } else {
+    // Identificador nao declarado
+    throw new ErroSemantico(
+      "sem2",
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
+    );
+  }
 }
 
 function analisaExpressao() {

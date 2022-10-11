@@ -27,7 +27,7 @@ class Lexico {
 
       // Ignora espaços em branco
       if (caracter == " " || caracter == "\t") {
-        if (caracter == "\t") coluna += 1;
+        if (caracter == "\t") coluna += 0;
         continue;
       }
       // Ignora quebra de linha e incrementa a linha

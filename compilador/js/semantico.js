@@ -119,7 +119,7 @@ class Semantico {
 
   analisar(posFixo) {
     /**
-     * Faz a analise semantica da expressão em pos fixo
+     * Faz a analise semantica da expressão em pos fixo e retorna o tipo
      */
   }
 }
