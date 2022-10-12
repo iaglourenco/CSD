@@ -36,6 +36,17 @@ class TabelaSimbolos {
     this.printTabela();
   }
 
+  getTipo(lexema) {
+    /**
+     * Retorna o tipo do lexema
+     */
+    const simbolos = this.getSimbolos(lexema);
+    if (simbolos.length > 0) {
+      return simbolos[0].tipo;
+    }
+    return null;
+  }
+
   // Desempilha todos os simbolos até que o escopo mude, removendo assim os simbolos do escopo
   desempilhaEscopo() {
     while (this.tabela[this.tabela.length - 1].escopo == this.escopoAtual) {

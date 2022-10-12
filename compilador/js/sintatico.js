@@ -345,9 +345,25 @@ function analisaComandoAtribuicao() {
 
   // Analisa o lado esquerdo da atribuição verificando se o identificador já foi declarado
   if (semantico.pesquisaTabela(lexico.ultimoTokenLido.lexema)) {
+    let tokenEsquerda = lexico.ultimoTokenLido;
     lexico.proximoToken();
     analisaExpressao();
-    console.log(semantico.posFixa());
+    // Analise semantica da expressao
+    if (
+      tabelaSimbolos
+        .getTipo(tokenEsquerda.lexema)
+        .includes(semantico.analisar(semantico.posFixa()))
+    ) {
+      // Gera código?
+    } else {
+      // Tipo da expressão não é compatível com o tipo da variável
+      throw new ErroSemantico(
+        "sem5",
+        tokenEsquerda.lexema,
+        tokenEsquerda.linha,
+        tokenEsquerda.coluna
+      );
+    }
   } else {
     // Identificador nao declarado
     throw new ErroSemantico(
@@ -413,7 +429,6 @@ function analisaChamadaProcedimento() {
    * <chamada de procedimento>::= <identificador>
    */
   //lexico.proximoToken();
-  // TODO: analisar chamada de procedimento
   if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
     throw new ErroSemantico(
       "sem2",
@@ -428,6 +443,26 @@ function analisaChamadaFuncao() {
   /**
    * <chamada de função>::= <identificador>
    */
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
+      throw new ErroSemantico(
+        "sem2",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    } else {
+      // Gera código?
+      semantico.pushExpressaoInfixa(lexico.tokenAtual);
+    }
+  } else {
+    throw new ErroSintatico(
+      "stc3",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
   lexico.proximoToken();
 }
 
@@ -438,7 +473,16 @@ function analisaComandoCondicional() {
    *                             [senao <comando>]
    */
   lexico.proximoToken();
+  let tokenSe = lexico.ultimoTokenLido;
   analisaExpressao();
+  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+    throw new ErroSemantico(
+      "sem7",
+      tokenSe.lexema,
+      tokenSe.linha,
+      tokenSe.coluna
+    );
+  }
   if (lexico.tokenAtual.simbolo == "Sentao") {
     lexico.proximoToken();
     analisaComandoSimples();
@@ -480,7 +524,16 @@ function analisaComandoEnquanto() {
   // TODO: jumps criados na geração de código
 
   lexico.proximoToken();
+  let tokenEnquanto = lexico.ultimoTokenLido;
   analisaExpressao();
+  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+    throw new ErroSemantico(
+      "sem7",
+      tokenEnquanto.lexema,
+      tokenEnquanto.linha,
+      tokenEnquanto.coluna
+    );
+  }
   if (lexico.tokenAtual.simbolo == "Sfaca") {
     lexico.proximoToken();
     analisaComandoSimples();
