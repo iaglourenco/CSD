@@ -83,6 +83,10 @@ body {
   cursor: text;
 }
 
+pre.CodeMirror-placeholder.CodeMirror-line-like {
+  color: var(--comment) !important;
+}
+
 #codeeditor {
   display: flex;
   flex-direction: column;

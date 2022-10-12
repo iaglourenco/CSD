@@ -93,7 +93,8 @@ a {
   text-align: center;
 }
 
-p {
+p,
+li {
   color: var(--foreground);
   font-family: var(--body);
 }

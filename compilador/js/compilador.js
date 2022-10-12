@@ -111,16 +111,30 @@ function addTabListeners() {
       activateTab(i);
     });
     document.getElementById(`tab${i}_close`).addEventListener("click", () => {
-      // Remove tab
-      if (tabs.length > 1) {
-        tabs.splice(i, 1);
+      // Ask for confirmation
+      closeTab(i);
+    });
+  }
+}
+
+function closeTab(index) {
+  // Remove tab
+  if (tabs.length > 1) {
+    if (editor.getValue().length > 0) {
+      if (confirm("Deseja realmente fechar esta aba?")) {
+        tabs.splice(index, 1);
         reconstructTabs();
         addTabListeners();
         activateTab(tabs.length - 1);
-      } else {
-        logar("Não é possível fechar a última aba!");
       }
-    });
+    } else {
+      tabs.splice(index, 1);
+      reconstructTabs();
+      addTabListeners();
+      activateTab(tabs.length - 1);
+    }
+  } else {
+    logar("Não é possível fechar a última aba!");
   }
 }
 
@@ -130,6 +144,7 @@ window.onload = function () {
     theme: "dracula",
     lineNumbers: true,
     autofocus: true,
+    placeholder: "Ctrl-O para abrir um arquivo, ou comece a digitar!",
     viewportMargin: 150,
     extraKeys: {
       F11: function (cm) {
@@ -146,7 +161,9 @@ window.onload = function () {
   document.getElementById(`tab0`).classList.add("active");
 
   logar("Bem vindo ao compilador LPD! aka. compi{LPD}lador");
-  logar("Para começar, carregue um arquivo ou digite o código na caixa acima.");
+  logar(
+    "Para começar, carregue um arquivo ou digite o código no editor acima."
+  );
 
   // Animação do logo
   document.getElementById("logo").addEventListener("mouseover", function () {
