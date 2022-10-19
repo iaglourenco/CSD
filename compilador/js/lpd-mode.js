@@ -27,7 +27,8 @@
       "var inicio fim se senao entao enquanto faca leia escreva e nao"
     );
     var atoms = {
-      null: true,
+      verdadeiro: true,
+      falso: true,
       programa: true,
       inteiro: true,
       booleano: true,

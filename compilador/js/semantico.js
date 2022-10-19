@@ -41,6 +41,7 @@ class Semantico {
     /**
      * Converte a expressão infixa previamente construida para pos fixa
      * Retorna a lista de tokens em pos fixa
+     * Ideia base do algoritmo dada pelo Prof. Ricardo Freitas
      */
     const expressao = this.expressaoInfixa;
     let pilha = [];
@@ -75,6 +76,7 @@ class Semantico {
             pilha.push(expressao[i]);
             break;
           case "Sfecha_parenteses":
+            // Desempilha até achar o abre parenteses
             while (pilha[pilha.length - 1].simbolo != "Sabre_parenteses") {
               saida.push(pilha.pop());
             }
@@ -93,6 +95,8 @@ class Semantico {
           case "Snao":
           case "Se":
           case "Sou":
+            // Verifica a precedencia dos simbolos na pilha
+            // Desempilhando na saida até encontrar uma maior ou igual
             while (
               pilha.length > 0 &&
               precedencia[pilha[pilha.length - 1].lexema] >=
@@ -111,6 +115,7 @@ class Semantico {
         );
       }
     }
+    // Desempilha o restante
     while (pilha.length > 0) {
       saida.push(pilha.pop());
     }
@@ -130,18 +135,22 @@ class Semantico {
     const unarios = ["+u", "-u"];
 
     // Pilha de tipos
+    // Converte todo simbolo para seu respectivo tipo
     let pilha = posFixo.map((token) => {
       if (token.simbolo == "Snumero") {
+        // Numeros são sempre tipo inteiro
         return { ...token, tipo: "inteiro" };
       } else if (token.simbolo == "Sidentificador") {
+        // Consulta a tabela de simbolos quanto ao tipo do identificador
         if (this.tabelaDeSimbolos.getTipo(token.lexema).includes("inteiro"))
           return { ...token, tipo: "inteiro" };
         else if (
           this.tabelaDeSimbolos.getTipo(token.lexema).includes("booleano")
         )
           return { ...token, tipo: "booleano" };
-        else return { ...token, tipo: "erro" }; // Não deve chegar aqui
+        else return { ...token, tipo: "erro" }; // Nunca chegará aqui está aqui por segurança e tratamento de possivel erro
       } else if (token.simbolo == "Sverdadeiro" || token.simbolo == "Sfalso") {
+        // Simbolo de booleano
         return { ...token, tipo: "booleano" };
       } else if (
         aritmeticos.includes(token.lexema) ||
@@ -149,19 +158,22 @@ class Semantico {
         logicos.includes(token.lexema) ||
         unarios.includes(token.lexema)
       ) {
+        // Caso seja algum operador somente passa adiante
         return { ...token, tipo: token.lexema };
       }
     });
 
+    // Percorre toda a lista de tipo construida anteriormente
     for (let i = 0; i < pilha.length; i++) {
       // I + I => I
       if (aritmeticos.includes(pilha[i].tipo)) {
         if (pilha[i - 2].tipo == "inteiro" && pilha[i - 1].tipo == "inteiro") {
-          pilha[i - 2].tipo = "inteiro";
-          pilha.splice(i - 1, 2);
+          pilha[i - 2].tipo = "inteiro"; // Substituição da expressão pelo tipo do retorno da mesma
+          pilha.splice(i - 1, 2); // Remoção dos simbolos que foram substituido pelo tipo do resultado da expressão
           i -= 2;
         } else {
           if (pilha[i - 2].tipo != "inteiro")
+            // Esperado inteiro no lado esquerdo
             throw new ErroSemantico(
               "sem6",
               pilha[i - 2].lexema,
@@ -169,6 +181,7 @@ class Semantico {
               pilha[i - 2].coluna
             );
           else {
+            // Esperado inteiro no lado direito
             throw new ErroSemantico(
               "sem6",
               pilha[i - 1].lexema,
@@ -180,11 +193,12 @@ class Semantico {
         // I + I => B
       } else if (relacionais.includes(pilha[i].tipo)) {
         if (pilha[i - 2].tipo == "inteiro" && pilha[i - 1].tipo == "inteiro") {
-          pilha[i - 2].tipo = "booleano";
-          pilha.splice(i - 1, 2);
+          pilha[i - 2].tipo = "booleano"; // Substituição da expressão pelo tipo do retorno da mesma
+          pilha.splice(i - 1, 2); // Remoção dos simbolos que foram substituido pelo tipo do resultado da expressão
           i -= 2;
         } else {
           if (pilha[i - 2].tipo != "inteiro")
+            // Esperado inteiro no lado esquerdo
             throw new ErroSemantico(
               "sem6",
               pilha[i - 2].lexema,
@@ -192,6 +206,7 @@ class Semantico {
               pilha[i - 2].coluna
             );
           else {
+            // Esperado inteiro no lado direito
             throw new ErroSemantico(
               "sem6",
               pilha[i - 1].lexema,
@@ -206,11 +221,12 @@ class Semantico {
           pilha[i - 2].tipo == "booleano" &&
           pilha[i - 1].tipo == "booleano"
         ) {
-          pilha[i - 2].tipo = "booleano";
-          pilha.splice(i - 1, 2);
+          pilha[i - 2].tipo = "booleano"; // Substituição da expressão pelo tipo do retorno da mesma
+          pilha.splice(i - 1, 2); // Remoção dos simbolos que foram substituido pelo tipo do resultado da expressão
           i -= 2;
         } else {
           if (pilha[i - 2].tipo != "booleano")
+            // Esperado booleano no lado esquerdo
             throw new ErroSemantico(
               "sem7",
               pilha[i - 2].lexema,
@@ -218,6 +234,7 @@ class Semantico {
               pilha[i - 2].coluna
             );
           else {
+            // Esperado booleano no lado direito
             throw new ErroSemantico(
               "sem7",
               pilha[i - 1].lexema,
@@ -229,10 +246,11 @@ class Semantico {
         // I => I
       } else if (unarios.includes(pilha[i].tipo)) {
         if (pilha[i - 1].tipo == "inteiro") {
-          pilha[i - 1].tipo = "inteiro";
-          pilha.splice(i, 1);
+          pilha[i - 1].tipo = "inteiro"; // Substituição da expressão pelo tipo do retorno da mesma
+          pilha.splice(i, 1); // Remoção dos simbolos que foram substituido pelo tipo do resultado da expressão
           i -= 1;
         } else {
+          // Esperado inteiro
           throw new ErroSemantico(
             "sem6",
             pilha[i - 1].lexema,
@@ -243,6 +261,7 @@ class Semantico {
       }
     }
 
+    // Retorna o tipo que ficou no final de toda a analise da expressão
     return pilha[0].tipo;
   }
 }

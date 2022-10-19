@@ -59,6 +59,9 @@ var editor;
 
 // Tabs management functions
 function createTab(name) {
+  /**
+   * Create a tab
+   */
   tabs.push({
     doc: CodeMirror.Doc("", "text/x-lpd"),
     name: name,
