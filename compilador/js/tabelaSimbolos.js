@@ -76,7 +76,7 @@ class TabelaSimbolos {
     /**
      * Retorna todos os simbolos encontrado para o @param lexema
      */
-    return this.tabela.filter((simbolo) => simbolo.lexema === lexema);
+    return this.tabela.filter((simbolo) => simbolo.lexema === lexema).reverse();
   }
 }
 

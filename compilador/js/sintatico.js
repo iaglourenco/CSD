@@ -557,18 +557,30 @@ function analisaComandoLeitura() {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
-        lexico.proximoToken();
-        if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+        if (tabelaSimbolos.getTipo(lexico.tokenAtual.lexema) == "Svariavel Sinteiro") {
+
           lexico.proximoToken();
-        } else {
-          // Fecha parenteses faltando
-          throw new ErroSintatico(
-            "stc12",
-            lexico.ultimoTokenLido.lexema,
-            lexico.ultimoTokenLido.linha,
-            lexico.ultimoTokenLido.coluna
-          );
+          if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+            lexico.proximoToken();
+          } else {
+            // Fecha parenteses faltando
+            throw new ErroSintatico(
+              "stc12",
+              lexico.ultimoTokenLido.lexema,
+              lexico.ultimoTokenLido.linha,
+              lexico.ultimoTokenLido.coluna
+            );
+          }
+        }else{
+           // Identificador com tipo invalido
+           throw new ErroSemantico(
+             "sem3",
+             lexico.tokenAtual.lexema,
+             lexico.tokenAtual.linha,
+             lexico.tokenAtual.coluna
+           )
         }
+
       } else {
         // Identificador não declarada
         throw new ErroSemantico(
