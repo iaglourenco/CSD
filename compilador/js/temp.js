@@ -1,50 +1,39 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
 
-var filename = "Novo.lpd";
-var textLog = "Inicio\n\n";
+var filename = "myfile.txt";
+var textLog = "Inicio\n";
 
-function sleep(ms) {
-  return new Promise(
-    resolve => setTimeout(resolve, ms)
-  );
-}
-
-async function loadLocalFile(files, editor) {
+function loadLocalFile(files, editor) {
   if (files.length == 1) {
     var reader = new FileReader();
     reader.fileName = files[0].name;
     filename = files[0].name;
-
+    document.getElementById("filename").innerHTML = filename;
     reader.onload = function (e) {
-      logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
-      createTab(e.target.fileName);
       editor.setValue(e.target.result);
+      logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
     };
     reader.readAsText(files[0]);
   }
-  else {
+  else{
     for (var i=0 ; i < files.length; i++){
       console.log(files.length);
       var reader = new FileReader();
       reader.fileName = files[i].name;
       filename = files[i].name;
-      
+      document.getElementById("filename").innerHTML = filename;
       reader.onload = function (e) {
-        createTab(e.target.fileName);
         editor.setValue(e.target.result);
         logar(`YES Arquivo ${e.target.fileName} carregado com sucesso!`);
         textLog += e.target.fileName + ':\n';
-        compileCode();
+        compileCode(editor, false);
         console.log(textLog);
       };
       reader.readAsText(files[i]);
     }
-    //sem sleep, criaria o tab 'results' primeiro e depois
-    //os outros tabs
-    await sleep(2000);
-    createTab("Results");
-    editor.setValue(textLog);
+    //document.getElementById("log").innerHTML = textLog;
   }
+
 }
 
 function saveTextAsFile(textToWrite) {
@@ -70,20 +59,12 @@ function saveTextAsFile(textToWrite) {
   downloadLink.click();
 }
 
-// Exibe mensagens no log com a hora
-function logar(msg) {
-  document.getElementById(
-    "log"
-  ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
-  // Faz o scroll na textarea para o fim
-  document.getElementById("log").scrollTop =
-    document.getElementById("log").scrollHeight;
-}
-
-function compileCode(){
+//compila codigo
+//no segundo parametro, checa se usuario selecionou 1(true) ou mais arquivos(false)
+function compileCode(editor, single){
   var code = editor.getValue();
   let log = document.getElementById("log");
-  log.value = "";
+  if (single) {log.value = "";} //apaga caixa do Log
   try {
     var start = performance.now();
     if (code.length > 0) {
@@ -107,120 +88,43 @@ function compileCode(){
       e instanceof ErroSemantico
     ) {
       // Coloca o cursor na linha e coluna do erro
-      editor.setCursor(e.linha, e.coluna);
+      editor.setCursor(e.linha - 1, e.coluna - 1);
       editor.focus();
     }
 
     // Printa a mensagem no log
     logar(e.message);
+    
   } finally {
     // Tempo de execução do compilador
     var end = performance.now();
-    log.value += `\n\n---\nTempo de execução: ${
+    log.value += `\n---\nTempo de execução: ${
       Math.round((end - start) * 100) / 100
-    }ms\n`;
+    }ms\n\n`;
   }
+}
+
+// Exibe mensagens no log com a hora
+function logar(msg) {
+  document.getElementById(
+    "log"
+  ).value += `[${new Date().toLocaleString()}] ${msg}\n`;
+  // Faz o scroll na textarea para o fim
+  document.getElementById("log").scrollTop =
+    document.getElementById("log").scrollHeight;
 }
 
 import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
 // Import dos módulos do compilador
 import sintatico from "./sintatico.js";
-// Guarda as abas do editor
-const tabs = [];
-var editor;
-
-// Tabs management functions
-function createTab(name) {
-  /**
-   * Create a tab
-   */
-  tabs.push({
-    doc: CodeMirror.Doc("", "text/x-lpd"),
-    name: name,
-  });
-  reconstructTabs();
-  addTabListeners();
-  activateTab(tabs.length - 1);
-  setTabName(tabs.length - 1, name);
-}
-
-function reconstructTabs() {
-  document.getElementById("tabs_container").innerHTML = "";
-  for (let i = 0; i < tabs.length; i++) {
-    document.getElementById("tabs_container").innerHTML += `
-  <div class="tab_c">
-    <div class="tab" id="tab${i}">
-      <span class="material-icons">code</span>
-      <span class="tab_title">${tabs[i].name}</span>
-    </div>
-    <span  class="material-icons close" id="tab${i}_close">close</span>
-  </div>`;
-  }
-
-  document.getElementById(
-    "tabs_container"
-  ).innerHTML += `<div id="new_tab"><span class="material-icons">add</span></div>`;
-
-  document.getElementById("new_tab").addEventListener("click", () => {
-    // create a new tab
-    createTab("Novo.lpd");
-  });
-}
-function activateTab(index) {
-  editor.swapDoc(tabs[index].doc);
-  editor.focus();
-  document.getElementById("posicao").innerHTML = `Ln ${
-    editor.getCursor().line + 1
-  }, Col ${editor.getCursor().ch + 1}`;
-
-  for (let j = 0; j < tabs.length; j++) {
-    document.getElementById(`tab${j}`).classList.remove("active");
-  }
-  document.getElementById(`tab${index}`).classList.add("active");
-}
-function setTabName(index, name) {
-  tabs[index].name = name;
-}
-function addTabListeners() {
-  for (let i = 0; i < tabs.length; i++) {
-    document.getElementById(`tab${i}`).addEventListener("click", () => {
-      activateTab(i);
-    });
-    document.getElementById(`tab${i}_close`).addEventListener("click", () => {
-      // Ask for confirmation
-      closeTab(i);
-    });
-  }
-}
-
-function closeTab(index) {
-  // Remove tab
-  if (tabs.length > 1) {
-    if (editor.getValue().length > 0) {
-      if (confirm("Deseja realmente fechar esta aba?")) {
-        tabs.splice(index, 1);
-        reconstructTabs();
-        addTabListeners();
-        activateTab(tabs.length - 1);
-      }
-    } else {
-      tabs.splice(index, 1);
-      reconstructTabs();
-      addTabListeners();
-      activateTab(tabs.length - 1);
-    }
-  } else {
-    logar("Não é possível fechar a última aba!");
-  }
-}
 
 window.onload = function () {
-  editor = CodeMirror(document.getElementById("codeeditor"), {
+  var editor = CodeMirror(document.getElementById("codeeditor"), {
     mode: "text/x-lpd",
     theme: "dracula",
     lineNumbers: true,
     autofocus: true,
-    placeholder: "Ctrl-O para abrir um arquivo, ou comece a digitar!",
+
     viewportMargin: 150,
     extraKeys: {
       F11: function (cm) {
@@ -231,15 +135,6 @@ window.onload = function () {
       },
     },
   });
-  tabs.push({ doc: editor.getDoc(), name: "Novo.lpd" });
-  reconstructTabs();
-  addTabListeners();
-  document.getElementById(`tab0`).classList.add("active");
-
-  logar("Bem vindo ao compilador LPD! aka. compi{LPD}lador");
-  logar(
-    "Para começar, carregue um arquivo ou digite o código no editor acima."
-  );
 
   // Animação do logo
   document.getElementById("logo").addEventListener("mouseover", function () {
@@ -253,6 +148,9 @@ window.onload = function () {
 
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
+    if (document.getElementById("filename").value == "") {
+      document.getElementById("filename").value = filename;
+    }
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
     }, Col ${editor.getCursor().ch + 1}`;
@@ -292,7 +190,7 @@ window.onload = function () {
 
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
-    compileCode();
+    compileCode(editor, true);
   });
 
   // Salva o arquivo
