@@ -1,8 +1,15 @@
-// Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
+// Author: Iago Lourenço (iagojlourenco@gmail.com) / compilador.js
+
+import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
+// Import dos módulos do compilador
+import sintatico from "./sintatico.js";
+// Guarda as abas do editor
+const tabs = [];
+var editor;
 
 var filename = "Novo.lpd";
 
-function loadLocalFile(files, editor) {
+async function loadLocalFile(files, editor) {
   if (files.length == 1) {
     var reader = new FileReader();
     reader.fileName = files[0].name;
@@ -14,6 +21,19 @@ function loadLocalFile(files, editor) {
       editor.setValue(e.target.result);
     };
     reader.readAsText(files[0]);
+  } else {
+    for (var i = 0; i < files.length; i++) {
+      var reader = new FileReader();
+      reader.fileName = files[i].name;
+      filename = files[i].name;
+
+      reader.onload = function (e) {
+        createTab(e.target.fileName);
+        editor.setValue(e.target.result);
+        logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
+      };
+      reader.readAsText(files[i]);
+    }
   }
 }
 
@@ -50,12 +70,45 @@ function logar(msg) {
     document.getElementById("log").scrollHeight;
 }
 
-import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
-// Import dos módulos do compilador
-import sintatico from "./sintatico.js";
-// Guarda as abas do editor
-const tabs = [];
-var editor;
+function compileCode() {
+  var code = editor.getValue();
+  let log = document.getElementById("log");
+  log.value = "";
+  try {
+    var start = performance.now();
+    if (code.length > 0) {
+      logar(`Compilando...`);
+      // Chamada do sintático para iniciar a análise
+      const codigo = sintatico.iniciar(code);
+
+      logar(`SUCESSO!`);
+      textLog += "SUCESSO!" + "\n\n";
+    } else {
+      throw new Error("Nenhum código inserido!");
+    }
+  } catch (e) {
+    console.error(e);
+    textLog += e.message + "\n\n";
+    if (
+      e instanceof ErroLexico ||
+      e instanceof ErroSintatico ||
+      e instanceof ErroSemantico
+    ) {
+      // Coloca o cursor na linha e coluna do erro
+      editor.setCursor(e.linha, e.coluna);
+      editor.focus();
+    }
+
+    // Printa a mensagem no log
+    logar(e.message);
+  } finally {
+    // Tempo de execução do compilador
+    var end = performance.now();
+    log.value += `\n\n---\nTempo de execução: ${
+      Math.round((end - start) * 100) / 100
+    }ms\n`;
+  }
+}
 
 // Tabs management functions
 function createTab(name) {
@@ -71,6 +124,7 @@ function createTab(name) {
   activateTab(tabs.length - 1);
   setTabName(tabs.length - 1, name);
 }
+
 function reconstructTabs() {
   document.getElementById("tabs_container").innerHTML = "";
   for (let i = 0; i < tabs.length; i++) {
@@ -219,44 +273,7 @@ window.onload = function () {
 
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
-    var code = editor.getValue();
-    let log = document.getElementById("log");
-    log.value = "";
-    try {
-      var start = performance.now();
-      if (code.length > 0) {
-        logar(`Compilando...`);
-        // Chamada do sintático para iniciar a análise
-        const codigo = sintatico.iniciar(code);
-
-        logar(`SUCESSO!`);
-        // logar(`Tokens: ${JSON.stringify(listaToken)}`);
-        // console.table(listaToken);
-      } else {
-        throw new Error("Nenhum código inserido!");
-      }
-    } catch (e) {
-      console.error(e);
-
-      if (
-        e instanceof ErroLexico ||
-        e instanceof ErroSintatico ||
-        e instanceof ErroSemantico
-      ) {
-        // Coloca o cursor na linha e coluna do erro
-        editor.setCursor(e.linha, e.coluna);
-        editor.focus();
-      }
-
-      // Printa a mensagem no log
-      logar(e.message);
-    } finally {
-      // Tempo de execução do compilador
-      var end = performance.now();
-      log.value += `\n\n---\nTempo de execução: ${
-        Math.round((end - start) * 100) / 100
-      }ms\n`;
-    }
+    compileCode();
   });
 
   // Salva o arquivo
