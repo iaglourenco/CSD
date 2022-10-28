@@ -88,7 +88,6 @@ function compileCode() {
     }
   } catch (e) {
     console.error(e);
-    textLog += e.message + "\n\n";
     if (
       e instanceof ErroLexico ||
       e instanceof ErroSintatico ||
