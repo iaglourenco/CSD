@@ -1,9 +1,13 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / sintatico.js
 
-import { ErroSintatico } from "./erros.js";
+import { ErroSemantico, ErroSintatico } from "./erros.js";
 import Lexico from "./lexico.js";
+import Semantico from "./semantico.js";
+import TabelaSimbolos from "./tabelaSimbolos.js";
 
 let lexico;
+let semantico = new Semantico([]);
+let tabelaSimbolos = new TabelaSimbolos();
 
 // Regras de produção:
 function analisaBloco() {
@@ -33,7 +37,7 @@ function analisaDeclaracaoVariaveis() {
         } else {
           // Ponto e virgula esperado
           throw new ErroSintatico(
-            "sxs4",
+            "stc4",
             lexico.tokenAtual.lexema,
             lexico.tokenAtual.linha,
             lexico.tokenAtual.coluna
@@ -43,7 +47,7 @@ function analisaDeclaracaoVariaveis() {
     } else {
       // Identificador esperado
       throw new ErroSintatico(
-        "sxs3",
+        "stc3",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
@@ -58,9 +62,14 @@ function analisaVariaveis() {
    */
   while (lexico.tokenAtual.simbolo != "Sdoispontos") {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      if (/* pesquisaVariavel(lexico.tokenAtual.lexema) */ true) {
-        // Pesquisa na tabela de simbolos se a variável já foi declarada
-        //insereTabelaSimbolos(lexico.tokenAtual.lexema, "variavel", "", ""); /* Insere na tabela de simbolos */
+      // Pesquisa na tabela de simbolos se a variável já foi declarada
+      if (!semantico.pesquisaIdentificador(lexico.tokenAtual.lexema)) {
+        /* Insere na tabela de simbolos */
+        tabelaSimbolos.pushSimbolo(
+          lexico.tokenAtual.lexema,
+          "Svariavel",
+          "NOMEM"
+        );
         lexico.proximoToken();
         if (
           lexico.tokenAtual.simbolo == "Svirgula" ||
@@ -71,7 +80,7 @@ function analisaVariaveis() {
             if (lexico.tokenAtual.simbolo == "Sdoispontos") {
               // Lança um erro pois é esperado um identificador
               throw new ErroSintatico(
-                "sxs3",
+                "stc3",
                 lexico.tokenAtual.lexema,
                 lexico.tokenAtual.linha,
                 lexico.tokenAtual.coluna
@@ -81,19 +90,24 @@ function analisaVariaveis() {
         } else {
           // Lança um erro pois é esperado o simbolo Sdoispontos ou Svirgula
           throw new ErroSintatico(
-            "sxs5",
+            "stc5",
             lexico.tokenAtual.lexema,
             lexico.tokenAtual.linha,
             lexico.tokenAtual.coluna
           );
         }
       } else {
-        //   // Lança um erro pois a variável já foi declarada
-        // ...
+        // Lança um erro pois a variável já foi declarada
+        throw new ErroSemantico(
+          "sem1",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
       }
     } else {
       throw new ErroSintatico(
-        "sxs3",
+        "stc3",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
@@ -109,7 +123,7 @@ function analisaSubrotinas() {
    * <etapa de declaração de sub-rotinas> ::= (<declaração de procedimento>;|<declaração de função>;)
    *                                          {<declaração de procedimento>;|<declaração de função>;}
    */
-  // TODO: semantico
+  // TODO: geracao de codigo
 
   while (
     lexico.tokenAtual.simbolo == "Sprocedimento" ||
@@ -124,7 +138,7 @@ function analisaSubrotinas() {
       lexico.proximoToken();
     } else {
       throw new ErroSintatico(
-        "sxs4",
+        "stc4",
         lexico.ultimoTokenLido.lexema,
         lexico.ultimoTokenLido.linha,
         lexico.ultimoTokenLido.coluna
@@ -139,19 +153,34 @@ function analisaDeclaracaoProcedimento() {
    */
 
   lexico.proximoToken();
-  //TODO: adicionar marca/galho
 
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    // TODO: semantico
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
+    if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
+      throw new ErroSemantico(
+        "sem1",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    } else {
+      tabelaSimbolos.pushSimbolo(
+        lexico.tokenAtual.lexema,
+        "Sprocedimento",
+        "NOMEM"
+      );
+
+      //TODO: adicionar marca/galho
+      tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
+    }
 
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
       analisaBloco();
     } else {
       throw new ErroSintatico(
-        "sxs4",
+        "stc4",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
@@ -159,13 +188,14 @@ function analisaDeclaracaoProcedimento() {
     }
   } else {
     throw new ErroSintatico(
-      "sxs3",
+      "stc3",
       lexico.tokenAtual.lexema,
       lexico.tokenAtual.linha,
       lexico.tokenAtual.coluna
     );
   }
-  // Desempilha ou volta nivel
+  // Desempilha o escopo
+  tabelaSimbolos.desempilhaEscopo();
 }
 
 function analisaDeclaracaoFuncao() {
@@ -174,14 +204,30 @@ function analisaDeclaracaoFuncao() {
    */
 
   lexico.proximoToken();
-  // TODO: adicionar marca/galho
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    // TODO: semantico
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
+    if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
+      throw new ErroSemantico(
+        "sem1",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    } else {
+      tabelaSimbolos.pushSimbolo(lexico.tokenAtual.lexema, "Sfuncao", "NOMEM");
+
+      // TODO: adicionar marca/galho
+      tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
+    }
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sdoispontos") {
       lexico.proximoToken();
+      analisaTipo();
+      if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+        analisaBloco();
+      }
+      /**  Reutilizei o analisaTipo aqui pois ele ja adiciona o tipo na tabela de simbolos
       if (
         lexico.tokenAtual.simbolo == "Sinteiro" ||
         lexico.tokenAtual.simbolo == "Sbooleano"
@@ -194,15 +240,16 @@ function analisaDeclaracaoFuncao() {
         }
       } else {
         throw new ErroSintatico(
-          "sxs6",
+          "stc6",
           lexico.tokenAtual.lexema,
           lexico.tokenAtual.linha,
           lexico.tokenAtual.coluna
         );
       }
+      */
     } else {
       throw new ErroSintatico(
-        "sxs5",
+        "stc5",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
@@ -210,12 +257,15 @@ function analisaDeclaracaoFuncao() {
     }
   } else {
     throw new ErroSintatico(
-      "sxs3",
+      "stc3",
       lexico.tokenAtual.lexema,
       lexico.tokenAtual.linha,
       lexico.tokenAtual.coluna
     );
   }
+
+  // Desempilha o escopo
+  tabelaSimbolos.desempilhaEscopo();
 }
 
 function analisaComandos() {
@@ -234,7 +284,7 @@ function analisaComandos() {
         }
       } else {
         throw new ErroSintatico(
-          "sxs4",
+          "stc4",
           lexico.ultimoTokenLido.lexema,
           lexico.ultimoTokenLido.linha,
           lexico.ultimoTokenLido.coluna
@@ -244,7 +294,7 @@ function analisaComandos() {
     lexico.proximoToken();
   } else {
     throw new ErroSintatico(
-      "sxs7",
+      "stc7",
       lexico.ultimoTokenLido.lexema,
       lexico.ultimoTokenLido.linha,
       lexico.ultimoTokenLido.coluna
@@ -292,8 +342,51 @@ function analisaComandoAtribuicao() {
   /**
    * <comando atribuicao>::= identificador := <expressao>
    */
-  lexico.proximoToken();
-  analisaExpressao();
+
+  // Analisa o lado esquerdo da atribuição verificando se o identificador já foi declarado
+  if (semantico.pesquisaTabela(lexico.ultimoTokenLido.lexema)) {
+    let tokenEsquerda = lexico.ultimoTokenLido;
+    lexico.proximoToken();
+    analisaExpressao();
+
+    // Verifica se o identificador é funcao, se sim, a atribuição só é permitida se estiver no escopo da propria funcao
+    if (
+      tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao") &&
+      tokenEsquerda.lexema != tabelaSimbolos.escopoAtual
+    ) {
+      // Atribuição de funcao em outro escopo
+      throw new ErroSemantico(
+        "sem8",
+        tokenEsquerda.lexema,
+        tokenEsquerda.linha,
+        tokenEsquerda.coluna
+      );
+    }
+    // Verifica se os tipos são compatíveis
+    else if (
+      tabelaSimbolos
+        .getTipo(tokenEsquerda.lexema)
+        .includes(semantico.analisar(semantico.posFixa()))
+    ) {
+      // Gera código?
+    } else {
+      // Tipo da expressão não é compatível com o tipo da variável
+      throw new ErroSemantico(
+        "sem5",
+        tokenEsquerda.lexema,
+        tokenEsquerda.linha,
+        tokenEsquerda.coluna
+      );
+    }
+  } else {
+    // Identificador nao declarado
+    throw new ErroSemantico(
+      "sem2",
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
+    );
+  }
 }
 
 function analisaExpressao() {
@@ -309,6 +402,8 @@ function analisaExpressao() {
     lexico.tokenAtual.simbolo == "Sigual" ||
     lexico.tokenAtual.simbolo == "Sdiferente"
   ) {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressaoSimples();
   }
@@ -322,6 +417,11 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smais" ||
     lexico.tokenAtual.simbolo == "Smenos"
   ) {
+    semantico.pushExpressaoInfixa({
+      ...lexico.tokenAtual,
+
+      lexema: lexico.tokenAtual.lexema + "u",
+    });
     lexico.proximoToken();
   }
   analisaTermo();
@@ -331,6 +431,8 @@ function analisaExpressaoSimples() {
     lexico.tokenAtual.simbolo == "Smenos" ||
     lexico.tokenAtual.simbolo == "Sou"
   ) {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaTermo();
   }
@@ -341,14 +443,41 @@ function analisaChamadaProcedimento() {
    * <chamada de procedimento>::= <identificador>
    */
   //lexico.proximoToken();
-  // TODO: analisar chamada de procedimento
+  if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
+    throw new ErroSemantico(
+      "sem2",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
 }
+
 function analisaChamadaFuncao() {
   /**
    * <chamada de função>::= <identificador>
    */
+  if (lexico.tokenAtual.simbolo == "Sidentificador") {
+    if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
+      throw new ErroSemantico(
+        "sem2",
+        lexico.tokenAtual.lexema,
+        lexico.tokenAtual.linha,
+        lexico.tokenAtual.coluna
+      );
+    } else {
+      // Gera código?
+      semantico.pushExpressaoInfixa(lexico.tokenAtual);
+    }
+  } else {
+    throw new ErroSintatico(
+      "stc3",
+      lexico.tokenAtual.lexema,
+      lexico.tokenAtual.linha,
+      lexico.tokenAtual.coluna
+    );
+  }
   lexico.proximoToken();
-  // TODO: analisar chamada de funcao
 }
 
 function analisaComandoCondicional() {
@@ -358,7 +487,16 @@ function analisaComandoCondicional() {
    *                             [senao <comando>]
    */
   lexico.proximoToken();
+  let tokenSe = lexico.ultimoTokenLido;
   analisaExpressao();
+  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+    throw new ErroSemantico(
+      "sem7",
+      tokenSe.lexema,
+      tokenSe.linha,
+      tokenSe.coluna
+    );
+  }
   if (lexico.tokenAtual.simbolo == "Sentao") {
     lexico.proximoToken();
     analisaComandoSimples();
@@ -368,7 +506,7 @@ function analisaComandoCondicional() {
     }
   } else {
     throw new ErroSintatico(
-      "sxs11",
+      "stc11",
       lexico.ultimoTokenLido.lexema,
       lexico.ultimoTokenLido.linha,
       lexico.ultimoTokenLido.coluna
@@ -386,6 +524,8 @@ function analisaTermo() {
     lexico.tokenAtual.simbolo == "Sdiv" ||
     lexico.tokenAtual.simbolo == "Se"
   ) {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaFator();
   }
@@ -398,13 +538,22 @@ function analisaComandoEnquanto() {
   // TODO: jumps criados na geração de código
 
   lexico.proximoToken();
+  let tokenEnquanto = lexico.ultimoTokenLido;
   analisaExpressao();
+  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+    throw new ErroSemantico(
+      "sem7",
+      tokenEnquanto.lexema,
+      tokenEnquanto.linha,
+      tokenEnquanto.coluna
+    );
+  }
   if (lexico.tokenAtual.simbolo == "Sfaca") {
     lexico.proximoToken();
     analisaComandoSimples();
   } else {
     throw new ErroSintatico(
-      "sxs15",
+      "stc15",
       lexico.ultimoTokenLido.lexema,
       lexico.ultimoTokenLido.linha,
       lexico.ultimoTokenLido.coluna
@@ -421,24 +570,36 @@ function analisaComandoLeitura() {
   if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // TODO: semantico
-      if (/*pesquisaVariavelFuncao(lexico.tokenAtual.lexema) != null*/ true) {
-        lexico.proximoToken();
-        if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+      if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
+        if (
+          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema) ==
+          "Svariavel Sinteiro"
+        ) {
           lexico.proximoToken();
+          if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+            lexico.proximoToken();
+          } else {
+            // Fecha parenteses faltando
+            throw new ErroSintatico(
+              "stc12",
+              lexico.ultimoTokenLido.lexema,
+              lexico.ultimoTokenLido.linha,
+              lexico.ultimoTokenLido.coluna
+            );
+          }
         } else {
-          // Fecha parenteses faltando
-          throw new ErroSintatico(
-            "sxs12",
-            lexico.ultimoTokenLido.lexema,
-            lexico.ultimoTokenLido.linha,
-            lexico.ultimoTokenLido.coluna
+          // Identificador com tipo invalido
+          throw new ErroSemantico(
+            "sem3",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
           );
         }
       } else {
         // Identificador não declarada
-        throw new ErroSintatico(
-          "sxs13",
+        throw new ErroSemantico(
+          "sem2",
           lexico.tokenAtual.lexema,
           lexico.tokenAtual.linha,
           lexico.tokenAtual.coluna
@@ -447,7 +608,7 @@ function analisaComandoLeitura() {
     } else {
       // Identificador faltando
       throw new ErroSintatico(
-        "sxs3",
+        "stc3",
         lexico.ultimoTokenLido.lexema,
         lexico.ultimoTokenLido.linha,
         lexico.ultimoTokenLido.coluna
@@ -456,7 +617,7 @@ function analisaComandoLeitura() {
   } else {
     // Abre parenteses faltando
     throw new ErroSintatico(
-      "sxs16",
+      "stc16",
       lexico.ultimoTokenLido.lexema,
       lexico.ultimoTokenLido.linha,
       lexico.ultimoTokenLido.coluna
@@ -472,15 +633,14 @@ function analisaComandoEscrita() {
   if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // TODO: semantico
-      if (/*pesquisaVariavelFuncao(lexico.tokenAtual.lexema) != null*/ true) {
+      if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
         lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
           lexico.proximoToken();
         } else {
           // Fecha parenteses faltando
           throw new ErroSintatico(
-            "sxs12",
+            "stc12",
             lexico.ultimoTokenLido.lexema,
             lexico.ultimoTokenLido.linha,
             lexico.ultimoTokenLido.coluna
@@ -488,8 +648,8 @@ function analisaComandoEscrita() {
         }
       } else {
         // Identificador não declarada
-        throw new ErroSintatico(
-          "sxs13",
+        throw new ErroSemantico(
+          "sem2",
           lexico.tokenAtual.lexema,
           lexico.tokenAtual.linha,
           lexico.tokenAtual.coluna
@@ -498,7 +658,7 @@ function analisaComandoEscrita() {
     } else {
       // Identificador faltando
       throw new ErroSintatico(
-        "sxs3",
+        "stc3",
         lexico.ultimoTokenLido.lexema,
         lexico.ultimoTokenLido.linha,
         lexico.ultimoTokenLido.coluna
@@ -508,7 +668,7 @@ function analisaComandoEscrita() {
     // Abre parenteses faltando
 
     throw new ErroSintatico(
-      "sxs16",
+      "stc16",
       lexico.ultimoTokenLido.lexema,
       lexico.ultimoTokenLido.linha,
       lexico.ultimoTokenLido.coluna
@@ -526,36 +686,49 @@ function analisaFator() {
    *
    */
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    //semantico
-    if (/*pesquisaTabela(lexico.tokenAtual.lexema, nível, ind) */ true) {
+    if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
+      // Pega o tipo dos simbolos com esse lexema
+      const simb = tabelaSimbolos
+        .getSimbolos(lexico.tokenAtual.lexema)
+        .map((s) => s.tipo);
       if (
-        /*tabelaSimbolos[ind].tipo == "funcao int" ||
-        tabelaSimbolos[ind].tipo == "funcao booleano" */ false
+        simb.includes("Sfuncao Sinteiro") ||
+        simb.includes("Sfuncao Sbooleano")
       ) {
         analisaChamadaFuncao();
-      } else lexico.proximoToken();
+      } else {
+        // Adiciona o token a pilha de expressao infixa
+        semantico.pushExpressaoInfixa(lexico.tokenAtual);
+        lexico.proximoToken();
+      }
     } else {
-      // Identificador não declarada
-      throw new ErroSintatico(
-        "sxs13",
+      // Identificador não declarado
+      throw new ErroSemantico(
+        "sem2",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
       );
     }
   } else if (lexico.tokenAtual.simbolo == "Snumero") {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else if (lexico.tokenAtual.simbolo == "Snao") {
     lexico.proximoToken();
     analisaFator();
   } else if (lexico.tokenAtual.simbolo == "Sabre_parenteses") {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
     analisaExpressao();
     if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+      // Adiciona o token a pilha de expressao infixa
+      semantico.pushExpressaoInfixa(lexico.tokenAtual);
       lexico.proximoToken();
     } else {
       throw new ErroSintatico(
-        "sxs9",
+        "stc9",
         lexico.ultimoTokenLido.lexema,
         lexico.ultimoTokenLido.linha,
         lexico.ultimoTokenLido.coluna
@@ -565,10 +738,12 @@ function analisaFator() {
     lexico.tokenAtual.simbolo == "Sverdadeiro" ||
     lexico.tokenAtual.simbolo == "Sfalso"
   ) {
+    // Adiciona o token a pilha de expressao infixa
+    semantico.pushExpressaoInfixa(lexico.tokenAtual);
     lexico.proximoToken();
   } else {
     throw new ErroSintatico(
-      "sxs10",
+      "stc10",
       lexico.tokenAtual.lexema,
       lexico.tokenAtual.linha,
       lexico.tokenAtual.coluna
@@ -585,13 +760,13 @@ function analisaTipo() {
     lexico.tokenAtual.simbolo != "Sbooleano"
   ) {
     throw new ErroSintatico(
-      "sxs6",
+      "stc6",
       lexico.tokenAtual.lexema,
       lexico.tokenAtual.linha,
       lexico.tokenAtual.coluna
     );
   } else {
-    // colocaTipo(lexico.tokenAtual.lexema);
+    tabelaSimbolos.colocaTipo(lexico.tokenAtual.simbolo);
     lexico.proximoToken();
   }
 }
@@ -608,7 +783,14 @@ function analisaPrograma() {
   if (lexico.tokenAtual && lexico.tokenAtual.simbolo == "Sprograma") {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
-      // insereTabelaSimbolos(lexico.tokenAtual.lexema, "nomeDePrograma","",""); /* Insere na tabela de simbolos */
+      tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
+      /* Insere na tabela de simbolos */
+      tabelaSimbolos.pushSimbolo(
+        lexico.tokenAtual.lexema,
+        "Snome_programa",
+        undefined
+      );
+
       lexico.proximoToken();
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
         // Chamada da função de análise do bloco
@@ -621,7 +803,7 @@ function analisaPrograma() {
           } else {
             // Caso haja mais simbolos na lista de tokens, após o ponto, lança um erro
             throw new ErroSintatico(
-              "sxs1",
+              "stc1",
               lexico.tokenAtual.lexema,
               lexico.tokenAtual.linha,
               lexico.tokenAtual.coluna
@@ -629,7 +811,7 @@ function analisaPrograma() {
           }
         } else {
           throw new ErroSintatico(
-            "sxs14",
+            "stc14",
             lexico.tokenAtual.lexema,
             lexico.tokenAtual.linha,
             lexico.tokenAtual.coluna
@@ -637,7 +819,7 @@ function analisaPrograma() {
         }
       } else {
         throw new ErroSintatico(
-          "sxs4",
+          "stc4",
           lexico.tokenAtual.lexema,
           lexico.tokenAtual.linha,
           lexico.tokenAtual.coluna
@@ -645,7 +827,7 @@ function analisaPrograma() {
       }
     } else {
       throw new ErroSintatico(
-        "sxs3",
+        "stc3",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
@@ -653,7 +835,7 @@ function analisaPrograma() {
     }
   } else {
     throw new ErroSintatico(
-      "sxs2",
+      "stc2",
       lexico.tokenAtual.lexema,
       lexico.tokenAtual.linha,
       lexico.tokenAtual.coluna
@@ -666,11 +848,17 @@ function iniciar(data) {
   /**
    * Inicia o analisador sintático, que orquestra a análise do código fonte chamando os outros módulos
    * @param {string} data Código em LPD a ser analisado.
-   * @returns {string} Código em LPD compilado e em linguagem de máquina.
+   * @returns {string} Código em LPD compilado e em linguagem de montagem.
    */
 
   // Inicia o analisador léxico
   lexico = new Lexico(data);
+
+  // Inicia a tabela de símbolos
+  tabelaSimbolos = new TabelaSimbolos();
+
+  // Inicia o analisador semântico
+  semantico = new Semantico(tabelaSimbolos);
 
   // Chamada da regra de entrada do sintático
   analisaPrograma();

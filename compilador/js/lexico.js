@@ -9,7 +9,7 @@ class Lexico {
   }
   tokenizar(data) {
     /**
-     * Identifica tokens.
+     * Identifica tokens em uma cadeia de caracteres de entrada.
      * @param {string} data Código em LPD a ser identificado.
      * @returns {list({lexema:string,simbolo:string})} uma lista de tokens identificados em data
      * @throws {ErroLexico} Caso encontre um caractere estranho indicando a linha e coluna do erro
@@ -18,8 +18,8 @@ class Lexico {
     // Controlador de comentário, incrementa a cada "{" lido e decrementa a cada "}" lido
     let isComment = 0;
     let lista = [];
-    let linha = 1;
-    let coluna = 1;
+    let linha = 0;
+    let coluna = 0;
     let ultimoComentario = { linha: 0, coluna: 0 }; // Armazena a linha e coluna do último comentário aberto
     for (let i = 0; i < data.length; i++) {
       let caracter = data[i];
@@ -27,13 +27,13 @@ class Lexico {
 
       // Ignora espaços em branco
       if (caracter == " " || caracter == "\t") {
-        if (caracter == "\t") coluna += 1;
+        if (caracter == "\t") coluna += 0;
         continue;
       }
       // Ignora quebra de linha e incrementa a linha
       if (caracter == "\n") {
         linha++;
-        coluna = 1;
+        coluna = 0;
         continue;
       }
       // Se o caracter atual for o início do comentário, incrementa o bloco de comentário
@@ -44,7 +44,7 @@ class Lexico {
       } else if (caracter == "}") {
         // Se o caracter atual for o final do comentário, decrementa o bloco de comentário
         if (isComment == 0) {
-          throw new ErroLexico("lxl1", caracter, linha, coluna);
+          throw new ErroLexico("lxc1", caracter, linha, coluna);
         }
         isComment--;
         continue;
@@ -62,9 +62,6 @@ class Lexico {
             caracter = data[++i];
             coluna++;
           }
-          // Volta um caracter para não perder o próximo caracter
-          i--;
-          coluna--;
 
           let token = {
             linha,
@@ -73,6 +70,10 @@ class Lexico {
             simbolo: "Snumero",
           };
           lista.push(token);
+
+          // Volta um caracter para não perder o próximo caracter
+          i--;
+          coluna--;
           continue;
         }
 
@@ -96,6 +97,7 @@ class Lexico {
             simbolo: this.identificaSimbolo(tokenId),
           };
           lista.push(token);
+
           continue;
         }
 
@@ -111,6 +113,8 @@ class Lexico {
             };
             lista.push(token);
             i++;
+            coluna++;
+
             continue;
           }
           // Se não, trata como dois pontos
@@ -168,6 +172,7 @@ class Lexico {
             if (data[i + 1] == "=") {
               token = { linha, coluna, lexema: "!=", simbolo: "Sdiferente" };
               i++;
+              coluna++;
             } else {
               token = { linha, coluna, lexema: "!", simbolo: "Snao" };
             }
@@ -181,6 +186,7 @@ class Lexico {
                 simbolo: "Smenorig",
               };
               i++;
+              coluna++;
             } else {
               token = {
                 linha,
@@ -199,6 +205,7 @@ class Lexico {
                 simbolo: "Smaiorig",
               };
               i++;
+              coluna++;
             } else {
               token = {
                 linha,
@@ -268,14 +275,14 @@ class Lexico {
           continue;
         }
 
-        throw new ErroLexico("lxl2", caracter, linha, coluna);
+        throw new ErroLexico("lxc2", caracter, linha, coluna);
       }
     }
 
     // Se o bloco de comentário não estiver fechado, lança um erro
     if (isComment > 0) {
       throw new ErroLexico(
-        "lxl3",
+        "lxc3",
         undefined,
         ultimoComentario.linha,
         ultimoComentario.coluna

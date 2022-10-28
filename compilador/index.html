@@ -20,7 +20,8 @@
 
   <script src="codemirror/lib/codemirror.js"></script>
   <script src="codemirror/addon/display/fullscreen.js"></script>
-  <script src="codemirror/addon/hint/show-hint.js"></script>
+  <script src="codemirror/addon/display/placeholder.js"></script>
+
 
   <!-- Script imports -->
   <script type="module" src="js/compilador.js"></script>
@@ -65,23 +66,28 @@
       <div class="menu_btn" id="abrir">
         <span class="material-icons"> upload_file </span>
         <span class="menu_btn_title" style="text-align: center">Carregar <br>(Ctrl+O)</span>
-        <input id="file-input" type="file" accept=".txt" />
+        <input id="file-input" type="file" accept=".txt" multiple/>
       </div>
     </div>
   </header>
 
   <div id="codeeditor">
     <div id="codeeditor_header">
-      <div style="display: flex; align-items: baseline">
-        <legend>Editor:</legend>
-        <legend id="filename"></legend>
+      <div style="display: flex; align-items:center; justify-content:space-between">
+        <legend id="title">Editor:</legend>
+        <legend id="posicao">Ln 1, Col 1</legend>
       </div>
-      <legend id="posicao">Ln 1, Col 1</legend>
+
+      <div id="tabs_container">
+
+
+      </div>
     </div>
+
   </div>
 
   <div id="console">
-    <div style="display: flex; justify-content: space-between">
+    <div id="log_header">
       <legend>Log</legend>
       <legend id="limpar" onclick="document.getElementById('log').value=''">
         Limpar (Ctrl+L)

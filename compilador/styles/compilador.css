@@ -80,6 +80,11 @@ body {
   font-family: var(--mono);
   font-size: large;
   height: 100%;
+  cursor: text;
+}
+
+pre.CodeMirror-placeholder.CodeMirror-line-like {
+  color: var(--comment) !important;
 }
 
 #codeeditor {
@@ -94,14 +99,72 @@ body {
 
 #codeeditor #codeeditor_header {
   display: flex;
-  align-items: center;
-  background-color: var(--orange);
+  flex-direction: column;
+  color: var(--orange);
+  background-color: var(--current-line);
   justify-content: space-between;
 }
 
-#codeeditor #codeeditor_header legend {
+#tabs_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  background-color: var(--current-line);
+  overflow-y: auto;
+}
+
+#tabs_container .tab,
+.tab_c {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  color: var(--foreground);
+  background-color: var(--comment);
+  margin-left: 2px;
+  border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
-  color: var(--background);
+  cursor: pointer;
+  overflow-y: hidden;
+}
+
+.tab *,
+tab_c * {
+  margin: 2px;
+}
+
+#tabs_container .tab:hover,
+#tabs_container #new_tab:hover {
+  opacity: 0.8;
+}
+
+#tabs_container .material-icons.close:hover {
+  color: var(--red);
+}
+
+#tabs_container .tab.active,
+.tab:focus {
+  color: var(--foreground);
+  border-bottom: 2px double var(--orange);
+}
+
+#tabs_container #new_tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  margin-left: 2px;
+  padding: 2px;
+  border-radius: 5px 5px 0px 0px;
+  font-family: var(--mono);
+  cursor: pointer;
+  background-color: var(--comment);
+}
+
+#posicao,
+#title {
+  color: var(--orange);
+  font-family: var(--mono);
   font-size: 14px;
   padding: 5px;
   font-weight: bold;
@@ -114,32 +177,34 @@ body {
   min-height: 100px;
   max-width: 1200px;
   width: 95%;
-
   margin: 20px auto auto auto;
 }
 
-#console legend {
-  background-color: var(--orange);
+#log_header {
+  display: flex;
+  color: var(--orange);
+  background-color: var(--current-line);
+  justify-content: space-between;
   font-family: var(--mono);
-  font-size: 13px;
+  font-weight: bold;
+}
+
+#log_header legend {
   padding: 5px 10px;
   font-weight: bold;
+  background-color: var(--orange);
+  color: var(--background);
+  border-radius: 0px 0px 5px 0px;
 }
 
 #console #limpar {
   cursor: pointer;
-  background-color: var(--orange);
-  color: var(--background);
-  font-family: var(--mono);
-  padding: 5px 10px;
-  font-weight: bold;
+  border-radius: 0px 0px 0px 5px;
 }
 
 #console #limpar:hover {
   opacity: .8;
 }
-
-
 
 #console textarea {
   color: var(--foreground);
