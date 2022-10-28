@@ -1,6 +1,7 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / sintatico.js
 
 import { ErroSemantico, ErroSintatico } from "./erros.js";
+import Gerador from "./gerador.js";
 import Lexico from "./lexico.js";
 import Semantico from "./semantico.js";
 import TabelaSimbolos from "./tabelaSimbolos.js";
@@ -8,7 +9,7 @@ import TabelaSimbolos from "./tabelaSimbolos.js";
 let lexico;
 let semantico = new Semantico([]);
 let tabelaSimbolos = new TabelaSimbolos();
-
+let gerador = new Gerador();
 // Regras de produção:
 function analisaBloco() {
   /**
