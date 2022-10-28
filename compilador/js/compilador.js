@@ -1,13 +1,13 @@
-// Author: Iago Lourenço (iagojlourenco@gmail.com) / main.js
+// Author: Iago Lourenço (iagojlourenco@gmail.com) / compilador.js
+
+import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
+// Import dos módulos do compilador
+import sintatico from "./sintatico.js";
+// Guarda as abas do editor
+const tabs = [];
+var editor;
 
 var filename = "Novo.lpd";
-var textLog = "Inicio\n\n";
-
-function sleep(ms) {
-  return new Promise(
-    resolve => setTimeout(resolve, ms)
-  );
-}
 
 async function loadLocalFile(files, editor) {
   if (files.length == 1) {
@@ -21,29 +21,19 @@ async function loadLocalFile(files, editor) {
       editor.setValue(e.target.result);
     };
     reader.readAsText(files[0]);
-  }
-  else {
-    for (var i=0 ; i < files.length; i++){
-      console.log(files.length);
+  } else {
+    for (var i = 0; i < files.length; i++) {
       var reader = new FileReader();
       reader.fileName = files[i].name;
       filename = files[i].name;
-      
+
       reader.onload = function (e) {
         createTab(e.target.fileName);
         editor.setValue(e.target.result);
-        logar(`YES Arquivo ${e.target.fileName} carregado com sucesso!`);
-        textLog += e.target.fileName + ':\n';
-        compileCode();
-        console.log(textLog);
+        logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
       };
       reader.readAsText(files[i]);
     }
-    //sem sleep, criaria o tab 'results' primeiro e depois
-    //os outros tabs
-    await sleep(2000);
-    createTab("Results");
-    editor.setValue(textLog);
   }
 }
 
@@ -80,7 +70,7 @@ function logar(msg) {
     document.getElementById("log").scrollHeight;
 }
 
-function compileCode(){
+function compileCode() {
   var code = editor.getValue();
   let log = document.getElementById("log");
   log.value = "";
@@ -92,15 +82,13 @@ function compileCode(){
       const codigo = sintatico.iniciar(code);
 
       logar(`SUCESSO!`);
-      textLog += 'SUCESSO!' + '\n\n';
-      // logar(`Tokens: ${JSON.stringify(listaToken)}`);
-      // console.table(listaToken);
+      textLog += "SUCESSO!" + "\n\n";
     } else {
       throw new Error("Nenhum código inserido!");
     }
   } catch (e) {
     console.error(e);
-    textLog += e.message + '\n\n';
+    textLog += e.message + "\n\n";
     if (
       e instanceof ErroLexico ||
       e instanceof ErroSintatico ||
@@ -121,13 +109,6 @@ function compileCode(){
     }ms\n`;
   }
 }
-
-import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
-// Import dos módulos do compilador
-import sintatico from "./sintatico.js";
-// Guarda as abas do editor
-const tabs = [];
-var editor;
 
 // Tabs management functions
 function createTab(name) {
