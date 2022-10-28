@@ -82,7 +82,6 @@ function compileCode() {
       const codigo = sintatico.iniciar(code);
 
       logar(`SUCESSO!`);
-      textLog += "SUCESSO!" + "\n\n";
     } else {
       throw new Error("Nenhum código inserido!");
     }
