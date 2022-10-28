@@ -348,8 +348,22 @@ function analisaComandoAtribuicao() {
     let tokenEsquerda = lexico.ultimoTokenLido;
     lexico.proximoToken();
     analisaExpressao();
-    // Analise semantica da expressao
+
+    // Verifica se o identificador é funcao, se sim, a atribuição só é permitida se estiver no escopo da propria funcao
     if (
+      tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao") &&
+      tokenEsquerda.lexema != tabelaSimbolos.escopoAtual
+    ) {
+      // Atribuição de funcao em outro escopo
+      throw new ErroSemantico(
+        "sem8",
+        tokenEsquerda.lexema,
+        tokenEsquerda.linha,
+        tokenEsquerda.coluna
+      );
+    }
+    // Verifica se os tipos são compatíveis
+    else if (
       tabelaSimbolos
         .getTipo(tokenEsquerda.lexema)
         .includes(semantico.analisar(semantico.posFixa()))
@@ -557,8 +571,10 @@ function analisaComandoLeitura() {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
-        if (tabelaSimbolos.getTipo(lexico.tokenAtual.lexema) == "Svariavel Sinteiro") {
-
+        if (
+          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema) ==
+          "Svariavel Sinteiro"
+        ) {
           lexico.proximoToken();
           if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
             lexico.proximoToken();
@@ -571,16 +587,15 @@ function analisaComandoLeitura() {
               lexico.ultimoTokenLido.coluna
             );
           }
-        }else{
-           // Identificador com tipo invalido
-           throw new ErroSemantico(
-             "sem3",
-             lexico.tokenAtual.lexema,
-             lexico.tokenAtual.linha,
-             lexico.tokenAtual.coluna
-           )
+        } else {
+          // Identificador com tipo invalido
+          throw new ErroSemantico(
+            "sem3",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
         }
-
       } else {
         // Identificador não declarada
         throw new ErroSemantico(
