@@ -25,7 +25,7 @@ export const messages = {
   sem2: "[SEM2] Erro semântico: Identificador não declarado->",
   sem3: "[SEM3] Erro semântico: Tipos incompatíveis",
   sem4: "[SEM4] Erro semântico: Expressão inválida",
-  sem5: "[SEM5] Erro semântico: Tipo de retorno da expressão não é compatível com o tipo da variável",
+  sem5: "[SEM5] Erro semântico: Tipo de retorno da expressão não é compatível com o tipo do identificador",
   sem6: "[SEM6] Erro semântico: Esperado tipo 'inteiro'",
   sem7: "[SEM7] Erro semântico: Esperado tipo 'booleano'",
   sem8: "[SEM8] Erro semântico: Atribuição de função em outro escopo",
