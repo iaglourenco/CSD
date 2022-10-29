@@ -158,6 +158,7 @@ function activateTab(index) {
   }
   document.getElementById(`tab${index}`).classList.add("active");
   activeTab = index;
+  filename = tabs[index].name;
 }
 function setTabName(index, name) {
   tabs[index].name = name;
