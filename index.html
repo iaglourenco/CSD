@@ -91,92 +91,99 @@
             arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
 
-        <h3>Descrição em BNF da linguagem</h3>
+        <h4>Descrição em BNF da linguagem</h4>
         <p>Para a descrição da linguagem LPD, foi utilizado a notação BNF (Backus-Naur Form), sendo uma notação para
             especificar gramáticas formais.</p>
 
         <p>Espaços, tabulações, caracteres não
             imprimíveis e quebras de linha são ignorados.</p>
 
-        <div class="code_container">
+        <!-- Clique para expandir -->
 
-            <code>&lt;programa&gt;::= programa &lt;identificador&gt; ; &lt;bloco&gt;.</code>
-            <br>
-            <code>&lt;bloco&gt;::= [&lt;etapa de declaração de variáveis&gt;][&lt;etapa de declaração de sub-rotinas&gt;]&lt;comandos&gt;</code>
-            <br>
-            <code class="comment">//Declarações</code>
-            <br>
-            <code>&lt;etapa de declaração de variáveis&gt;::= var &lt;declaração de variáveis&gt;;{&lt;declaração de variáveis&gt;;}</code>
-            <br>
-            <code>&lt;declaração de variáveis&gt;::= &lt;identificador&gt; {, &lt;identificador&gt;} : &lt;tipo&gt;</code>
-            <br>
-            <code>&lt;tipo&gt; ::= (inteiro | booleano)</code>
-            <br>
-            <code>&lt;etapa de declaração de sub-rotinas&gt; ::= (&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;){&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;}</code>
-            <br>
-            <code>&lt;declaração de procedimento&gt; ::= procedimento &lt;identificador&gt;;&lt;bloco&gt;</code>
-            <br>
-            <code>&lt;declaração de função&gt; ::= funcao &lt;identificador&gt;: &lt;tipo&gt;;&lt;bloco&gt;</code>
-            <br>
-            <code class="comment">//Comandos</code>
-            <br>
-            <code>&lt;comandos&gt;::= inicio&lt;comando&gt;{;&lt;comando&gt;}[;]fim</code>
-            <br>
-            <code>&lt;comando&gt;::= (&lt;atribuição_chprocedimento&gt;|&lt;comando condicional&gt; |&lt;comando enquanto&gt; |&lt;comando
-                            leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
-            <br>
-            <code>&lt;atribuição_chprocedimento&gt;::= (&lt;comando atribuicao&gt;|&lt;chamada de procedimento&gt;)</code>
-            <br>
-            <code>&lt;comando atribuicao&gt;::= &lt;identificador&gt; := &lt;expressão&gt;</code>
-            <br>
-            <code>&lt;chamada de procedimento&gt;::= &lt;identificador&gt;</code>
-            <br>
-            <code>&lt;comando condicional&gt;::= se &lt;expressão&gt; entao &lt;comando&gt; [senao &lt;comando&gt;]</code>
-            <br>
-            <code>&lt;comando enquanto&gt; ::= enquanto &lt;expressão&gt; faca &lt;comando&gt;</code>
-            <br>
-            <code>&lt;comando leitura&gt; ::= leia ( &lt;identificador&gt; )</code>
-            <br>
-            <code>&lt;comando escrita&gt; ::= escreva ( &lt;identificador&gt; )</code>
-            <br>
-            <code class="comment">//Expressões</code>
-            <br>
-            <code>&lt;expressão&gt;::= &lt;expressão simples&gt; [&lt;operador relacional&gt;&lt;expressão simples&gt;]</code>
-            <br>
-            <code>&lt;operador relacional&gt;::= (!= | = | &lt; | &lt;= | &gt; | &gt;=)</code>
-            <br>
-            <code>&lt;expressão simples&gt; ::= [ + | - ] &lt;termo&gt; {( + | - | ou) &lt;termo&gt; }</code>
-            <br>
-            <code>&lt;termo&gt;::= &lt;fator&gt; {(\* | div | e) &lt;fator&gt;}</code>
-            <br>
-            <code>&lt;fator&gt; ::= (&lt;variável&gt; | &lt;número&gt; | &lt;chamada de função&gt; | (&lt;expressão&gt;) | verdadeiro |
-                falso | nao &lt;fator&gt;)</code>
-            <br>
-            <code>&lt;variável&gt; ::= &lt;identificador&gt;</code>
-            <br>
-            <code>&lt;chamada de função&gt; ::= &lt;identificador &gt;</code>
-            <br>
-            <code class="comment">//Números e identificadores</code>
-            <br>
-            <code>&lt;identificador&gt; ::= &lt;letra&gt; {&lt;letra&gt; | &lt;dígito&gt; | \_ }</code>
-            <br>
-            <code>&lt;número&gt; ::= &lt;dígito&gt; {&lt;dígito&gt;}</code>
-            <br>
-            <code>&lt;dígito&gt; ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)</code>
-            <br>
-            <code>&lt;letra&gt; ::= (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
-                            A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
-            <br>
-            <code class="comment">//Comentários</code>
-            <code class="comment">/*Uma vez que os comentários servem apenas como documentação do código fonte, ao realizar
-                            a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
-                            delimitadores.*/</code>
-            <br>
-            <code>delimitadores : { }
-                            <br><br>
-                            </code>
+        <details>
+            <summary>Clique para expandir</summary>
+            <pre class="code_container">
 
-        </div>
+                        <code>&lt;programa&gt;::= programa &lt;identificador&gt; ; &lt;bloco&gt;.</code>
+                        <br>
+                        <code>&lt;bloco&gt;::= [&lt;etapa de declaração de variáveis&gt;][&lt;etapa de declaração de sub-rotinas&gt;]&lt;comandos&gt;</code>
+                        <br>
+                        <code class="comment">//Declarações</code>
+                        <br>
+                        <code>&lt;etapa de declaração de variáveis&gt;::= var &lt;declaração de variáveis&gt;;{&lt;declaração de variáveis&gt;;}</code>
+                        <br>
+                        <code>&lt;declaração de variáveis&gt;::= &lt;identificador&gt; {, &lt;identificador&gt;} : &lt;tipo&gt;</code>
+                        <br>
+                        <code>&lt;tipo&gt; ::= (inteiro | booleano)</code>
+                        <br>
+                        <code>&lt;etapa de declaração de sub-rotinas&gt; ::= (&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;){&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;}</code>
+                        <br>
+                        <code>&lt;declaração de procedimento&gt; ::= procedimento &lt;identificador&gt;;&lt;bloco&gt;</code>
+                        <br>
+                        <code>&lt;declaração de função&gt; ::= funcao &lt;identificador&gt;: &lt;tipo&gt;;&lt;bloco&gt;</code>
+                        <br>
+                        <code class="comment">//Comandos</code>
+                        <br>
+                        <code>&lt;comandos&gt;::= inicio&lt;comando&gt;{;&lt;comando&gt;}[;]fim</code>
+                        <br>
+                        <code>&lt;comando&gt;::= (&lt;atribuição_chprocedimento&gt;|&lt;comando condicional&gt; |&lt;comando enquanto&gt; |&lt;comando
+                                        leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
+                        <br>
+                        <code>&lt;atribuição_chprocedimento&gt;::= (&lt;comando atribuicao&gt;|&lt;chamada de procedimento&gt;)</code>
+                        <br>
+                        <code>&lt;comando atribuicao&gt;::= &lt;identificador&gt; := &lt;expressão&gt;</code>
+                        <br>
+                        <code>&lt;chamada de procedimento&gt;::= &lt;identificador&gt;</code>
+                        <br>
+                        <code>&lt;comando condicional&gt;::= se &lt;expressão&gt; entao &lt;comando&gt; [senao &lt;comando&gt;]</code>
+                        <br>
+                        <code>&lt;comando enquanto&gt; ::= enquanto &lt;expressão&gt; faca &lt;comando&gt;</code>
+                        <br>
+                        <code>&lt;comando leitura&gt; ::= leia ( &lt;identificador&gt; )</code>
+                        <br>
+                        <code>&lt;comando escrita&gt; ::= escreva ( &lt;identificador&gt; )</code>
+                        <br>
+                        <code class="comment">//Expressões</code>
+                        <br>
+                        <code>&lt;expressão&gt;::= &lt;expressão simples&gt; [&lt;operador relacional&gt;&lt;expressão simples&gt;]</code>
+                        <br>
+                        <code>&lt;operador relacional&gt;::= (!= | = | &lt; | &lt;= | &gt; | &gt;=)</code>
+                        <br>
+                        <code>&lt;expressão simples&gt; ::= [ + | - ] &lt;termo&gt; {( + | - | ou) &lt;termo&gt; }</code>
+                        <br>
+                        <code>&lt;termo&gt;::= &lt;fator&gt; {(\* | div | e) &lt;fator&gt;}</code>
+                        <br>
+                        <code>&lt;fator&gt; ::= (&lt;variável&gt; | &lt;número&gt; | &lt;chamada de função&gt; | (&lt;expressão&gt;) | verdadeiro |
+                            falso | nao &lt;fator&gt;)</code>
+                        <br>
+                        <code>&lt;variável&gt; ::= &lt;identificador&gt;</code>
+                        <br>
+                        <code>&lt;chamada de função&gt; ::= &lt;identificador &gt;</code>
+                        <br>
+                        <code class="comment">//Números e identificadores</code>
+                        <br>
+                        <code>&lt;identificador&gt; ::= &lt;letra&gt; {&lt;letra&gt; | &lt;dígito&gt; | \_ }</code>
+                        <br>
+                        <code>&lt;número&gt; ::= &lt;dígito&gt; {&lt;dígito&gt;}</code>
+                        <br>
+                        <code>&lt;dígito&gt; ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)</code>
+                        <br>
+                        <code>&lt;letra&gt; ::= (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
+                                        A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
+                        <br>
+                        <code class="comment">//Comentários</code>
+                        <code class="comment">/*Uma vez que os comentários servem apenas como documentação do código fonte, ao realizar
+                                        a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
+                                        delimitadores.*/</code>
+                        <br>
+                        <code>delimitadores : { }
+                                        <br><br>
+                                        </code>
+
+                    </pre>
+        </details>
+
+
         <h3>Sintático</h3>
         <p>
             Este módulo é responsável por realizar a análise sintática do código fonte, ou seja, a verificação da
