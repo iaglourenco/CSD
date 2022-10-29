@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <link rel="icon" type="image/x-icon" href="../public/favicon.ico" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Máquina{MVD}Virtual</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/maquina.css" />
+  <link rel="stylesheet" href="../styles/dracula-theme.css" />
+
+  <script type="module" src="js/maquina.js"></script>
+
+
+</head>
+
+<body>
+  <script>
+    function openNav() {
+      var x = document.getElementById("nav");
+      if (x.className === "menu") {
+        x.className += " responsive";
+      } else {
+        x.className = "menu";
+      }
+    }
+  </script>
+
+  <header id="nav" class="menu">
+    <div style="display: flex; width: 100%; justify-content: space-between;">
+      <a id="logo_container" href="/">
+        <h1 id="logo" class="logo">máquina{<span class="logo_snip">LPD</span>}virtual</h1>
+      </a>
+      <div onclick="openNav()" class="menu_btn" id="menu_icon">
+        <span class="material-icons"> menu </span>
+        <span>Menu</span>
+      </div>
+    </div>
+
+    <div id="menu_container">
+      <div class="menu_btn" id="executar">
+        <span class="material-icons"> play_arrow</span>
+        <span class="menu_btn_title" style="text-align: center">Executar <br>(F5)</span>
+      </div>
+      <div class="menu_btn" id="debug">
+        <span class="material-icons"> bug_report </span>
+        <span class="menu_btn_title" style="text-align: center">Depurar <br>(Ctrl+F5)</span>
+      </div>
+      <div class="menu_btn" id="abrir">
+        <span class="material-icons"> upload_file </span>
+        <span class="menu_btn_title" style="text-align: center">Carregar <br>(Ctrl+O)</span>
+        <input id="file-input" type="file" accept=".txt" />
+      </div>
+    </div>
+  </header>
+
+
+
+  <div id="console">
+    <div id="log_header">
+      <legend>Console</legend>
+      <legend id="limpar" onclick="document.getElementById('log').value=''">
+        Limpar (Ctrl+L)
+      </legend>
+    </div>
+    <textarea name="log" id="log" cols="30" rows="10" disabled></textarea>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+ /* Author: Iago Lourenço (iagojlourenco@gmail.com) / maquina.css  */
+
+ html,
+ body {
+     display: flex;
+     flex-direction: column;
+     min-width: 270px;
+     overflow-x: hidden;
+ }
+
+ #menu_icon {
+     display: none;
+ }
+
+ @media screen and (max-width: 520px) {
+     #menu_container * {
+         display: none;
+     }
+
+     div#menu_icon {
+         display: flex;
+     }
+
+     .menu.responsive {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+     }
+ }
+
+ .menu.responsive #menu_container * {
+     display: flex;
+ }
+
+ .menu {
+     display: flex;
+     align-items: center;
+     padding: 0px 0px 0px 0px;
+     justify-content: space-between;
+     background-color: var(--background);
+ }
+
+ #menu_container {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .menu_btn {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     cursor: pointer;
+     font-family: var(--mono);
+     min-width: 75px;
+     border-radius: 5px;
+     color: var(--foreground);
+     margin-bottom: 5px;
+ }
+
+ .menu_btn .menu_btn_title {
+     margin: 5px;
+     font-size: 0.8rem;
+ }
+
+ #file-input {
+     opacity: 0;
+     position: absolute;
+     z-index: -1;
+ }
+
+ .menu_btn:hover {
+     background-color: var(--orange);
+     color: var(--background);
+ }
+
+ #console {
+     display: flex;
+     flex-direction: column;
+     border: 1px solid var(--foreground);
+     min-height: 100px;
+     max-width: 1200px;
+     width: 95%;
+     margin: 20px auto auto auto;
+ }
+
+ #log_header {
+     display: flex;
+     color: var(--orange);
+     background-color: var(--current-line);
+     justify-content: space-between;
+     font-family: var(--mono);
+     font-weight: bold;
+ }
+
+ #log_header legend {
+     padding: 5px 10px;
+     font-weight: bold;
+     background-color: var(--orange);
+     color: var(--background);
+     border-radius: 0px 0px 5px 0px;
+ }
+
+ #console #limpar {
+     cursor: pointer;
+     border-radius: 0px 0px 0px 5px;
+ }
+
+ #console #limpar:hover {
+     opacity: .8;
+ }
+
+ #console textarea {
+     color: var(--foreground);
+     font-family: var(--mono);
+     background: var(--current-line);
+     font-size: 14px;
+     border: none;
+     text-decoration: none;
+     resize: none;
+ }
