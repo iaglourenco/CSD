@@ -274,14 +274,14 @@ window.onload = function () {
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
     // Se o codigo do editor for .lpo (arquivo compilado) não compila
-    if (tabs[activeTab].name.split(".").pop() == "lpo") {
+    if (tabs[activeTab].name.split(".").pop() == "lpdo") {
       logar("Não é possível compilar um arquivo compilado!");
     } else if (editor.getValue().length == 0) {
       logar("Não é possível compilar um arquivo vazio!");
     } else {
       let code = compileCode();
       if (code) {
-        createTab(`${tabs[activeTab].name.split(".")[0]}.lpo`);
+        createTab(`${tabs[activeTab].name.split(".")[0]}.lpdo`);
         editor.setValue(code);
       }
     }

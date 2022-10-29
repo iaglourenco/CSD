@@ -30,7 +30,6 @@ class Gerador {
      * Para k:=n-1 até 0
      * faça M[m+k]:=M[s]; s:=s-1
      */
-    this.alocacoes.pop();
     this.codigo += `DALLOC ${valor1}, ${valor2}\n`;
   }
 

@@ -610,6 +610,10 @@ function analisaComandoLeitura() {
           tabelaSimbolos.getTipo(lexico.tokenAtual.lexema) ==
           "Svariavel Sinteiro"
         ) {
+          gerador.RD();
+          gerador.STR(
+            tabelaSimbolos.getSimbolos(lexico.tokenAtual.lexema)[0].memoria
+          );
           lexico.proximoToken();
           if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
             lexico.proximoToken();
@@ -669,8 +673,12 @@ function analisaComandoEscrita() {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
+        gerador.LDV(
+          tabelaSimbolos.getSimbolos(lexico.tokenAtual.lexema)[0].memoria
+        );
         lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
+          gerador.PRN();
           lexico.proximoToken();
         } else {
           // Fecha parenteses faltando
@@ -834,7 +842,11 @@ function analisaPrograma() {
         if (lexico.tokenAtual.simbolo == "Sponto") {
           if (lexico.listaToken.length == 0) {
             // Caso não haja mais simbolos na lista de tokens, o código está correto
-
+            // Desaloca a memoria
+            while (gerador.alocacoes.length > 0) {
+              let { valor1, valor2 } = gerador.alocacoes.pop();
+              gerador.DALLOC(valor1, valor2);
+            }
             gerador.HLT();
             return "Compilado com sucesso!";
           } else {
