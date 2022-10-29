@@ -22,7 +22,7 @@ class TabelaSimbolos {
       lexema,
       escopo: this.escopoAtual,
       tipo,
-      memoria, // TODO: Geração de código
+      memoria,
     });
     this.printTabela();
   }
@@ -77,6 +77,24 @@ class TabelaSimbolos {
      * Retorna todos os simbolos encontrado para o @param lexema
      */
     return this.tabela.filter((simbolo) => simbolo.lexema === lexema).reverse();
+  }
+
+  countVarsEscopoAtual() {
+    /**
+     * Retorna a quantidade de variaveis do escopo atual
+     */
+    return this.tabela.filter(
+      (simbolo) =>
+        simbolo.escopo === this.escopoAtual &&
+        simbolo.tipo.includes("Svariavel")
+    ).length;
+  }
+  countVars() {
+    /**
+     * Retorna a quantidade de variaveis de toda tabela
+     */
+    return this.tabela.filter((simbolo) => simbolo.tipo.includes("Svariavel"))
+      .length;
   }
 }
 

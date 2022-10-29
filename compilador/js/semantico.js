@@ -122,6 +122,7 @@ class Semantico {
 
     // Limpa o buffer
     this.expressaoInfixa = [];
+
     return saida;
   }
 

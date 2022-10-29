@@ -5,6 +5,7 @@ import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
 import sintatico from "./sintatico.js";
 // Guarda as abas do editor
 const tabs = [];
+var activeTab = 0;
 var editor;
 
 var filename = "Novo.lpd";
@@ -80,8 +81,8 @@ function compileCode() {
       logar(`Compilando...`);
       // Chamada do sintático para iniciar a análise
       const codigo = sintatico.iniciar(code);
-
       logar(`SUCESSO!`);
+      return codigo;
     } else {
       throw new Error("Nenhum código inserido!");
     }
@@ -156,6 +157,7 @@ function activateTab(index) {
     document.getElementById(`tab${j}`).classList.remove("active");
   }
   document.getElementById(`tab${index}`).classList.add("active");
+  activeTab = index;
 }
 function setTabName(index, name) {
   tabs[index].name = name;
@@ -271,7 +273,18 @@ window.onload = function () {
 
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
-    compileCode();
+    // Se o codigo do editor for .lpo (arquivo compilado) não compila
+    if (tabs[activeTab].name.split(".").pop() == "lpo") {
+      logar("Não é possível compilar um arquivo compilado!");
+    } else if (editor.getValue().length == 0) {
+      logar("Não é possível compilar um arquivo vazio!");
+    } else {
+      let code = compileCode();
+      if (code) {
+        createTab(`${tabs[activeTab].name.split(".")[0]}.lpo`);
+        editor.setValue(code);
+      }
+    }
   });
 
   // Salva o arquivo

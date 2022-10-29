@@ -3,7 +3,41 @@
 class Gerador {
   constructor() {
     this.codigo = "";
-    this.rotulo = 0;
+    this.rotulo = 1;
+    this.endereco = 0;
+    this.alocacoes = [];
+  }
+
+  proximoEndereco() {
+    /**
+     * Retorna o próximo endereço de memória
+     * @returns {Number}
+     */
+    return this.endereco++;
+  }
+
+  ALLOC(valor1, valor2) {
+    /**
+     * Aloca memória
+     * s:=s+m
+     */
+    this.alocacoes.push({ valor1, valor2 });
+    this.codigo += `ALLOC ${valor1}, ${valor2}\n`;
+  }
+  DALLOC(valor1, valor2) {
+    /**
+     * Desaloca memória
+     * Para k:=n-1 até 0
+     * faça M[m+k]:=M[s]; s:=s-1
+     */
+    this.alocacoes.pop();
+    this.codigo += `DALLOC ${valor1}, ${valor2}\n`;
+  }
+
+  geraPosFixo(expressao) {
+    /**
+     * Gera o código de uma expressão em pós-fix
+     */
   }
 
   START() {
@@ -160,11 +194,11 @@ class Gerador {
      */
     this.codigo += `JMPF L${rotulo}\n`;
   }
-  NULL() {
+  NULL(rotulo) {
     /**
      * Nada
      */
-    this.codigo += `NULL\n`;
+    this.codigo += `L${rotulo} NULL\n`;
   }
   RD() {
     /**
@@ -180,21 +214,7 @@ class Gerador {
      */
     this.codigo += `PRN\n`;
   }
-  ALLOC(valor1, valor2) {
-    /**
-     * Aloca memória
-     * s:=s+m
-     */
-    this.codigo += `ALLOC ${valor1}, ${valor2}\n`;
-  }
-  DALLOC(valor1, valor2) {
-    /**
-     * Desaloca memória
-     * Para k:=n-1 até 0
-     * faça M[m+k]:=M[s]; s:=s-1
-     */
-    this.codigo += `DALLOC ${valor1}, ${valor2}\n`;
-  }
+
   CALL(rotulo) {
     /**
      * Chamada de procedimento ou função
@@ -209,6 +229,7 @@ class Gerador {
      */
     this.codigo += `RETURN\n`;
   }
+
   getCodigo() {
     /**
      * Retorna o código gerado

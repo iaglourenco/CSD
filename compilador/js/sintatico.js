@@ -6,7 +6,7 @@ import Lexico from "./lexico.js";
 import Semantico from "./semantico.js";
 import TabelaSimbolos from "./tabelaSimbolos.js";
 
-let lexico;
+let lexico = new Lexico("");
 let semantico = new Semantico([]);
 let tabelaSimbolos = new TabelaSimbolos();
 let gerador = new Gerador();
@@ -33,6 +33,7 @@ function analisaDeclaracaoVariaveis() {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       while (lexico.tokenAtual.simbolo == "Sidentificador") {
         analisaVariaveis();
+        gerador;
         if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
           lexico.proximoToken();
         } else {
@@ -61,6 +62,7 @@ function analisaVariaveis() {
   /**
    *<declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
    */
+  let enderecoInicial = gerador.endereco;
   while (lexico.tokenAtual.simbolo != "Sdoispontos") {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       // Pesquisa na tabela de simbolos se a variável já foi declarada
@@ -69,7 +71,7 @@ function analisaVariaveis() {
         tabelaSimbolos.pushSimbolo(
           lexico.tokenAtual.lexema,
           "Svariavel",
-          "NOMEM"
+          gerador.proximoEndereco()
         );
         lexico.proximoToken();
         if (
@@ -115,6 +117,7 @@ function analisaVariaveis() {
       );
     }
   }
+  gerador.ALLOC(enderecoInicial, gerador.endereco - enderecoInicial);
   lexico.proximoToken();
   analisaTipo();
 }
@@ -169,7 +172,7 @@ function analisaDeclaracaoProcedimento() {
       tabelaSimbolos.pushSimbolo(
         lexico.tokenAtual.lexema,
         "Sprocedimento",
-        "NOMEM"
+        gerador.rotulo
       );
 
       //TODO: adicionar marca/galho
@@ -216,7 +219,11 @@ function analisaDeclaracaoFuncao() {
         lexico.tokenAtual.coluna
       );
     } else {
-      tabelaSimbolos.pushSimbolo(lexico.tokenAtual.lexema, "Sfuncao", "NOMEM");
+      tabelaSimbolos.pushSimbolo(
+        lexico.tokenAtual.lexema,
+        "Sfuncao",
+        gerador.rotulo
+      );
 
       // TODO: adicionar marca/galho
       tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
@@ -487,6 +494,10 @@ function analisaComandoCondicional() {
    *                             entao <comando>
    *                             [senao <comando>]
    */
+
+  let auxrot = gerador.rotulo;
+  let auxrot2 = 0;
+
   lexico.proximoToken();
   let tokenSe = lexico.ultimoTokenLido;
   analisaExpressao();
@@ -499,11 +510,22 @@ function analisaComandoCondicional() {
     );
   }
   if (lexico.tokenAtual.simbolo == "Sentao") {
+    gerador.JMPF(auxrot);
+    gerador.rotulo++;
+
     lexico.proximoToken();
     analisaComandoSimples();
     if (lexico.tokenAtual.simbolo == "Ssenao") {
+      auxrot2 = gerador.rotulo;
+      gerador.rotulo++;
+      gerador.JMP(auxrot2);
+      gerador.NULL(auxrot);
+
       lexico.proximoToken();
       analisaComandoSimples();
+      gerador.NULL(auxrot2);
+    } else {
+      gerador.NULL(auxrot);
     }
   } else {
     throw new ErroSintatico(
@@ -536,7 +558,12 @@ function analisaComandoEnquanto() {
   /**
    * <comando enquanto> ::= enquanto <expressão> faca <comando>
    */
-  // TODO: jumps criados na geração de código
+
+  let auxrot1 = gerador.rotulo;
+  let auxrot2 = 0;
+
+  gerador.NULL(gerador.rotulo);
+  gerador.rotulo++;
 
   lexico.proximoToken();
   let tokenEnquanto = lexico.ultimoTokenLido;
@@ -550,8 +577,15 @@ function analisaComandoEnquanto() {
     );
   }
   if (lexico.tokenAtual.simbolo == "Sfaca") {
+    auxrot2 = gerador.rotulo;
+    gerador.rotulo++;
+    gerador.JMPF(auxrot2);
+
     lexico.proximoToken();
     analisaComandoSimples();
+
+    gerador.JMP(auxrot1);
+    gerador.NULL(auxrot2);
   } else {
     throw new ErroSintatico(
       "stc15",
@@ -777,7 +811,6 @@ function analisaPrograma() {
    * <programa>::= programa <identificador> ; <bloco> .
    */
 
-  // let rotulo = 1; // A ser usado pelo gerador de código
   // Desempilha o primeiro token
   lexico.proximoToken();
 
@@ -791,6 +824,7 @@ function analisaPrograma() {
         "Snome_programa",
         undefined
       );
+      gerador.START();
 
       lexico.proximoToken();
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
@@ -800,6 +834,8 @@ function analisaPrograma() {
         if (lexico.tokenAtual.simbolo == "Sponto") {
           if (lexico.listaToken.length == 0) {
             // Caso não haja mais simbolos na lista de tokens, o código está correto
+
+            gerador.HLT();
             return "Compilado com sucesso!";
           } else {
             // Caso haja mais simbolos na lista de tokens, após o ponto, lança um erro
@@ -861,8 +897,14 @@ function iniciar(data) {
   // Inicia o analisador semântico
   semantico = new Semantico(tabelaSimbolos);
 
+  // Inicia o gerador de código
+  gerador = new Gerador();
+
   // Chamada da regra de entrada do sintático
   analisaPrograma();
+
+  // Retorna o código em linguagem de montagem
+  return gerador.getCodigo();
 }
 const sintatico = {
   iniciar,
