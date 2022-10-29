@@ -11,7 +11,7 @@ class TabelaSimbolos {
      * Função de depuração da tabela
      * Exibe todo o conteúdo
      */
-    console.table(this.tabela);
+    // console.table(this.tabela);
   }
 
   pushSimbolo(lexema, tipo, memoria) {

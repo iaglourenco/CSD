@@ -356,27 +356,31 @@ function analisaComandoAtribuicao() {
     let tokenEsquerda = lexico.ultimoTokenLido;
     lexico.proximoToken();
     analisaExpressao();
-
-    // Verifica se o identificador é funcao, se sim, a atribuição só é permitida se estiver no escopo da propria funcao
-    if (
-      tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao") &&
-      tokenEsquerda.lexema != tabelaSimbolos.escopoAtual
-    ) {
-      // Atribuição de funcao em outro escopo
-      throw new ErroSemantico(
-        "sem8",
-        tokenEsquerda.lexema,
-        tokenEsquerda.linha,
-        tokenEsquerda.coluna
-      );
+    const expPosFix = semantico.posFixa();
+    // Verifica se o identificador é funcao
+    if (tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao")) {
+      // Se sim, a atribuição só é permitida se estiver no escopo da propria funcao
+      if (tokenEsquerda.lexema != tabelaSimbolos.escopoAtual) {
+        // Atribuição de funcao em outro escopo
+        throw new ErroSemantico(
+          "sem8",
+          tokenEsquerda.lexema,
+          tokenEsquerda.linha,
+          tokenEsquerda.coluna
+        );
+      } else {
+        // Gera codigo
+      }
     }
     // Verifica se os tipos são compatíveis
     else if (
       tabelaSimbolos
         .getTipo(tokenEsquerda.lexema)
-        .includes(semantico.analisar(semantico.posFixa()))
+        .includes(semantico.analisar(expPosFix))
     ) {
-      // Gera código?
+      // Gera código
+      gerador.geraPosFixo(expPosFix);
+      gerador.STR(tabelaSimbolos.getSimbolos(tokenEsquerda.lexema)[0].memoria);
     } else {
       // Tipo da expressão não é compatível com o tipo da variável
       throw new ErroSemantico(
@@ -427,8 +431,8 @@ function analisaExpressaoSimples() {
   ) {
     semantico.pushExpressaoInfixa({
       ...lexico.tokenAtual,
-
       lexema: lexico.tokenAtual.lexema + "u",
+      simbolo: lexico.tokenAtual.simbolo + "u",
     });
     lexico.proximoToken();
   }
@@ -501,7 +505,8 @@ function analisaComandoCondicional() {
   lexico.proximoToken();
   let tokenSe = lexico.ultimoTokenLido;
   analisaExpressao();
-  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+  const expPosFix = semantico.posFixa();
+  if (semantico.analisar(expPosFix) != "booleano") {
     throw new ErroSemantico(
       "sem7",
       tokenSe.lexema,
@@ -509,6 +514,7 @@ function analisaComandoCondicional() {
       tokenSe.coluna
     );
   }
+  gerador.geraPosFixo(expPosFix);
   if (lexico.tokenAtual.simbolo == "Sentao") {
     gerador.JMPF(auxrot);
     gerador.rotulo++;
@@ -568,7 +574,9 @@ function analisaComandoEnquanto() {
   lexico.proximoToken();
   let tokenEnquanto = lexico.ultimoTokenLido;
   analisaExpressao();
-  if (semantico.analisar(semantico.posFixa()) != "booleano") {
+  const expPosFix = semantico.posFixa();
+
+  if (semantico.analisar(expPosFix) != "booleano") {
     throw new ErroSemantico(
       "sem7",
       tokenEnquanto.lexema,
@@ -576,6 +584,7 @@ function analisaComandoEnquanto() {
       tokenEnquanto.coluna
     );
   }
+  gerador.geraPosFixo(expPosFix);
   if (lexico.tokenAtual.simbolo == "Sfaca") {
     auxrot2 = gerador.rotulo;
     gerador.rotulo++;
@@ -910,7 +919,7 @@ function iniciar(data) {
   semantico = new Semantico(tabelaSimbolos);
 
   // Inicia o gerador de código
-  gerador = new Gerador();
+  gerador = new Gerador(tabelaSimbolos);
 
   // Chamada da regra de entrada do sintático
   analisaPrograma();

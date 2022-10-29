@@ -84,6 +84,8 @@ class Semantico {
             break;
           case "Smais":
           case "Smenos":
+          case "Smenosu":
+          case "Smaisu":
           case "Smult":
           case "Sdiv":
           case "Smaior":

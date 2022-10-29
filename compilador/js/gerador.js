@@ -1,11 +1,12 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / gerador.js
 
 class Gerador {
-  constructor() {
+  constructor(tabelaSimbolos) {
     this.codigo = "";
     this.rotulo = 1;
     this.endereco = 0;
     this.alocacoes = [];
+    this.tabelaSimbolos = tabelaSimbolos;
   }
 
   proximoEndereco() {
@@ -33,10 +34,74 @@ class Gerador {
     this.codigo += `DALLOC ${valor1}, ${valor2}\n`;
   }
 
-  geraPosFixo(expressao) {
+  geraPosFixo(posFixa) {
     /**
      * Gera o código de uma expressão em pós-fix
      */
+    for (let i = 0; i < posFixa.length; i++) {
+      const token = posFixa[i];
+      switch (token.simbolo) {
+        case "Sidentificador":
+          this.LDV(this.tabelaSimbolos.getSimbolos(token.lexema)[0].memoria);
+          break;
+        case "Snumero":
+          this.LDC(token.lexema);
+          break;
+        case "Sverdadeiro":
+          this.LDC(1);
+          break;
+        case "Sfalso":
+          this.LDC(0);
+          break;
+        case "Smais":
+          this.ADD();
+          break;
+        case "Smenos":
+          this.SUB();
+          break;
+        case "Smenosu":
+          this.INV();
+          break;
+        case "Smaisu":
+          continue;
+        case "Smult":
+          this.MULT();
+          break;
+        case "Sdiv":
+          this.DIVI();
+          break;
+        case "Se":
+          this.AND();
+          break;
+        case "Snao":
+          this.NEG();
+          break;
+        case "Smaior":
+          this.CMA();
+          break;
+        case "Smenor":
+          this.CME();
+          break;
+        case "Smaiorig":
+          this.CMAQ();
+          break;
+        case "Smenorig":
+          this.CMEQ();
+          break;
+        case "Sigual":
+          this.CEQ();
+          break;
+        case "Sdiferente":
+          this.CDIF();
+          break;
+        case "Sou":
+          this.OR();
+          break;
+        default:
+          break;
+      }
+    }
+    return posFixa;
   }
 
   START() {
