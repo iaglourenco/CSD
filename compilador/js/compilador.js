@@ -235,6 +235,9 @@ window.onload = function () {
 
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
+    document.getElementById("compilar").style.marginRight = "0px";
+    document.getElementById("salvar").style.marginRight = "0px";
+
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
     }, Col ${editor.getCursor().ch + 1}`;
@@ -286,6 +289,28 @@ window.onload = function () {
         editor.setValue(code);
       }
     }
+  });
+
+  // Brincadeira....
+  document
+    .getElementById("compilar")
+    .addEventListener("mouseover", function () {
+      const st =
+        document.getElementById("compilar").style.marginRight == "100px"
+          ? "0px"
+          : "100px";
+      if (editor.getValue().length == 0)
+        document.getElementById("compilar").style.marginRight = st;
+      else document.getElementById("compilar").style.marginRight = "0px";
+    });
+  document.getElementById("salvar").addEventListener("mouseover", function () {
+    const st =
+      document.getElementById("salvar").style.marginRight == "100px"
+        ? "0px"
+        : "100px";
+    if (editor.getValue().length == 0)
+      document.getElementById("salvar").style.marginRight = st;
+    else document.getElementById("salvar").style.marginRight = "0px";
   });
 
   // Salva o arquivo
