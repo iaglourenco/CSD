@@ -357,30 +357,27 @@ function analisaComandoAtribuicao() {
     lexico.proximoToken();
     analisaExpressao();
     const expPosFix = semantico.posFixa();
-    // Verifica se o identificador é funcao
-    if (tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao")) {
-      // Se sim, a atribuição só é permitida se estiver no escopo da propria funcao
-      if (tokenEsquerda.lexema != tabelaSimbolos.escopoAtual) {
-        // Atribuição de funcao em outro escopo
-        throw new ErroSemantico(
-          "sem8",
-          tokenEsquerda.lexema,
-          tokenEsquerda.linha,
-          tokenEsquerda.coluna
-        );
-      } else {
-        // Gera codigo
-      }
-    }
     // Verifica se os tipos são compatíveis
-    else if (
-      tabelaSimbolos
-        .getTipo(tokenEsquerda.lexema)
-        .includes(semantico.analisar(expPosFix))
-    ) {
-      // Gera código
-      gerador.geraPosFixo(expPosFix);
-      gerador.STR(tabelaSimbolos.getSimbolos(tokenEsquerda.lexema)[0].memoria);
+    if (semantico.comparaTipo(tokenEsquerda.lexema, expPosFix)) {
+      // Verifica se o identificador é funcao
+      if (tabelaSimbolos.getTipo(tokenEsquerda.lexema).includes("Sfuncao")) {
+        // Se sim, a atribuição só é permitida se estiver no escopo da propria funcao
+        if (tokenEsquerda.lexema != tabelaSimbolos.escopoAtual) {
+          // Atribuição de funcao em outro escopo
+          throw new ErroSemantico(
+            "sem8",
+            tokenEsquerda.lexema,
+            tokenEsquerda.linha,
+            tokenEsquerda.coluna
+          );
+        } else {
+          // Gera codigo
+        }
+      } else {
+        // Gera código da expressão
+        gerador.geraPosFixo(expPosFix);
+        gerador.STR(tabelaSimbolos.getMemoria(tokenEsquerda.lexema));
+      }
     } else {
       // Tipo da expressão não é compatível com o tipo da variável
       throw new ErroSemantico(
@@ -455,7 +452,10 @@ function analisaChamadaProcedimento() {
    * <chamada de procedimento>::= <identificador>
    */
   //lexico.proximoToken();
-  if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
+  if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema)) {
+    gerador.CALL(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
+  } else {
+    // Identificador não declarado
     throw new ErroSemantico(
       "sem2",
       lexico.tokenAtual.lexema,
@@ -470,16 +470,17 @@ function analisaChamadaFuncao() {
    * <chamada de função>::= <identificador>
    */
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema) == null) {
+    if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema)) {
+      // Gera código?
+      semantico.pushExpressaoInfixa(lexico.tokenAtual);
+    } else {
+      // Identificador não declarado
       throw new ErroSemantico(
         "sem2",
         lexico.tokenAtual.lexema,
         lexico.tokenAtual.linha,
         lexico.tokenAtual.coluna
       );
-    } else {
-      // Gera código?
-      semantico.pushExpressaoInfixa(lexico.tokenAtual);
     }
   } else {
     throw new ErroSintatico(
@@ -620,9 +621,7 @@ function analisaComandoLeitura() {
           "Svariavel Sinteiro"
         ) {
           gerador.RD();
-          gerador.STR(
-            tabelaSimbolos.getSimbolos(lexico.tokenAtual.lexema)[0].memoria
-          );
+          gerador.STR(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
           lexico.proximoToken();
           if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
             lexico.proximoToken();
@@ -682,9 +681,7 @@ function analisaComandoEscrita() {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
-        gerador.LDV(
-          tabelaSimbolos.getSimbolos(lexico.tokenAtual.lexema)[0].memoria
-        );
+        gerador.LDV(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
         lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
           gerador.PRN();

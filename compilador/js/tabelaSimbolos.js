@@ -49,16 +49,21 @@ class TabelaSimbolos {
     this.printTabela();
   }
 
+  getMemoria(lexema) {
+    /**
+     * Retorna o primeiro endereco de memoria encontrado do @param lexema
+     */
+    const simbolos = this.getSimbolos(lexema);
+    return simbolos.length > 0 ? simbolos[0].memoria : null;
+  }
+
   getTipo(lexema) {
     /**
-     * Retorna o tipo do @param lexema
+     * Retorna o primeiro tipo do @param lexema
      * @returns {tipo|null}
      */
     const simbolos = this.getSimbolos(lexema);
-    if (simbolos.length > 0) {
-      return simbolos[0].tipo;
-    }
-    return null;
+    return simbolos.length > 0 ? simbolos[0].tipo : null;
   }
 
   desempilhaEscopo() {
@@ -76,7 +81,9 @@ class TabelaSimbolos {
     /**
      * Retorna todos os simbolos encontrado para o @param lexema
      */
-    return this.tabela.filter((simbolo) => simbolo.lexema === lexema).reverse();
+    return (
+      this.tabela.filter((simbolo) => simbolo.lexema === lexema).reverse() ?? []
+    );
   }
 
   countVarsEscopoAtual() {

@@ -178,7 +178,7 @@ function addTabListeners() {
 function closeTab(index) {
   // Remove tab
   if (tabs.length > 1) {
-    if (editor.getValue().length > 0) {
+    if (tabs[index].doc.getValue().length > 0) {
       if (confirm("Deseja realmente fechar esta aba?")) {
         tabs.splice(index, 1);
         reconstructTabs();

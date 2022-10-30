@@ -267,6 +267,15 @@ class Semantico {
     // Retorna o tipo que ficou no final de toda a analise da expressão
     return pilha[0].tipo;
   }
+
+  comparaTipo(lexema, posFixa) {
+    /**
+     * Compara o tipo do lexema com o retorno da expressão
+     */
+    return this.tabelaDeSimbolos
+      .getTipo(lexema)
+      .includes(this.analisar(posFixa));
+  }
 }
 
 export default Semantico;
