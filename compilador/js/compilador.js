@@ -122,6 +122,9 @@ function createTab(name) {
   addTabListeners();
   activateTab(tabs.length - 1);
   setTabName(tabs.length - 1, name);
+  // Scroll the tab container to the end
+  document.getElementById("tabs_container").scrollLeft =
+    document.getElementById("tabs_container").scrollWidth;
 }
 
 function reconstructTabs() {
@@ -292,26 +295,8 @@ window.onload = function () {
   });
 
   // Brincadeira....
-  document
-    .getElementById("compilar")
-    .addEventListener("mouseover", function () {
-      const st =
-        document.getElementById("compilar").style.marginRight == "100px"
-          ? "0px"
-          : "100px";
-      if (editor.getValue().length == 0)
-        document.getElementById("compilar").style.marginRight = st;
-      else document.getElementById("compilar").style.marginRight = "0px";
-    });
-  document.getElementById("salvar").addEventListener("mouseover", function () {
-    const st =
-      document.getElementById("salvar").style.marginRight == "100px"
-        ? "0px"
-        : "100px";
-    if (editor.getValue().length == 0)
-      document.getElementById("salvar").style.marginRight = st;
-    else document.getElementById("salvar").style.marginRight = "0px";
-  });
+  document.getElementById("compilar").addEventListener("mouseover", prank);
+  document.getElementById("salvar").addEventListener("mouseover", prank);
 
   // Salva o arquivo
   document.getElementById("salvar").addEventListener("click", function () {
@@ -322,3 +307,9 @@ window.onload = function () {
     }
   });
 };
+
+function prank() {
+  const st = this.style.marginRight == "100px" ? "0px" : "100px";
+  if (editor.getValue().length == 0) this.style.marginRight = st;
+  else this.style.marginRight = "0px";
+}

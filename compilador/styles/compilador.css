@@ -125,7 +125,6 @@ pre.CodeMirror-placeholder.CodeMirror-line-like {
   border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
   cursor: pointer;
-  overflow-y: hidden;
 }
 
 .tab *,
@@ -155,6 +154,7 @@ tab_c * {
   color: var(--foreground);
   margin-left: 2px;
   padding: 2px;
+  margin-right: 100px;
   border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
   cursor: pointer;
