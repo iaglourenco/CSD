@@ -40,7 +40,13 @@ class Gerador {
       const token = posFixa[i];
       switch (token.simbolo) {
         case "Sidentificador":
-          this.LDV(this.tabelaSimbolos.getSimbolos(token.lexema)[0].memoria);
+          if (this.tabelaSimbolos.getTipo(token.lexema).includes("Sfuncao")) {
+            this.CALL(this.tabelaSimbolos.getMemoria(token.lexema));
+          } else if (
+            this.tabelaSimbolos.getTipo(token.lexema).includes("Svariavel")
+          ) {
+            this.LDV(this.tabelaSimbolos.getMemoria(token.lexema));
+          }
           break;
         case "Snumero":
           this.LDC(token.lexema);

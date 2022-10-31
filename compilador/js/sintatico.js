@@ -392,6 +392,8 @@ function analisaComandoAtribuicao() {
             tokenEsquerda.coluna
           );
         } else {
+          gerador.geraPosFixo(expPosFix);
+
           // Desaloca as variaveis
           const vars = tabelaSimbolos.countVarsEscopoAtual();
           if (vars > 0) {
