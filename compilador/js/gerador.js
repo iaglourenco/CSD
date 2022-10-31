@@ -21,7 +21,7 @@ class Gerador {
      * Aloca memória
      * s:=s+m
      */
-    this.codigo += `ALLOC ${valor1}, ${valor2}\n`;
+    this.codigo += `\tALLOC ${valor1},${valor2}\n`;
   }
   DALLOC(valor1, valor2) {
     /**
@@ -29,7 +29,7 @@ class Gerador {
      * Para k:=n-1 até 0
      * faça M[m+k]:=M[s]; s:=s-1
      */
-    this.codigo += `DALLOC ${valor1}, ${valor2}\n`;
+    this.codigo += `\tDALLOC ${valor1},${valor2}\n`;
   }
 
   geraPosFixo(posFixa) {
@@ -112,7 +112,7 @@ class Gerador {
     /**
      * Iniciar programa principal
      */
-    this.codigo += "START\n";
+    this.codigo += "\tSTART\n";
   }
 
   LDV(valor) {
@@ -120,55 +120,55 @@ class Gerador {
      * Carrega valor
      * s:=s+1 ; M[s]:=M[n]
      */
-    this.codigo += `LDV ${valor}\n`;
+    this.codigo += `\tLDV ${valor}\n`;
   }
   LDC(valor) {
     /**
      * Carrega constante
      * s:=s + 1 ; M [s]: = k
      */
-    this.codigo += `LDC ${valor}\n`;
+    this.codigo += `\tLDC ${valor}\n`;
   }
   HLT() {
     /**
      * Para a execução do programa
      */
-    this.codigo += "HLT\n";
+    this.codigo += "\tHLT\n";
   }
   ADD() {
     /**
      * Somar
      * M[s-1]:=M[s-1]+M[s]; s:=s-1
      */
-    this.codigo += "ADD\n";
+    this.codigo += "\tADD\n";
   }
   SUB() {
     /**
      * Subtrair
      * M[s-1]:=M[s-1]-M[s]; s:=s-1
      */
-    this.codigo += "SUB\n";
+    this.codigo += "\tSUB\n";
   }
   MULT() {
     /**
      * Multiplicar
      * M[s-1]:=M[s-1]*M[s]; s:=s-1
      */
-    this.codigo += "MULT\n";
+    this.codigo += "\tMULT\n";
   }
   DIVI() {
     /**
      * Dividir
      * M[s-1]:=M[s-1] div M[s]; s:=s-1
      */
-    this.codigo += "DIVI\n";
+    this.codigo += "\tDIVI\n";
   }
   INV() {
     /**
      * Inverter
      * M[s]:= -M[s]
      */
-    this.codigo += "INV\n";
+    this.codigo += "\tINV\n";
   }
   AND() {
     /**
@@ -176,7 +176,7 @@ class Gerador {
      * Se M[s-1] = 1 e M[s] = 1 então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "AND\n";
+    this.codigo += "\tAND\n";
   }
   OR() {
     /**
@@ -184,14 +184,14 @@ class Gerador {
      * Se M[s-1] = 1 ou M[s] = 1 então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "OR\n";
+    this.codigo += "\tOR\n";
   }
   NEG() {
     /**
      * Negar
      * M[s]:= 1 - M[s]
      */
-    this.codigo += "NEG\n";
+    this.codigo += "\tNEG\n";
   }
   CME() {
     /**
@@ -199,7 +199,7 @@ class Gerador {
      * Se M[s-1] < M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CME\n";
+    this.codigo += "\tCME\n";
   }
   CMA() {
     /**
@@ -207,7 +207,7 @@ class Gerador {
      * Se M[s-1] > M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CMA\n";
+    this.codigo += "\tCMA\n";
   }
   CEQ() {
     /**
@@ -215,7 +215,7 @@ class Gerador {
      * Se M[s-1] = M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CEQ\n";
+    this.codigo += "\tCEQ\n";
   }
   CDIF() {
     /**
@@ -223,7 +223,7 @@ class Gerador {
      * Se M[s-1] <> M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CDIF\n";
+    this.codigo += "\tCDIF\n";
   }
   CMEQ() {
     /**
@@ -231,7 +231,7 @@ class Gerador {
      * Se M[s-1] <= M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CMEQ\n";
+    this.codigo += "\tCMEQ\n";
   }
   CMAQ() {
     /**
@@ -239,20 +239,20 @@ class Gerador {
      * Se M[s-1] >= M[s] então M[s-1] := 1 senão M[s-1] := 0
      * s := s-1
      */
-    this.codigo += "CMAQ\n";
+    this.codigo += "\tCMAQ\n";
   }
   STR(valor) {
     /**
      * Armazena valor
      * M[n]:=M[s]; s:=s-1
      */
-    this.codigo += `STR ${valor}\n`;
+    this.codigo += `\tSTR ${valor}\n`;
   }
   JMP(rotulo) {
     /**
      * Desvio incondicional
      */
-    this.codigo += `JMP L${rotulo}\n`;
+    this.codigo += `\tJMP L${rotulo}\n`;
   }
   JMPF(rotulo) {
     /**
@@ -260,27 +260,27 @@ class Gerador {
      * Se M[s] = 0 então i:=p senão i:=i+1
      * s:=s-1
      */
-    this.codigo += `JMPF L${rotulo}\n`;
+    this.codigo += `\tJMPF L${rotulo}\n`;
   }
   NULL(rotulo) {
     /**
      * Nada
      */
-    this.codigo += `L${rotulo} NULL\n`;
+    this.codigo += `L${rotulo} \tNULL\n`;
   }
   RD() {
     /**
      * Leitura
      * s:=s+1; M[s]:=leia()
      */
-    this.codigo += `RD\n`;
+    this.codigo += `\tRD\n`;
   }
   PRN() {
     /**
      * Impressão
      * escreva(M[s]); s:=s-1
      */
-    this.codigo += `PRN\n`;
+    this.codigo += `\tPRN\n`;
   }
 
   CALL(rotulo) {
@@ -288,14 +288,14 @@ class Gerador {
      * Chamada de procedimento ou função
      * s:=s+1; M[s]:=i+1; i:=p
      */
-    this.codigo += `CALL L${rotulo}\n`;
+    this.codigo += `\tCALL L${rotulo}\n`;
   }
   RETURN() {
     /**
      * Retorno de procedimento ou função
      * i:=M[s]; s:=s-1
      */
-    this.codigo += `RETURN\n`;
+    this.codigo += `\tRETURN\n`;
   }
 
   getCodigo() {
