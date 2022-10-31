@@ -295,8 +295,8 @@ window.onload = function () {
   });
 
   // Brincadeira....
-  document.getElementById("compilar").addEventListener("mouseover", prank);
-  document.getElementById("salvar").addEventListener("mouseover", prank);
+  window.addEventListener("resize", setupPrank);
+  setupPrank();
 
   // Salva o arquivo
   document.getElementById("salvar").addEventListener("click", function () {
@@ -309,7 +309,58 @@ window.onload = function () {
 };
 
 function prank() {
-  const st = this.style.marginRight == "100px" ? "0px" : "100px";
-  if (editor.getValue().length == 0) this.style.marginRight = st;
-  else this.style.marginRight = "0px";
+  let compilar = document.getElementById("compilar");
+  let salvar = document.getElementById("salvar");
+
+  // Both right
+  if (
+    compilar.style.transform == "translateX(0px)" &&
+    salvar.style.transform == "translateX(0px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(-100px)";
+    } else {
+      compilar.style.transform = "translateX(-100px)";
+      salvar.style.transform = "translateX(-100px)";
+    }
+  }
+  // Both left
+  else if (
+    compilar.style.transform == "translateX(-100px)" &&
+    salvar.style.transform == "translateX(-100px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(0px)";
+      salvar.style.transform = "translateX(0px)";
+    } else {
+      salvar.style.transform = "translateX(0px)";
+    }
+  } else if (
+    compilar.style.transform == "translateX(-100px)" &&
+    salvar.style.transform == "translateX(0px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(0px)";
+    } else {
+      salvar.style.transform = "translateX(-100px)";
+    }
+  }
+  // const st = this.style.transform == "translateX(-100px)" ? "0px" : "-100px";
+  // if (editor.getValue().length == 0) this.style.transform = `translateX(${st})`;
+  // else this.style.transform = "translateX(0px)";
+}
+
+function setupPrank() {
+  let compilar = document.getElementById("compilar");
+  let salvar = document.getElementById("salvar");
+  compilar.style.transform = "translateX(0px)";
+  salvar.style.transform = "translateX(0px)";
+
+  if (window.innerWidth > 768) {
+    compilar.addEventListener("mouseenter", prank);
+    salvar.addEventListener("mouseenter", prank);
+  } else {
+    compilar.removeEventListener("mouseenter", prank);
+    salvar.removeEventListener("mouseenter", prank);
+  }
 }
