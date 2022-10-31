@@ -238,8 +238,8 @@ window.onload = function () {
 
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
-    document.getElementById("compilar").style.marginRight = "0px";
-    document.getElementById("salvar").style.marginRight = "0px";
+    document.getElementById("compilar").style.transform = "translateX(0px)";
+    document.getElementById("salvar").style.transform = "translateX(0px)";
 
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
@@ -311,9 +311,12 @@ window.onload = function () {
 function prank() {
   let compilar = document.getElementById("compilar");
   let salvar = document.getElementById("salvar");
-
+  if (editor.getValue().length > 0) {
+    compilar.style.transform = "translateX(0px)";
+    salvar.style.transform = "translateX(0px)";
+  }
   // Both right
-  if (
+  else if (
     compilar.style.transform == "translateX(0px)" &&
     salvar.style.transform == "translateX(0px)"
   ) {
@@ -335,7 +338,9 @@ function prank() {
     } else {
       salvar.style.transform = "translateX(0px)";
     }
-  } else if (
+  }
+  // Compilar right and salvar left
+  else if (
     compilar.style.transform == "translateX(-100px)" &&
     salvar.style.transform == "translateX(0px)"
   ) {
@@ -345,9 +350,6 @@ function prank() {
       salvar.style.transform = "translateX(-100px)";
     }
   }
-  // const st = this.style.transform == "translateX(-100px)" ? "0px" : "-100px";
-  // if (editor.getValue().length == 0) this.style.transform = `translateX(${st})`;
-  // else this.style.transform = "translateX(0px)";
 }
 
 function setupPrank() {
