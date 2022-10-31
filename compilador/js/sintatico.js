@@ -127,7 +127,18 @@ function analisaSubrotinas() {
    * <etapa de declaração de sub-rotinas> ::= (<declaração de procedimento>;|<declaração de função>;)
    *                                          {<declaração de procedimento>;|<declaração de função>;}
    */
-  // TODO: geracao de codigo
+  let auxrot = 0;
+  let flag = 0;
+
+  if (
+    lexico.tokenAtual.simbolo == "Sprocedimento" ||
+    lexico.tokenAtual.simbolo == "Sfuncao"
+  ) {
+    auxrot = gerador.rotulo;
+    gerador.JMP(gerador.rotulo); // Salto das subrotinas
+    gerador.rotulo++;
+    flag = 1;
+  }
 
   while (
     lexico.tokenAtual.simbolo == "Sprocedimento" ||
@@ -149,15 +160,16 @@ function analisaSubrotinas() {
       );
     }
   }
+  if (flag === 1) {
+    gerador.NULL(auxrot); // Inicio do programa principal
+  }
 }
 
 function analisaDeclaracaoProcedimento() {
   /**
    * <declaração de procedimento> ::= procedimento <identificador>;<bloco>
    */
-
   lexico.proximoToken();
-
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
     // Pesquisa na tabela de simbolos se o identificador já foi declarado
     // Se sim, lança um erro, senão adiciona na tabela de simbolos
@@ -169,26 +181,33 @@ function analisaDeclaracaoProcedimento() {
         lexico.tokenAtual.coluna
       );
     } else {
+      gerador.NULL(gerador.rotulo);
       tabelaSimbolos.pushSimbolo(
         lexico.tokenAtual.lexema,
         "Sprocedimento",
         gerador.rotulo
       );
+      gerador.rotulo++;
 
-      //TODO: adicionar marca/galho
       tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
-    }
 
-    lexico.proximoToken();
-    if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
-      analisaBloco();
-    } else {
-      throw new ErroSintatico(
-        "stc4",
-        lexico.tokenAtual.lexema,
-        lexico.tokenAtual.linha,
-        lexico.tokenAtual.coluna
-      );
+      lexico.proximoToken();
+      if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+        analisaBloco();
+        const vars = tabelaSimbolos.countVarsEscopoAtual();
+        if (vars > 0) {
+          gerador.DALLOC(gerador.endereco - vars, vars);
+          gerador.endereco -= vars;
+        }
+        gerador.RETURN();
+      } else {
+        throw new ErroSintatico(
+          "stc4",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
     }
   } else {
     throw new ErroSintatico(
@@ -219,28 +238,29 @@ function analisaDeclaracaoFuncao() {
         lexico.tokenAtual.coluna
       );
     } else {
+      gerador.NULL(gerador.rotulo);
       tabelaSimbolos.pushSimbolo(
         lexico.tokenAtual.lexema,
         "Sfuncao",
         gerador.rotulo
       );
+      gerador.rotulo++;
 
-      // TODO: adicionar marca/galho
+      // Adiciona marca/galho
       tabelaSimbolos.escopoAtual = lexico.tokenAtual.lexema;
-    }
-    lexico.proximoToken();
-    if (lexico.tokenAtual.simbolo == "Sdoispontos") {
+
       lexico.proximoToken();
-      analisaTipo();
-      if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
-        analisaBloco();
-      }
-      /**  Reutilizei o analisaTipo aqui pois ele ja adiciona o tipo na tabela de simbolos
+      if (lexico.tokenAtual.simbolo == "Sdoispontos") {
+        lexico.proximoToken();
+        analisaTipo();
+        if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
+          analisaBloco();
+        }
+        /**  Reutilizei o analisaTipo aqui pois ele ja adiciona o tipo na tabela de simbolos
       if (
         lexico.tokenAtual.simbolo == "Sinteiro" ||
         lexico.tokenAtual.simbolo == "Sbooleano"
       ) {
-        // TODO: semantico
         // Adicionar na tabela de simbolos o tipo da função
         lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
@@ -255,13 +275,14 @@ function analisaDeclaracaoFuncao() {
         );
       }
       */
-    } else {
-      throw new ErroSintatico(
-        "stc5",
-        lexico.tokenAtual.lexema,
-        lexico.tokenAtual.linha,
-        lexico.tokenAtual.coluna
-      );
+      } else {
+        throw new ErroSintatico(
+          "stc5",
+          lexico.tokenAtual.lexema,
+          lexico.tokenAtual.linha,
+          lexico.tokenAtual.coluna
+        );
+      }
     }
   } else {
     throw new ErroSintatico(
@@ -371,7 +392,13 @@ function analisaComandoAtribuicao() {
             tokenEsquerda.coluna
           );
         } else {
-          // Gera codigo
+          // Desaloca as variaveis
+          const vars = tabelaSimbolos.countVarsEscopoAtual();
+          if (vars > 0) {
+            gerador.DALLOC(gerador.endereco - vars, vars);
+            gerador.endereco -= vars;
+          }
+          // TODO: Gera codigo, onde colocar o retorno da funcao?
         }
       } else {
         // Gera código da expressão
@@ -452,15 +479,15 @@ function analisaChamadaProcedimento() {
    * <chamada de procedimento>::= <identificador>
    */
   //lexico.proximoToken();
-  if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema)) {
-    gerador.CALL(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
+  if (semantico.pesquisaTabela(lexico.ultimoTokenLido.lexema)) {
+    gerador.CALL(tabelaSimbolos.getMemoria(lexico.ultimoTokenLido.lexema));
   } else {
     // Identificador não declarado
     throw new ErroSemantico(
       "sem2",
-      lexico.tokenAtual.lexema,
-      lexico.tokenAtual.linha,
-      lexico.tokenAtual.coluna
+      lexico.ultimoTokenLido.lexema,
+      lexico.ultimoTokenLido.linha,
+      lexico.ultimoTokenLido.coluna
     );
   }
 }
@@ -470,7 +497,7 @@ function analisaChamadaFuncao() {
    * <chamada de função>::= <identificador>
    */
   if (lexico.tokenAtual.simbolo == "Sidentificador") {
-    if (semantico.pesquisaIdentificador(lexico.tokenAtual.lexema)) {
+    if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
       // Gera código?
       semantico.pushExpressaoInfixa(lexico.tokenAtual);
     } else {
@@ -681,7 +708,19 @@ function analisaComandoEscrita() {
     lexico.proximoToken();
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
-        gerador.LDV(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
+        if (
+          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema).includes("Svariavel")
+        ) {
+          gerador.LDV(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
+        } else if (
+          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema).includes("Sfuncao")
+        ) {
+          // Chama a funcao
+          // Como saber que esta variavel contem retorno de funcao
+          gerador.CALL(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
+          // TODO: Onde guardar o retorno da funcao?
+        }
+
         lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
           gerador.PRN();
@@ -849,9 +888,10 @@ function analisaPrograma() {
           if (lexico.listaToken.length == 0) {
             // Caso não haja mais simbolos na lista de tokens, o código está correto
             // Desaloca a memoria
-            while (gerador.alocacoes.length > 0) {
-              let { valor1, valor2 } = gerador.alocacoes.pop();
-              gerador.DALLOC(valor1, valor2);
+            const vars = tabelaSimbolos.countVarsEscopoAtual();
+            if (vars > 0) {
+              gerador.DALLOC(gerador.endereco - vars, vars);
+              gerador.endereco -= vars;
             }
             gerador.HLT();
             return "Compilado com sucesso!";

@@ -3,9 +3,8 @@
 class Gerador {
   constructor(tabelaSimbolos) {
     this.codigo = "";
-    this.rotulo = 1;
+    this.rotulo = 0;
     this.endereco = 0;
-    this.alocacoes = [];
     this.tabelaSimbolos = tabelaSimbolos;
   }
 
@@ -22,7 +21,6 @@ class Gerador {
      * Aloca memória
      * s:=s+m
      */
-    this.alocacoes.push({ valor1, valor2 });
     this.codigo += `ALLOC ${valor1}, ${valor2}\n`;
   }
   DALLOC(valor1, valor2) {
