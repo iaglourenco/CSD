@@ -121,17 +121,72 @@
      resize: none;
  }
 
+ .code {
+     display: flex;
+     width: 100%;
+     height: 100%;
+     flex-direction: column;
+     overflow-y: scroll;
+ }
+
+ #code_table {
+     width: 100%;
+     height: 100%;
+ }
+
+ #code_table tr {
+     color: var(--foreground);
+     font-family: var(--mono);
+     box-sizing: border-box;
+     align-items: center;
+     justify-content: space-between;
+ }
+
+ #code_table td {
+     padding: 0px 5px 0px 5px;
+     box-sizing: border-box;
+     background: var(--current-line);
+ }
+
+ #code_table td:nth-child(1) {
+     width: 5%;
+     text-align: right;
+ }
+
+ #code_table td:nth-child(2) {
+     width: 15%;
+     text-align: left;
+ }
+
+ #code_table td input[type="checkbox"] {
+     width: 20px;
+     height: 20px;
+     margin: 0px;
+     padding: 0px;
+     border: none;
+     font-family: var(--mono);
+     font-size: 14px;
+     text-align: center;
+     cursor: pointer;
+ }
+
+ .code.hidden {
+     display: none;
+ }
+
  #editor {
+     margin: 0;
+     max-height: 62vh;
+     box-sizing: border-box;
      border: 1px solid var(--foreground);
      grid-row: 1/3;
      grid-column: 2/3;
      display: flex;
      align-items: center;
      justify-content: center;
-     font-family: var(--mono);
  }
 
- #drag_and_drop {
+ .drag_and_drop {
      display: flex;
      flex-direction: column;
      align-items: center;
@@ -142,6 +197,10 @@
      border: 5px dashed var(--comment);
      color: var(--comment);
      font-family: var(--mono);
+ }
+
+ .drag_and_drop.hidden {
+     display: none;
  }
 
  #drag_and_drop.hovered {
@@ -173,6 +232,7 @@
 
  #log_header,
  #input_header,
+ #code_header,
  #output_header {
      display: flex;
      color: var(--orange);
@@ -183,13 +243,20 @@
  }
 
 
- #limpar {
+ #limpar,
+ #fechar {
      cursor: pointer;
      border-radius: 0px 0px 0px 5px !important;
  }
 
+ #limpar:hover,
+ #fechar:hover {
+     opacity: .8;
+ }
+
  #log_header legend,
  #input_header legend,
+ #code_header legend,
  #output_header legend {
      padding: 5px 10px;
      font-weight: bold;
@@ -198,10 +265,6 @@
      border-radius: 0px 0px 5px 0px;
  }
 
-
- #limpar:hover {
-     opacity: .8;
- }
 
  #console textarea {
      color: var(--foreground);

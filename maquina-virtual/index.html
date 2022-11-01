@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Máquina{MVD}Virtual</title>
+  <title>máquina{LPD}virtual</title>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link rel="stylesheet" href="styles/maquina.css" />
@@ -79,12 +79,34 @@
       </div>
       <textarea id="output" disabled></textarea>
     </div>
-    <!-- Drag and drop -->
 
     <div id="editor">
 
 
-      <div id="drag_and_drop">
+      <div class="code hidden">
+        <div id="code_header">
+          <legend>Código</legend>
+          <legend id="fechar">
+            Fechar
+          </legend>
+        </div>
+        <div id="code_content">
+          <table id="code_table">
+            <thead>
+              <tr>
+                <th>Breakpoint</th>
+                <th>Instrução</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody id="code_table_body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <div class="drag_and_drop">
         <div id="drag_and_drop_container">
           <div id="drag_and_drop_content">
             <span class="material-icons"> upload_file </span>
