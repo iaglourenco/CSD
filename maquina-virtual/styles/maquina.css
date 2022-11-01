@@ -12,7 +12,7 @@
      display: none;
  }
 
- @media screen and (max-width: 520px) {
+ @media screen and (max-width: 620px) {
      #menu_container * {
          display: none;
      }
@@ -77,6 +77,90 @@
      color: var(--background);
  }
 
+
+ #container {
+     height: 62vh;
+     max-width: 1200px;
+     width: 95%;
+     margin: 10px auto auto auto;
+     display: grid;
+     grid-template-columns: 1fr 4fr;
+     grid-gap: 20px;
+ }
+
+
+ #input_box {
+     display: flex;
+     flex-direction: column;
+     border: 1px solid var(--foreground);
+     resize: none;
+     box-sizing: border-box;
+ }
+
+ #output_box {
+     display: flex;
+     flex-direction: column;
+     border: 1px solid var(--foreground);
+     resize: none;
+     box-sizing: border-box;
+ }
+
+ #input_box textarea,
+ #output_box textarea {
+     margin: 0px;
+     width: 100%;
+     height: 100%;
+     max-height: 28vh;
+     box-sizing: border-box;
+     color: var(--foreground);
+     font-family: var(--mono);
+     background: var(--current-line);
+     font-size: 14px;
+     border: none;
+     text-decoration: none;
+     resize: none;
+ }
+
+ #editor {
+     border: 1px solid var(--foreground);
+     grid-row: 1/3;
+     grid-column: 2/3;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-family: var(--mono);
+ }
+
+ #drag_and_drop {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     box-sizing: border-box;
+     justify-content: center;
+     height: 100%;
+     width: 100%;
+     border: 5px dashed var(--comment);
+     color: var(--comment);
+     font-family: var(--mono);
+ }
+
+ #drag_and_drop.hovered {
+     border: 5px dashed var(--orange);
+     color: var(--orange);
+     opacity: 0.8;
+ }
+
+ #drag_and_drop_content {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: 100%;
+     font-size: xx-large;
+     text-align: center;
+     width: 100%;
+ }
+
  #console {
      display: flex;
      flex-direction: column;
@@ -87,7 +171,9 @@
      margin: 20px auto auto auto;
  }
 
- #log_header {
+ #log_header,
+ #input_header,
+ #output_header {
      display: flex;
      color: var(--orange);
      background-color: var(--current-line);
@@ -96,7 +182,15 @@
      font-weight: bold;
  }
 
- #log_header legend {
+
+ #limpar {
+     cursor: pointer;
+     border-radius: 0px 0px 0px 5px !important;
+ }
+
+ #log_header legend,
+ #input_header legend,
+ #output_header legend {
      padding: 5px 10px;
      font-weight: bold;
      background-color: var(--orange);
@@ -104,12 +198,8 @@
      border-radius: 0px 0px 5px 0px;
  }
 
- #console #limpar {
-     cursor: pointer;
-     border-radius: 0px 0px 0px 5px;
- }
 
- #console #limpar:hover {
+ #limpar:hover {
      opacity: .8;
  }
 

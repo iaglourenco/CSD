@@ -26,7 +26,7 @@ function logar(msg) {
 window.onload = function () {
   logar("Bem vindo à máquina virtual LPD!");
   logar(
-    "Para começar, carregue um arquivo .lpdo clicando no botão 'Carregar' acima."
+    "Para começar, carregue um arquivo .lpdo clicando no botão 'Carregar' acima ou arrastando o arquivo."
   );
 
   // Animação do logo
@@ -62,6 +62,26 @@ window.onload = function () {
       document.getElementById("abrir").click();
     }
   };
+
+  // Drag and drop
+  document.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.getElementById("drag_and_drop").classList.add("hovered");
+  });
+
+  document.addEventListener("dragleave", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.getElementById("drag_and_drop").classList.remove("hovered");
+  });
+
+  document.addEventListener("drop", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    loadLocalFile(e.dataTransfer.files);
+    document.getElementById("drag_and_drop").classList.remove("hovered");
+  });
 
   // Carrega o arquivo local
   document.getElementById("abrir").addEventListener("click", function () {

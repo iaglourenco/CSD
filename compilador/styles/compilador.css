@@ -10,7 +10,7 @@ body {
   display: none;
 }
 
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 620px) {
   #menu_container * {
     display: none;
   }

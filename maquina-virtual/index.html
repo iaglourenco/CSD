@@ -59,6 +59,46 @@
 
 
 
+  <div id="container">
+
+    <div id="input_box">
+      <div id="input_header">
+        <legend>Entrada</legend>
+        <legend id="limpar" onclick="document.getElementById('input').value=''">
+          Limpar
+        </legend>
+      </div>
+      <textarea id="input" disabled></textarea>
+    </div>
+    <div id="output_box">
+      <div id="output_header">
+        <legend>Saida</legend>
+        <legend id="limpar" onclick="document.getElementById('output').value=''">
+          Limpar
+        </legend>
+      </div>
+      <textarea id="output" disabled></textarea>
+    </div>
+    <!-- Drag and drop -->
+
+    <div id="editor">
+
+
+      <div id="drag_and_drop">
+        <div id="drag_and_drop_container">
+          <div id="drag_and_drop_content">
+            <span class="material-icons"> upload_file </span>
+            <span>Arraste e solte um arquivo aqui!</span>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
   <div id="console">
     <div id="log_header">
       <legend>Console</legend>
