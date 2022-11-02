@@ -203,7 +203,7 @@
      display: none;
  }
 
- #drag_and_drop.hovered {
+ .drag_and_drop.hovered {
      border: 5px dashed var(--orange);
      color: var(--orange);
      opacity: 0.8;

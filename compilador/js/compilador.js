@@ -20,6 +20,7 @@ async function loadLocalFile(files, editor) {
       logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
       createTab(e.target.fileName);
       editor.setValue(e.target.result);
+      document.getElementById("file-input").value = "";
     };
     reader.readAsText(files[0]);
   } else {
@@ -32,6 +33,7 @@ async function loadLocalFile(files, editor) {
         createTab(e.target.fileName);
         editor.setValue(e.target.result);
         logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
+        document.getElementById("file-input").value = "";
       };
       reader.readAsText(files[i]);
     }
