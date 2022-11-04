@@ -42,6 +42,7 @@ class Gerador {
         case "Sidentificador":
           if (this.tabelaSimbolos.getTipo(token.lexema).includes("Sfuncao")) {
             this.CALL(this.tabelaSimbolos.getMemoria(token.lexema));
+            this.LDV(0); // Armazena o retorno da função
           } else if (
             this.tabelaSimbolos.getTipo(token.lexema).includes("Svariavel")
           ) {

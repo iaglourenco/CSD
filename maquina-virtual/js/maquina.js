@@ -6,7 +6,8 @@ export class Maquina {
     this.s = 0; // Ponteiro de pilha
     this.pc = 0; // Contador de programa
     this.n = 0; // Tamanho da memória alocada
-    this.instrucoes = this.loadInstrucoes(codigo);
+    if (codigo.length > 0) this.instrucoes = this.loadInstrucoes(codigo);
+    // else throw new Error(`Entrada vazia`);
 
     this.linha = 0; // Linha atual do programa
     this.breakpoints = []; // Linhas de interrupção
@@ -72,6 +73,9 @@ export class Maquina {
           break;
         }
       }
+    }
+    if (instrucoes.length == 0) {
+      throw new Error("Nenhuma instrução detectada!");
     }
     return instrucoes;
   }

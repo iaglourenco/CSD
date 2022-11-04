@@ -394,16 +394,17 @@ function analisaComandoAtribuicao() {
         } else {
           gerador.geraPosFixo(expPosFix);
 
+          gerador.STR(0); // Armazena o retorno da função
           // Desaloca as variaveis
           const vars = tabelaSimbolos.countVarsEscopoAtual();
           if (vars > 0) {
             gerador.DALLOC(gerador.endereco - vars, vars);
             gerador.endereco -= vars;
           }
-          // TODO: Gera codigo, onde colocar o retorno da funcao?
+          gerador.RETURN();
         }
       } else {
-        // Gera código da expressão
+        // Gera código da expressão, caso não seja retorno de função
         gerador.geraPosFixo(expPosFix);
         gerador.STR(tabelaSimbolos.getMemoria(tokenEsquerda.lexema));
       }
@@ -718,9 +719,8 @@ function analisaComandoEscrita() {
           tabelaSimbolos.getTipo(lexico.tokenAtual.lexema).includes("Sfuncao")
         ) {
           // Chama a funcao
-          // Como saber que esta variavel contem retorno de funcao
           gerador.CALL(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
-          // TODO: Onde guardar o retorno da funcao?
+          gerador.LDV(0); // Endereço de retorno de função
         }
 
         lexico.proximoToken();
@@ -880,6 +880,7 @@ function analisaPrograma() {
         undefined
       );
       gerador.START();
+      gerador.ALLOC(gerador.proximoEndereco(), 1); // Aloca o retorno de funções
 
       lexico.proximoToken();
       if (lexico.tokenAtual.simbolo == "Sponto_virgula") {
@@ -895,6 +896,7 @@ function analisaPrograma() {
               gerador.DALLOC(gerador.endereco - vars, vars);
               gerador.endereco -= vars;
             }
+            gerador.DALLOC(0, 1); // Desaloca o retorno de funções
             gerador.HLT();
             return "Compilado com sucesso!";
           } else {

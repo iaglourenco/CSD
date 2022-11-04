@@ -11,10 +11,14 @@ async function loadLocalFile(files) {
   filename = files[0].name;
 
   reader.onload = function (e) {
-    logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
     code = e.target.result;
-    load2Table(code);
-    addListenersBreakpoints();
+    try {
+      load2Table(code);
+      logar(`Arquivo ${filename} carregado com sucesso!`);
+      addListenersBreakpoints();
+    } catch (e) {
+      logar(`Falha ao carregar ${filename}: ${e.message}`);
+    }
 
     document.getElementById("executar").style.transform = "translateX(0px)";
     document.getElementById("debug").style.transform = "translateX(0px)";
@@ -71,7 +75,7 @@ window.onload = function () {
     // Ctrl + L
     if (e.ctrlKey && e.keyCode == 76) {
       e.preventDefault();
-      document.getElementById("limpar").click();
+      document.getElementById("log").value = "";
     }
     // Ctrl + O
     if (e.ctrlKey && e.keyCode == 79) {
