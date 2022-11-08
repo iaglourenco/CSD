@@ -63,16 +63,17 @@
 
     <div id="input_box">
       <div id="input_header">
-        <legend>Entrada</legend>
+        <legend>Entradas</legend>
         <legend id="limpar" onclick="document.getElementById('input').value=''">
           Limpar
         </legend>
       </div>
       <textarea id="input" disabled></textarea>
     </div>
+
     <div id="output_box">
       <div id="output_header">
-        <legend>Saida</legend>
+        <legend>Saidas</legend>
         <legend id="limpar" onclick="document.getElementById('output').value=''">
           Limpar
         </legend>
@@ -81,8 +82,6 @@
     </div>
 
     <div id="editor">
-
-
       <div class="code hidden">
         <div id="code_header">
           <legend>Código</legend>
@@ -117,19 +116,39 @@
 
 
     </div>
-  </div>
 
-
-
-  <div id="console">
-    <div id="log_header">
-      <legend>Console</legend>
-      <legend id="limpar" onclick="document.getElementById('log').value=''">
-        Limpar (Ctrl+L)
-      </legend>
+    <div id="memory">
+      <div id="memory_header">
+        <legend>Memória</legend>
+        <legend id="mem_size">
+          0 valores
+        </legend>
+      </div>
+      <div id="memory_content">
+        <table id="memory_table">
+          <tr id="mem_addresses">
+            <th>Endereço</th>
+            <td>0</td>
+          </tr>
+          <tr id="mem_values">
+            <th>Valor</th>
+            <td>0</td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <textarea name="log" id="log" cols="30" rows="10" disabled></textarea>
-  </div>
+
+
+
+    <div id="console">
+      <div id="log_header">
+        <legend>Console</legend>
+        <legend id="limpar" onclick="document.getElementById('log').value=''">
+          Limpar (Ctrl+L)
+        </legend>
+      </div>
+      <textarea name="log" id="log" cols="30" rows="10" disabled></textarea>
+    </div>
 </body>
 
 </html>

@@ -252,6 +252,7 @@ class Gerador {
   JMP(rotulo) {
     /**
      * Desvio incondicional
+     * i:=p
      */
     this.codigo += `\tJMP L${rotulo}\n`;
   }

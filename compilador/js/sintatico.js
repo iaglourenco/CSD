@@ -712,18 +712,20 @@ function analisaComandoEscrita() {
     if (lexico.tokenAtual.simbolo == "Sidentificador") {
       if (semantico.pesquisaTabela(lexico.tokenAtual.lexema)) {
         if (
-          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema).includes("Svariavel")
+          tabelaSimbolos
+            .getTipo(lexico.tokenAtual.lexema)
+            .includes("Svariavel Sinteiro") // Somente variaveis inteiras
         ) {
           gerador.LDV(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
-        } else if (
-          tabelaSimbolos.getTipo(lexico.tokenAtual.lexema).includes("Sfuncao")
-        ) {
-          // Chama a funcao
-          gerador.CALL(tabelaSimbolos.getMemoria(lexico.tokenAtual.lexema));
-          gerador.LDV(0); // Endereço de retorno de função
+        } else {
+          // Identificador com tipo invalido, esperado inteiro
+          throw new ErroSemantico(
+            "sem6",
+            lexico.tokenAtual.lexema,
+            lexico.tokenAtual.linha,
+            lexico.tokenAtual.coluna
+          );
         }
-
-        lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
           gerador.PRN();
           lexico.proximoToken();

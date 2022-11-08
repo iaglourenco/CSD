@@ -1,8 +1,7 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / maquina.js
-import { Maquina } from "./maquina.js";
 
 var filename = "Novo.lpdo";
-var maquina = new Maquina("");
+var maquina;
 var code = "";
 
 async function loadLocalFile(files) {
@@ -42,6 +41,24 @@ function input(message) {
 
 function output(message) {
   document.getElementById("output").value += `${message}\n`;
+}
+
+function updateMemory(memory) {
+  document.getElementById("memory_table").innerHTML = "";
+  document.getElementById("memory_table").innerHTML = `<tr id="mem_addresses">
+            <th>Endereço</th>
+          </tr>
+          <tr id="mem_values">
+            <th>Valor</th>
+          </tr>`;
+
+  const tableAddr = document.getElementById("mem_addresses");
+  const tableValues = document.getElementById("mem_values");
+  for (let i = 0; i < memory.length; i++) {
+    tableAddr.innerHTML += `<td>${i}</td>`;
+    tableValues.innerHTML += `<td>${memory[i]}</td>`;
+  }
+  document.getElementById("mem_size").innerHTML = `${memory.length} valores`;
 }
 
 window.onload = function () {
@@ -84,12 +101,13 @@ window.onload = function () {
     }
   };
 
-  document
-    .getElementById("executar")
-    .addEventListener("click", () => maquina.executar());
+  document.getElementById("executar").addEventListener("click", () => {
+    updateMemory([2, 3, 4, 1, "banana"]);
+    // maquina.executar();
+  });
   document
     .getElementById("debug")
-    .addEventListener("click", () => maquina.debug());
+    .addEventListener("click", () => maquina.executar());
 
   // Drag and drop
   document.addEventListener("dragover", function (e) {
@@ -176,7 +194,7 @@ function prank() {
 function load2Table(code) {
   // Carrega o código para a tabela na coluna de instruções
   // com a primeira coluna sendo um checkbox, a segunda o code e a terceira a descrição
-  maquina = new Maquina(code);
+  maquina = new Maquina(code, input, output, updateMemory);
 
   let table = document.getElementById("code_table_body");
   table.innerHTML = "";
