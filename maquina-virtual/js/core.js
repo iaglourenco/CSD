@@ -1,5 +1,7 @@
 // Author: Iago Lourenço (iagojlourenco@gmail.com) / maquina.js
 
+import { Maquina } from "./maquina.js";
+
 var filename = "Novo.lpdo";
 var maquina;
 var code = "";
@@ -102,8 +104,7 @@ window.onload = function () {
   };
 
   document.getElementById("executar").addEventListener("click", () => {
-    updateMemory([2, 3, 4, 1, "banana"]);
-    // maquina.executar();
+    maquina.executar();
   });
   document
     .getElementById("debug")
