@@ -5,6 +5,7 @@ import { ErroLexico, ErroSemantico, ErroSintatico } from "./erros.js";
 import sintatico from "./sintatico.js";
 // Guarda as abas do editor
 const tabs = [];
+var activeTab = 0;
 var editor;
 
 var filename = "Novo.lpd";
@@ -19,6 +20,7 @@ async function loadLocalFile(files, editor) {
       logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
       createTab(e.target.fileName);
       editor.setValue(e.target.result);
+      document.getElementById("file-input").value = "";
     };
     reader.readAsText(files[0]);
   } else {
@@ -31,6 +33,7 @@ async function loadLocalFile(files, editor) {
         createTab(e.target.fileName);
         editor.setValue(e.target.result);
         logar(`Arquivo ${e.target.fileName} carregado com sucesso!`);
+        document.getElementById("file-input").value = "";
       };
       reader.readAsText(files[i]);
     }
@@ -80,8 +83,8 @@ function compileCode() {
       logar(`Compilando...`);
       // Chamada do sintático para iniciar a análise
       const codigo = sintatico.iniciar(code);
-
       logar(`SUCESSO!`);
+      return codigo;
     } else {
       throw new Error("Nenhum código inserido!");
     }
@@ -121,6 +124,9 @@ function createTab(name) {
   addTabListeners();
   activateTab(tabs.length - 1);
   setTabName(tabs.length - 1, name);
+  // Scroll the tab container to the end
+  document.getElementById("tabs_container").scrollLeft =
+    document.getElementById("tabs_container").scrollWidth;
 }
 
 function reconstructTabs() {
@@ -156,6 +162,8 @@ function activateTab(index) {
     document.getElementById(`tab${j}`).classList.remove("active");
   }
   document.getElementById(`tab${index}`).classList.add("active");
+  activeTab = index;
+  filename = tabs[index].name;
 }
 function setTabName(index, name) {
   tabs[index].name = name;
@@ -175,7 +183,7 @@ function addTabListeners() {
 function closeTab(index) {
   // Remove tab
   if (tabs.length > 1) {
-    if (editor.getValue().length > 0) {
+    if (tabs[index].doc.getValue().length > 0) {
       if (confirm("Deseja realmente fechar esta aba?")) {
         tabs.splice(index, 1);
         reconstructTabs();
@@ -232,6 +240,9 @@ window.onload = function () {
 
   // Atualiza os números da linha e coluna na janela
   editor.on("cursorActivity", function () {
+    document.getElementById("compilar").style.transform = "translateX(0px)";
+    document.getElementById("salvar").style.transform = "translateX(0px)";
+
     document.getElementById("posicao").innerHTML = `Ln ${
       editor.getCursor().line + 1
     }, Col ${editor.getCursor().ch + 1}`;
@@ -271,8 +282,23 @@ window.onload = function () {
 
   // Compila o código
   document.getElementById("compilar").addEventListener("click", function () {
-    compileCode();
+    // Se o codigo do editor for .lpo (arquivo compilado) não compila
+    if (tabs[activeTab].name.split(".").pop() == "lpdo") {
+      logar("Não é possível compilar um arquivo compilado!");
+    } else if (editor.getValue().length == 0) {
+      logar("Não é possível compilar um arquivo vazio!");
+    } else {
+      let code = compileCode();
+      if (code) {
+        createTab(`${tabs[activeTab].name.split(".")[0]}.lpdo`);
+        editor.setValue(code);
+      }
+    }
   });
+
+  // Brincadeira....
+  window.addEventListener("resize", setupPrank);
+  setupPrank();
 
   // Salva o arquivo
   document.getElementById("salvar").addEventListener("click", function () {
@@ -283,3 +309,62 @@ window.onload = function () {
     }
   });
 };
+
+function prank() {
+  let compilar = document.getElementById("compilar");
+  let salvar = document.getElementById("salvar");
+  if (editor.getValue().length > 0) {
+    compilar.style.transform = "translateX(0px)";
+    salvar.style.transform = "translateX(0px)";
+  }
+  // Both right
+  else if (
+    compilar.style.transform == "translateX(0px)" &&
+    salvar.style.transform == "translateX(0px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(-100px)";
+    } else {
+      compilar.style.transform = "translateX(-100px)";
+      salvar.style.transform = "translateX(-100px)";
+    }
+  }
+  // Both left
+  else if (
+    compilar.style.transform == "translateX(-100px)" &&
+    salvar.style.transform == "translateX(-100px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(0px)";
+      salvar.style.transform = "translateX(0px)";
+    } else {
+      salvar.style.transform = "translateX(0px)";
+    }
+  }
+  // Compilar right and salvar left
+  else if (
+    compilar.style.transform == "translateX(-100px)" &&
+    salvar.style.transform == "translateX(0px)"
+  ) {
+    if (this.id == "compilar") {
+      compilar.style.transform = "translateX(0px)";
+    } else {
+      salvar.style.transform = "translateX(-100px)";
+    }
+  }
+}
+
+function setupPrank() {
+  let compilar = document.getElementById("compilar");
+  let salvar = document.getElementById("salvar");
+  compilar.style.transform = "translateX(0px)";
+  salvar.style.transform = "translateX(0px)";
+
+  if (window.innerWidth > 768) {
+    compilar.addEventListener("mouseenter", prank);
+    salvar.addEventListener("mouseenter", prank);
+  } else {
+    compilar.removeEventListener("mouseenter", prank);
+    salvar.removeEventListener("mouseenter", prank);
+  }
+}

@@ -1,0 +1,394 @@
+ /* Author: Iago Lourenço (iagojlourenco@gmail.com) / maquina.css  */
+
+ html,
+ body {
+     display: flex;
+     flex-direction: column;
+     min-width: 270px;
+     overflow-x: hidden;
+ }
+
+ #menu_icon {
+     display: none;
+ }
+
+ @media screen and (max-width: 620px) {
+     #menu_container * {
+         display: none;
+     }
+
+     div#menu_icon {
+         display: flex;
+     }
+
+     .menu.responsive {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+     }
+ }
+
+ .menu.responsive #menu_container * {
+     display: flex;
+ }
+
+ .menu {
+     display: flex;
+     align-items: center;
+     padding: 0px 0px 0px 0px;
+     justify-content: space-between;
+     background-color: var(--background);
+ }
+
+ #menu_container {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .menu_btn {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     cursor: pointer;
+     font-family: var(--mono);
+     min-width: 75px;
+     border-radius: 5px;
+     color: var(--foreground);
+     margin-bottom: 5px;
+     transition: all 0.2s ease-in-out;
+ }
+
+ .menu_btn .menu_btn_title {
+     margin: 5px;
+     font-size: 0.8rem;
+ }
+
+ #file-input {
+     opacity: 0;
+     position: absolute;
+     z-index: -1;
+ }
+
+ .menu_btn:hover {
+     background-color: var(--orange);
+     color: var(--background);
+ }
+
+
+ #container {
+     height: 100%;
+     max-width: 1200px;
+     width: 95%;
+     margin: 10px auto auto auto;
+     display: grid;
+     grid-template-columns: 1fr 4fr;
+     grid-template-rows: 2fr 2fr 1fr 2fr;
+     grid-gap: 20px;
+ }
+
+
+ #input_box {
+     display: flex;
+     flex-direction: column;
+     grid-row: 1 / 2;
+     grid-column: 1 / 2;
+     border: 1px solid var(--foreground);
+     resize: none;
+     box-sizing: border-box;
+ }
+
+ #output_box {
+     display: flex;
+     grid-row: 2 / 2;
+     grid-column: 1 / 2;
+     flex-direction: column;
+     border: 1px solid var(--foreground);
+     resize: none;
+     box-sizing: border-box;
+ }
+
+ #input_box textarea,
+ #output_box textarea {
+     margin: 0px;
+     width: 100%;
+     height: 100%;
+     max-height: 28vh;
+     box-sizing: border-box;
+     color: var(--foreground);
+     font-family: var(--mono);
+     background: var(--current-line);
+     font-size: 14px;
+     border: none;
+     text-decoration: none;
+     resize: none;
+ }
+
+ .code {
+     display: flex;
+     width: 100%;
+     height: 100%;
+     flex-direction: column;
+     overflow-y: scroll;
+ }
+
+ .debug_panel {
+     position: absolute;
+     left: 50%;
+     display: inline-flex;
+     background-color: var(--background);
+     border-radius: 5px;
+     color: var(--foreground);
+     font-family: var(--mono);
+     border: 1px solid var(--foreground);
+
+ }
+
+ #debug_panelheader {
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     align-items: center;
+     padding: 5px;
+     width: 100%;
+     cursor: grabbing;
+ }
+
+ .debug_panel.hidden {
+     display: none;
+ }
+
+ .debug_control {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     padding: 5px;
+ }
+
+ .debug_panel>*:nth-child(2) {
+     color: var(--yellow);
+ }
+
+ .debug_panel>*:nth-child(3) {
+     color: var(--green);
+ }
+
+ .debug_panel>*:nth-child(4) {
+     color: var(--red);
+ }
+
+ .debug_control_title {
+     font-size: 0.8rem;
+ }
+
+ .debug_control:hover {
+     background-color: var(--current-line);
+     cursor: pointer;
+ }
+
+
+ #code_table {
+     width: 100%;
+     height: 100%;
+ }
+
+ .line,
+ thead>tr {
+     color: var(--foreground);
+     font-family: var(--mono);
+     box-sizing: border-box;
+     align-items: center;
+     justify-content: space-between;
+ }
+
+ .line.highlighted {
+     background-color: var(--current-line);
+ }
+
+ #code_table td {
+     padding: 0px 5px 0px 5px;
+     box-sizing: border-box;
+     border-bottom: 1px solid var(--comment);
+ }
+
+ #code_table td:nth-child(1) {
+     width: 5%;
+     text-align: right;
+ }
+
+ #code_table td:nth-child(2) {
+     width: 15%;
+     text-align: left;
+ }
+
+ #code_table td input[type="checkbox"] {
+     width: 20px;
+     height: 20px;
+     margin: 0px;
+     padding: 0px;
+     border: none;
+     font-family: var(--mono);
+     font-size: 14px;
+     text-align: center;
+     cursor: pointer;
+ }
+
+ .code.hidden {
+     display: none;
+ }
+
+ #editor {
+     margin: 0;
+     max-height: 47vh;
+     box-sizing: border-box;
+     border: 1px solid var(--foreground);
+     grid-row: 1/3;
+     grid-column: 2/3;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ #memory {
+     margin: 0;
+     box-sizing: border-box;
+     border: 1px solid var(--foreground);
+     grid-column: 1/3;
+     grid-row: 3/4;
+     display: flex;
+     flex-direction: column;
+ }
+
+ #memory_content {
+     width: 100%;
+     height: 100%;
+     overflow-x: auto;
+ }
+
+ #memory_table {
+     /* vertical table */
+     height: 100%;
+     color: var(--foreground);
+ }
+
+ #memory_table #mem_addresses {
+     font-family: var(--mono);
+     box-sizing: border-box;
+     color: var(--orange);
+     font-weight: bold;
+     background: var(--current-line);
+ }
+
+ #memory_table #mem_values {
+     font-family: var(--mono);
+     box-sizing: border-box;
+     font-weight: bold;
+     background: var(--current-line);
+ }
+
+
+ #memory_table td {
+     padding: 0px 10px 0px 10px;
+     text-align: center;
+     box-sizing: border-box;
+ }
+
+ .drag_and_drop {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     box-sizing: border-box;
+     justify-content: center;
+     height: 100%;
+     width: 100%;
+     border: 5px dashed var(--comment);
+     color: var(--comment);
+     font-family: var(--mono);
+ }
+
+ .drag_and_drop.hidden {
+     display: none;
+ }
+
+ .drag_and_drop.hovered {
+     border: 5px dashed var(--orange);
+     color: var(--orange);
+     opacity: 0.8;
+ }
+
+ #drag_and_drop_content {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: 100%;
+     font-size: xx-large;
+     text-align: center;
+     width: 100%;
+ }
+
+ #console {
+     display: flex;
+     flex-direction: column;
+     border: 1px solid var(--foreground);
+     min-height: 100px;
+     width: 100%;
+     grid-column: 1/3;
+     grid-row: 4/6;
+ }
+
+ #log_header,
+ #memory_header,
+ #input_header,
+ #code_header,
+ #output_header {
+     display: flex;
+     color: var(--orange);
+     background-color: var(--current-line);
+     justify-content: space-between;
+     font-family: var(--mono);
+     font-weight: bold;
+ }
+
+
+ #limpar,
+ #mem_size,
+ #fechar {
+     cursor: pointer;
+     border-radius: 0px 0px 0px 5px !important;
+ }
+
+ #limpar:hover,
+ #fechar:hover {
+     opacity: .8;
+ }
+
+ #log_header legend,
+ #memory_header legend,
+ #input_header legend,
+ #code_header legend,
+ #output_header legend {
+     padding: 5px 10px;
+     font-weight: bold;
+     background-color: var(--orange);
+     color: var(--background);
+     border-radius: 0px 0px 5px 0px;
+ }
+
+
+ #console textarea {
+     margin: 0px;
+     width: 100%;
+     height: 100%;
+     max-height: 28vh;
+     box-sizing: border-box;
+     color: var(--foreground);
+     font-family: var(--mono);
+     background: var(--current-line);
+     font-size: 14px;
+     border: none;
+     text-decoration: none;
+     resize: none;
+ }

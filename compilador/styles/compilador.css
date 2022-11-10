@@ -10,7 +10,7 @@ body {
   display: none;
 }
 
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 620px) {
   #menu_container * {
     display: none;
   }
@@ -56,6 +56,7 @@ body {
   border-radius: 5px;
   color: var(--foreground);
   margin-bottom: 5px;
+  transition: all 0.2s ease-in-out;
 }
 
 .menu_btn .menu_btn_title {
@@ -69,7 +70,8 @@ body {
   z-index: -1;
 }
 
-.menu_btn:hover {
+.menu_btn:hover,
+.menu_btn:active {
   background-color: var(--orange);
   color: var(--background);
 }
@@ -125,7 +127,6 @@ pre.CodeMirror-placeholder.CodeMirror-line-like {
   border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
   cursor: pointer;
-  overflow-y: hidden;
 }
 
 .tab *,
@@ -134,11 +135,14 @@ tab_c * {
 }
 
 #tabs_container .tab:hover,
-#tabs_container #new_tab:hover {
+#tabs_container #new_tab:hover,
+#tabs_container .tab:active,
+#tabs_container #new_tab:active {
   opacity: 0.8;
 }
 
-#tabs_container .material-icons.close:hover {
+#tabs_container .material-icons.close:hover,
+#tabs_container .material-icons.close:active {
   color: var(--red);
 }
 
@@ -155,6 +159,7 @@ tab_c * {
   color: var(--foreground);
   margin-left: 2px;
   padding: 2px;
+  margin-right: 100px;
   border-radius: 5px 5px 0px 0px;
   font-family: var(--mono);
   cursor: pointer;
@@ -202,7 +207,8 @@ tab_c * {
   border-radius: 0px 0px 0px 5px;
 }
 
-#console #limpar:hover {
+#console #limpar:hover,
+#console #limpar:active {
   opacity: .8;
 }
 

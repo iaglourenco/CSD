@@ -32,7 +32,7 @@
 
         <div id="button-container">
             <a href="compilador" class="button">Acessar compilador</a>
-            <!-- <a href="#" class="button">Acessar máquina virtual</a> -->
+            <a href="maquina-virtual" class="button">Acessar máquina virtual</a>
         </div>
     </header>
 
@@ -91,92 +91,98 @@
             arquivo <a style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/lexico.js">lexico.js</a>.</p>
 
-        <h3>Descrição em BNF da linguagem</h3>
+        <h4>Descrição em BNF da linguagem</h4>
         <p>Para a descrição da linguagem LPD, foi utilizado a notação BNF (Backus-Naur Form), sendo uma notação para
             especificar gramáticas formais.</p>
 
         <p>Espaços, tabulações, caracteres não
             imprimíveis e quebras de linha são ignorados.</p>
 
-        <div class="code_container">
 
-            <code>&lt;programa&gt;::= programa &lt;identificador&gt; ; &lt;bloco&gt;.</code>
-            <br>
-            <code>&lt;bloco&gt;::= [&lt;etapa de declaração de variáveis&gt;][&lt;etapa de declaração de sub-rotinas&gt;]&lt;comandos&gt;</code>
-            <br>
-            <code class="comment">//Declarações</code>
-            <br>
-            <code>&lt;etapa de declaração de variáveis&gt;::= var &lt;declaração de variáveis&gt;;{&lt;declaração de variáveis&gt;;}</code>
-            <br>
-            <code>&lt;declaração de variáveis&gt;::= &lt;identificador&gt; {, &lt;identificador&gt;} : &lt;tipo&gt;</code>
-            <br>
-            <code>&lt;tipo&gt; ::= (inteiro | booleano)</code>
-            <br>
-            <code>&lt;etapa de declaração de sub-rotinas&gt; ::= (&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;){&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;}</code>
-            <br>
-            <code>&lt;declaração de procedimento&gt; ::= procedimento &lt;identificador&gt;;&lt;bloco&gt;</code>
-            <br>
-            <code>&lt;declaração de função&gt; ::= funcao &lt;identificador&gt;: &lt;tipo&gt;;&lt;bloco&gt;</code>
-            <br>
-            <code class="comment">//Comandos</code>
-            <br>
-            <code>&lt;comandos&gt;::= inicio&lt;comando&gt;{;&lt;comando&gt;}[;]fim</code>
-            <br>
-            <code>&lt;comando&gt;::= (&lt;atribuição_chprocedimento&gt;|&lt;comando condicional&gt; |&lt;comando enquanto&gt; |&lt;comando
-                            leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
-            <br>
-            <code>&lt;atribuição_chprocedimento&gt;::= (&lt;comando atribuicao&gt;|&lt;chamada de procedimento&gt;)</code>
-            <br>
-            <code>&lt;comando atribuicao&gt;::= &lt;identificador&gt; := &lt;expressão&gt;</code>
-            <br>
-            <code>&lt;chamada de procedimento&gt;::= &lt;identificador&gt;</code>
-            <br>
-            <code>&lt;comando condicional&gt;::= se &lt;expressão&gt; entao &lt;comando&gt; [senao &lt;comando&gt;]</code>
-            <br>
-            <code>&lt;comando enquanto&gt; ::= enquanto &lt;expressão&gt; faca &lt;comando&gt;</code>
-            <br>
-            <code>&lt;comando leitura&gt; ::= leia ( &lt;identificador&gt; )</code>
-            <br>
-            <code>&lt;comando escrita&gt; ::= escreva ( &lt;identificador&gt; )</code>
-            <br>
-            <code class="comment">//Expressões</code>
-            <br>
-            <code>&lt;expressão&gt;::= &lt;expressão simples&gt; [&lt;operador relacional&gt;&lt;expressão simples&gt;]</code>
-            <br>
-            <code>&lt;operador relacional&gt;::= (!= | = | &lt; | &lt;= | &gt; | &gt;=)</code>
-            <br>
-            <code>&lt;expressão simples&gt; ::= [ + | - ] &lt;termo&gt; {( + | - | ou) &lt;termo&gt; }</code>
-            <br>
-            <code>&lt;termo&gt;::= &lt;fator&gt; {(\* | div | e) &lt;fator&gt;}</code>
-            <br>
-            <code>&lt;fator&gt; ::= (&lt;variável&gt; | &lt;número&gt; | &lt;chamada de função&gt; | (&lt;expressão&gt;) | verdadeiro |
-                falso | nao &lt;fator&gt;)</code>
-            <br>
-            <code>&lt;variável&gt; ::= &lt;identificador&gt;</code>
-            <br>
-            <code>&lt;chamada de função&gt; ::= &lt;identificador &gt;</code>
-            <br>
-            <code class="comment">//Números e identificadores</code>
-            <br>
-            <code>&lt;identificador&gt; ::= &lt;letra&gt; {&lt;letra&gt; | &lt;dígito&gt; | \_ }</code>
-            <br>
-            <code>&lt;número&gt; ::= &lt;dígito&gt; {&lt;dígito&gt;}</code>
-            <br>
-            <code>&lt;dígito&gt; ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)</code>
-            <br>
-            <code>&lt;letra&gt; ::= (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
-                            A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
-            <br>
-            <code class="comment">//Comentários</code>
-            <code class="comment">/*Uma vez que os comentários servem apenas como documentação do código fonte, ao realizar
-                            a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
-                            delimitadores.*/</code>
-            <br>
-            <code>delimitadores : { }
-                            <br><br>
-                            </code>
+        <details>
+            <summary>Clique para expandir</summary>
+            <pre class="code_container">
 
-        </div>
+                        <code>&lt;programa&gt;::= programa &lt;identificador&gt; ; &lt;bloco&gt;.</code>
+                        <br>
+                        <code>&lt;bloco&gt;::= [&lt;etapa de declaração de variáveis&gt;][&lt;etapa de declaração de sub-rotinas&gt;]&lt;comandos&gt;</code>
+                        <br>
+                        <code class="comment">//Declarações</code>
+                        <br>
+                        <code>&lt;etapa de declaração de variáveis&gt;::= var &lt;declaração de variáveis&gt;;{&lt;declaração de variáveis&gt;;}</code>
+                        <br>
+                        <code>&lt;declaração de variáveis&gt;::= &lt;identificador&gt; {, &lt;identificador&gt;} : &lt;tipo&gt;</code>
+                        <br>
+                        <code>&lt;tipo&gt; ::= (inteiro | booleano)</code>
+                        <br>
+                        <code>&lt;etapa de declaração de sub-rotinas&gt; ::= (&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;){&lt;declaração de procedimento&gt;;|&lt;declaração de função&gt;;}</code>
+                        <br>
+                        <code>&lt;declaração de procedimento&gt; ::= procedimento &lt;identificador&gt;;&lt;bloco&gt;</code>
+                        <br>
+                        <code>&lt;declaração de função&gt; ::= funcao &lt;identificador&gt;: &lt;tipo&gt;;&lt;bloco&gt;</code>
+                        <br>
+                        <code class="comment">//Comandos</code>
+                        <br>
+                        <code>&lt;comandos&gt;::= inicio&lt;comando&gt;{;&lt;comando&gt;}[;]fim</code>
+                        <br>
+                        <code>&lt;comando&gt;::= (&lt;atribuição_chprocedimento&gt;|&lt;comando condicional&gt; |&lt;comando enquanto&gt; |&lt;comando
+                                        leitura&gt; |&lt;comando escrita&gt; |&lt;comandos&gt;)</code>
+                        <br>
+                        <code>&lt;atribuição_chprocedimento&gt;::= (&lt;comando atribuicao&gt;|&lt;chamada de procedimento&gt;)</code>
+                        <br>
+                        <code>&lt;comando atribuicao&gt;::= &lt;identificador&gt; := &lt;expressão&gt;</code>
+                        <br>
+                        <code>&lt;chamada de procedimento&gt;::= &lt;identificador&gt;</code>
+                        <br>
+                        <code>&lt;comando condicional&gt;::= se &lt;expressão&gt; entao &lt;comando&gt; [senao &lt;comando&gt;]</code>
+                        <br>
+                        <code>&lt;comando enquanto&gt; ::= enquanto &lt;expressão&gt; faca &lt;comando&gt;</code>
+                        <br>
+                        <code>&lt;comando leitura&gt; ::= leia ( &lt;identificador&gt; )</code>
+                        <br>
+                        <code>&lt;comando escrita&gt; ::= escreva ( &lt;identificador&gt; )</code>
+                        <br>
+                        <code class="comment">//Expressões</code>
+                        <br>
+                        <code>&lt;expressão&gt;::= &lt;expressão simples&gt; [&lt;operador relacional&gt;&lt;expressão simples&gt;]</code>
+                        <br>
+                        <code>&lt;operador relacional&gt;::= (!= | = | &lt; | &lt;= | &gt; | &gt;=)</code>
+                        <br>
+                        <code>&lt;expressão simples&gt; ::= [ + | - ] &lt;termo&gt; {( + | - | ou) &lt;termo&gt; }</code>
+                        <br>
+                        <code>&lt;termo&gt;::= &lt;fator&gt; {(\* | div | e) &lt;fator&gt;}</code>
+                        <br>
+                        <code>&lt;fator&gt; ::= (&lt;variável&gt; | &lt;número&gt; | &lt;chamada de função&gt; | (&lt;expressão&gt;) | verdadeiro |
+                            falso | nao &lt;fator&gt;)</code>
+                        <br>
+                        <code>&lt;variável&gt; ::= &lt;identificador&gt;</code>
+                        <br>
+                        <code>&lt;chamada de função&gt; ::= &lt;identificador &gt;</code>
+                        <br>
+                        <code class="comment">//Números e identificadores</code>
+                        <br>
+                        <code>&lt;identificador&gt; ::= &lt;letra&gt; {&lt;letra&gt; | &lt;dígito&gt; | \_ }</code>
+                        <br>
+                        <code>&lt;número&gt; ::= &lt;dígito&gt; {&lt;dígito&gt;}</code>
+                        <br>
+                        <code>&lt;dígito&gt; ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)</code>
+                        <br>
+                        <code>&lt;letra&gt; ::= (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
+                                        A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)</code>
+                        <br>
+                        <code class="comment">//Comentários</code>
+                        <code class="comment">/*Uma vez que os comentários servem apenas como documentação do código fonte, ao realizar
+                                        a compilação deste código faz-se necessário eliminar todo o conteúdo entre seus
+                                        delimitadores.*/</code>
+                        <br>
+                        <code>delimitadores : { }
+                                        <br><br>
+                                        </code>
+
+                    </pre>
+        </details>
+
+
         <h3>Sintático</h3>
         <p>
             Este módulo é responsável por realizar a análise sintática do código fonte, ou seja, a verificação da
@@ -244,9 +250,77 @@
                 href="https://github.com/iaglourenco/compilaDOR/blob/main/compilador/js/tabelaSimbolos.js">tabelaSimbolos.js</a>.
         </p>
         <h3>Geração de código</h3>
-        <p>Em desenvolvimento...</p>
+        <p>
+            O módulo de geração de código é responsável por gerar o código em linguagem de máquina a partir do código
+            fonte. Para isso é necessário que o código fonte esteja de acordo com a gramática da linguagem e que não
+            haja erros semânticos para isso o módulo de geração de código é o último módulo a ser executado, pois ele é
+            o
+            responsável por gerar o código em linguagem de máquina, ou seja, o código final.
+        </p>
+        <p>A seguir estão listadas as definições das instruções em linguagem de máquina:</p>
+        <ul>
+            <li><strong>START</strong> - Inicia o programa. Deve ser a primeira instrução do programa.</li>
+            <li><strong>HLT</strong> - Finaliza o programa. Deve ser a última instrução do programa.</li>
+            <li><strong>LDV</strong> k - Carrega o valor do local de memoria k na pilha.</li>
+            <li><strong>LDC</strong> n - Carrega o valor n na pilha.</li>
+            <li><strong>STR</strong> v - Armazena no local de memoria v o valor do topo da pilha.</li>
+            <li><strong>ADD</strong> - Soma os dois valores do topo da pilha e armazena o resultado no
+                topo da pilha.</li>
+            <li><strong>SUB</strong> - Subtrai os dois valores do topo da pilha e armazena o resultado no
+                topo da pilha.</li>
+            <li><strong>MULT</strong> - Multiplica os dois valores do topo da pilha e armazena o resultado
+                no
+                topo da pilha.</li>
+            <li><strong>DIVI</strong> - Divide os dois valores do topo da pilha e armazena o resultado no
+                topo da pilha.</li>
+            <li><strong>INV</strong> - Inverte o sinal do valor do topo da pilha.</li>
+            <li><strong>AND</strong> - Realiza a operação lógica AND entre os dois valores do topo da pilha de
+                operandos e armazena o resultado no topo da pilha.</li>
+            <li><strong>OR</strong> - Realiza a operação lógica OR entre os dois valores do topo da pilha de
+                operandos e armazena o resultado no topo da pilha.</li>
+            <li><strong>NEG</strong> - Realiza a operação lógica NOT entre os dois valores do topo da pilha de
+                operandos e armazena o resultado no topo da pilha.</li>
+            <li><strong>CME</strong> - Compara se o valor do topo da pilha é menor que o valor do topo
+                menos 1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário, o
+                valor 0 é armazenado no topo da pilha.</li>
+            <li><strong>CMA</strong> - Compara se o valor do topo da pilha é maior que o valor do topo
+                menos 1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário, o
+                valor 0 é armazenado no topo da pilha.</li>
+            <li><strong>CEQ</strong> - Compara se o valor do topo da pilha é igual ao valor do topo menos
+                1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário, o valor 0
+                é armazenado no topo da pilha.</li>
+            <li><strong>CDIF</strong> - Compara se o valor do topo da pilha é diferente do valor do topo
+                menos 1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário, o
+                valor 0 é armazenado no topo da pilha.</li>
+            <li><strong>CMEQ</strong> - Compara se o valor do topo da pilha é menor ou igual ao valor do
+                topo menos 1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário,
+                o valor 0 é armazenado no topo da pilha.</li>
+            <li><strong>CMAQ</strong> - Compara se o valor do topo da pilha é maior ou igual ao valor do
+                topo menos 1 da pilha. Se for, o valor 1 é armazenado no topo da pilha. Caso contrário,
+                o valor 0 é armazenado no topo da pilha.</li>
+
+            <li><strong>RD</strong> - Lê um valor do teclado e armazena no topo da pilha.</li>
+            <li><strong>PRN</strong> - Imprime o valor do topo da pilha.</li>
+            <li><strong>ALLOC</strong> b,o - Aloca espaço na memória sendo b=base e o=offset.</li>
+            <li><strong>DALLOC</strong> b,o - Desaloca espaço na memória sendo b=base e o=offset.</li>
+            <li><strong>CALL</strong> f - Chama uma função f.</li>
+            <li><strong>RETURN</strong> - Retorna o valor de uma função.</li>
+            <li><strong>JMP</strong> p - Desvia o fluxo de execução para uma instrução com o rotulo p.</li>
+            <li><strong>JMPF</strong> p - Desvia o fluxo de execução para uma instrução com o rotulo p se o valor do
+                topo da pilha de
+                operandos for igual a 0.</li>
+            <li><strong>NULL</strong> - Instrução nula. Não faz nada.</li>
+        </ul>
+
+        <p>A implementação do módulo de geração de código pode ser encontrada no arquivo <a
+                style="width: fit-content; display: inline-block;" target="_blank" noreferrer nopener
+                href="https://github.com/iaglourenco/compilador/blob/main/src/compilador/js/gerador.js">gerador.js</a>.
+        </p>
+
         <h3>Máquina virtual</h3>
-        <p>Em desenvolvimento...</p>
+        <p>
+            Em desenvolvimento...
+        </p>
 
 
 

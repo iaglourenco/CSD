@@ -137,6 +137,13 @@ strong {
   font-family: var(--title);
 }
 
+summary {
+  color: var(--purple);
+  font-family: var(--body);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 table {
   background-color: var(--background);
 }
