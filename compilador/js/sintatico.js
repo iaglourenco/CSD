@@ -726,6 +726,7 @@ function analisaComandoEscrita() {
             lexico.tokenAtual.coluna
           );
         }
+        lexico.proximoToken();
         if (lexico.tokenAtual.simbolo == "Sfecha_parenteses") {
           gerador.PRN();
           lexico.proximoToken();
