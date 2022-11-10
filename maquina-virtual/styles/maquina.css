@@ -134,12 +134,68 @@
      overflow-y: scroll;
  }
 
+ .debug_panel {
+     position: absolute;
+     left: 50%;
+     display: inline-flex;
+     background-color: var(--background);
+     border-radius: 5px;
+     color: var(--foreground);
+     font-family: var(--mono);
+     border: 1px solid var(--foreground);
+
+ }
+
+ #debug_panelheader {
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     align-items: center;
+     padding: 5px;
+     width: 100%;
+     cursor: grabbing;
+ }
+
+ .debug_panel.hidden {
+     display: none;
+ }
+
+ .debug_control {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     padding: 5px;
+ }
+
+ .debug_panel>*:nth-child(2) {
+     color: var(--yellow);
+ }
+
+ .debug_panel>*:nth-child(3) {
+     color: var(--green);
+ }
+
+ .debug_panel>*:nth-child(4) {
+     color: var(--red);
+ }
+
+ .debug_control_title {
+     font-size: 0.8rem;
+ }
+
+ .debug_control:hover {
+     background-color: var(--current-line);
+     cursor: pointer;
+ }
+
+
  #code_table {
      width: 100%;
      height: 100%;
  }
 
- #code_table tr {
+ .line,
+ thead>tr {
      color: var(--foreground);
      font-family: var(--mono);
      box-sizing: border-box;
@@ -147,10 +203,14 @@
      justify-content: space-between;
  }
 
+ .line.highlighted {
+     background-color: var(--current-line);
+ }
+
  #code_table td {
      padding: 0px 5px 0px 5px;
      box-sizing: border-box;
-     background: var(--current-line);
+     border-bottom: 1px solid var(--comment);
  }
 
  #code_table td:nth-child(1) {
@@ -204,6 +264,7 @@
  #memory_content {
      width: 100%;
      height: 100%;
+     overflow-x: scroll;
  }
 
  #memory_table {
@@ -293,6 +354,7 @@
 
 
  #limpar,
+ #mem_size,
  #fechar {
      cursor: pointer;
      border-radius: 0px 0px 0px 5px !important;

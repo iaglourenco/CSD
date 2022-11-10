@@ -58,7 +58,9 @@ function updateMemory(memory) {
   const tableValues = document.getElementById("mem_values");
   for (let i = 0; i < memory.length; i++) {
     tableAddr.innerHTML += `<td>${i}</td>`;
-    tableValues.innerHTML += `<td>${memory[i]}</td>`;
+    tableValues.innerHTML += `<td>${
+      memory[i] == undefined ? "-" : memory[i]
+    }</td>`;
   }
   document.getElementById("mem_size").innerHTML = `${memory.length} valores`;
 }
@@ -104,11 +106,16 @@ window.onload = function () {
   };
 
   document.getElementById("executar").addEventListener("click", () => {
-    maquina.executar();
+    try {
+      maquina.executar();
+      logar("Execução finalizada com sucesso!");
+    } catch (e) {
+      logar(e.message);
+    }
   });
   document
     .getElementById("debug")
-    .addEventListener("click", () => maquina.executar());
+    .addEventListener("click", () => maquina.debug());
 
   // Drag and drop
   document.addEventListener("dragover", function (e) {
@@ -146,7 +153,44 @@ window.onload = function () {
   document.getElementById("file-input").addEventListener("change", function () {
     loadLocalFile(this.files);
   });
+
+  // Drag debug panel
+  dragElement(document.getElementById("debug_panel"));
+
+  document.getElementById("step").addEventListener("click", () => {
+    maquina.next();
+  });
+  document.getElementById("run").addEventListener("click", () => {
+    maquina.resume();
+  });
+  document.getElementById("stop").addEventListener("click", () => {
+    maquina.stop();
+  });
 };
+
+var lastLine = 0;
+function showDebugUI(linha) {
+  /**
+   * Mostra a interface de debug
+   */
+  document.getElementById("linha_" + lastLine).classList.remove("highlighted");
+  if (linha == -1) {
+    // Debug interrompido
+    lastLine = 0;
+    document.getElementById("debug_panel").classList.add("hidden");
+    return;
+  } else {
+    document.getElementById("debug_panel").classList.remove("hidden");
+  }
+  // Higlihght a linha atual
+  document.getElementById("linha_" + linha).classList.add("highlighted");
+  // Scroll para a linha atual
+  document.getElementById("linha_" + linha).scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+  lastLine = linha;
+}
 
 function prank() {
   let executar = document.getElementById("executar");
@@ -195,13 +239,15 @@ function prank() {
 function load2Table(code) {
   // Carrega o código para a tabela na coluna de instruções
   // com a primeira coluna sendo um checkbox, a segunda o code e a terceira a descrição
-  maquina = new Maquina(code, input, output, updateMemory);
+  maquina = new Maquina(code, input, output, updateMemory, showDebugUI);
 
   let table = document.getElementById("code_table_body");
   table.innerHTML = "";
   for (let i = 0; i < maquina.instrucoes.length - 1; i++) {
     let ins = maquina.instrucoes[i];
     let row = table.insertRow(i);
+    row.id = "linha_" + i;
+    row.className = "line";
     let cell = row.insertCell(0);
     // zero fill left
     cell.innerHTML = `${(i + 1)
@@ -262,4 +308,58 @@ function closeDoc() {
   logar(
     "Para começar, carregue um arquivo .lpdo clicando no botão 'Carregar' acima ou arrastando o arquivo."
   );
+}
+
+function dragElement(elmnt) {
+  var pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position preventing it from going out of the screen:
+    if (
+      elmnt.offsetTop - pos2 > 0 &&
+      elmnt.offsetTop - pos2 < window.innerHeight - elmnt.offsetHeight
+    ) {
+      elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+    }
+    if (
+      elmnt.offsetLeft - pos1 > 0 &&
+      elmnt.offsetLeft - pos1 < window.innerWidth - elmnt.offsetWidth
+    ) {
+      elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+    }
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 }
