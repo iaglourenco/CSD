@@ -39,10 +39,16 @@ function logar(msg) {
 
 function input(message) {
   document.getElementById("input").value += `${message}\n`;
+  // Faz o scroll na textarea para o fim
+  document.getElementById("input").scrollTop =
+    document.getElementById("input").scrollHeight;
 }
 
 function output(message) {
   document.getElementById("output").value += `${message}\n`;
+  // Faz o scroll na textarea para o fim
+  document.getElementById("output").scrollTop =
+    document.getElementById("output").scrollHeight;
 }
 
 function updateMemory(memory) {
@@ -107,15 +113,22 @@ window.onload = function () {
 
   document.getElementById("executar").addEventListener("click", () => {
     try {
+      logar("Executando...");
       maquina.executar();
       logar("Execução finalizada com sucesso!");
     } catch (e) {
       logar(e.message);
     }
   });
-  document
-    .getElementById("debug")
-    .addEventListener("click", () => maquina.debug());
+  document.getElementById("debug").addEventListener("click", () => {
+    try {
+      logar("Depurando...");
+      maquina.debug();
+      if (!maquina.isBreak) logar("Depuração finalizada com sucesso!");
+    } catch (e) {
+      logar(e.message);
+    }
+  });
 
   // Drag and drop
   document.addEventListener("dragover", function (e) {
@@ -165,6 +178,7 @@ window.onload = function () {
   });
   document.getElementById("stop").addEventListener("click", () => {
     maquina.stop();
+    logar("Depuração interrompida.");
   });
 };
 

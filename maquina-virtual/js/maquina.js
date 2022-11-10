@@ -142,6 +142,7 @@ export class Maquina {
      * atual
      * */
     this.isBreak = false;
+    this.next();
     this.debug();
   }
 
