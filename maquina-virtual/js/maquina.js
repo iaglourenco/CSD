@@ -16,6 +16,7 @@ export class Maquina {
     this.isBreak = false; // Controla o estado de debug do programa
     this.breakpoints = []; // Linhas de interrupção
     this.memoryListener(this.memoria);
+    this.isRunning = false;
   }
 
   setDebugListener(debugListener) {
@@ -67,12 +68,12 @@ export class Maquina {
                 instrucoes.push({ ...INSTRUCOES[i], codigo: linha });
               }
               break;
-            case 2: // Tem 2 parametros no final, separados por virgula ou espaço
-              var params = linha.match(/(\d+,\d+)|(\d+ \d+)/);
+            case 2: // Tem 2 parametros numericos no final, separados por virgula ou por um ou mais espaços
+              var params = linha.match(/\d+,\d+|\d+ +\d+/);
               if (params) {
                 instrucoes.push({
                   ...INSTRUCOES[i],
-                  params: params[0].split(/,| /),
+                  params: params[0].split(/,| +/),
                   codigo: linha,
                 });
               }
@@ -113,6 +114,8 @@ export class Maquina {
      * Executa o programa
      */
     this.pc = this.pc == -1 ? 0 : this.pc;
+    this.memoryListener(this.memoria);
+    this.isRunning = true;
     while (this.pc != -1) {
       this.next();
     }
@@ -125,7 +128,9 @@ export class Maquina {
      * ou até o programa acabar
      */
     this.pc = this.pc == -1 ? 0 : this.pc;
-    this.isBreak = this.breakpoints.includes(this.pc);
+    this.isBreak = this.breakpoints.includes(this.pc) && this.pc != -1;
+    this.memoryListener(this.memoria);
+    this.isRunning = true;
 
     while (this.pc != -1 && !this.isBreak) {
       this.next();
@@ -144,6 +149,7 @@ export class Maquina {
     this.isBreak = false;
     this.next();
     this.debug();
+    if (!this.isBreak) this.stop();
   }
 
   next() {
@@ -163,6 +169,7 @@ export class Maquina {
     this.isBreak = false;
     this.memoria = [];
     this.topo = -1;
+    this.isRunning = false;
     this.debugListener(this.pc);
   }
 }
@@ -180,7 +187,7 @@ export const INSTRUCOES = {
   NULL: {
     nome: "NULL",
     tipo: 1, // Pode ter label no inicio da linha, sendo L<numero> ou <numero>
-    descricao: () => "Nada",
+    descricao: () => "Nada acontece",
     executar: (maquina, instrucao) => {
       maquina.pc++;
     },
@@ -213,6 +220,7 @@ export const INSTRUCOES = {
       maquina.stdout(maquina.memoria[maquina.topo]);
       maquina.topo--;
       maquina.memoria.pop();
+      maquina.memoryListener(maquina.memoria);
       maquina.pc++;
     },
   },
@@ -222,6 +230,7 @@ export const INSTRUCOES = {
     descricao: () => "Para a execução do programa",
     executar: (maquina, instrucao) => {
       maquina.pc = -1;
+      maquina.stop();
     },
   },
   DALLOC: {
@@ -242,6 +251,7 @@ export const INSTRUCOES = {
         maquina.memoria[m + i] = maquina.memoria[maquina.topo];
         maquina.topo--;
         maquina.memoria.pop();
+        maquina.memoryListener(maquina.memoria);
       }
       maquina.memoryListener(maquina.memoria);
       maquina.pc++;
@@ -280,7 +290,7 @@ export const INSTRUCOES = {
     descricao: (ins) => `Chama uma função/procedimento no label ${ins.label}`,
     executar: (maquina, instrucao) => {
       maquina.topo++;
-      maquina.memoria[maquina.topo] = maquina.pc + 1;
+      maquina.memoria[maquina.topo] = maquina.pc;
       maquina.memoryListener(maquina.memoria);
       maquina.pc = maquina.getLineFromLabel(instrucao.label);
     },
@@ -297,6 +307,7 @@ export const INSTRUCOES = {
       maquina.pc = maquina.memoria[maquina.topo];
       maquina.topo--;
       maquina.memoria.pop();
+      maquina.memoryListener(maquina.memoria);
       maquina.pc++;
     },
   },
@@ -344,22 +355,10 @@ export const INSTRUCOES = {
     executar: (maquina, instrucao) => {
       maquina.memoria[parseInt(instrucao.params)] =
         maquina.memoria[maquina.topo];
-      maquina.memoryListener(maquina.memoria);
       maquina.topo--;
       maquina.memoria.pop();
+      maquina.memoryListener(maquina.memoria);
       maquina.pc++;
-    },
-  },
-  JMP: {
-    /**
-     * Desvio incondicional
-     * pc:=p
-     */
-    nome: "JMP",
-    tipo: 3, // Tem 1 parametro no final, sendo L<numero> ou <numero>
-    descricao: (ins) => `Salta para o label ${ins.label} incondicionalmente`,
-    executar: (maquina, instrucao) => {
-      maquina.pc = maquina.getLineFromLabel(instrucao.label);
     },
   },
   JMPF: {
@@ -380,8 +379,22 @@ export const INSTRUCOES = {
       }
       maquina.topo--;
       maquina.memoria.pop();
+      maquina.memoryListener(maquina.memoria);
     },
   },
+  JMP: {
+    /**
+     * Desvio incondicional
+     * pc:=p
+     */
+    nome: "JMP",
+    tipo: 3, // Tem 1 parametro no final, sendo L<numero> ou <numero>
+    descricao: (ins) => `Salta para o label ${ins.label} incondicionalmente`,
+    executar: (maquina, instrucao) => {
+      maquina.pc = maquina.getLineFromLabel(instrucao.label);
+    },
+  },
+
   ADD: {
     /**
      * Somar
@@ -393,8 +406,9 @@ export const INSTRUCOES = {
     executar: (maquina, instrucao) => {
       maquina.memoria[maquina.topo - 1] =
         maquina.memoria[maquina.topo - 1] + maquina.memoria[maquina.topo];
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -409,8 +423,9 @@ export const INSTRUCOES = {
     executar: (maquina, instrucao) => {
       maquina.memoria[maquina.topo - 1] =
         maquina.memoria[maquina.topo - 1] - maquina.memoria[maquina.topo];
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -425,8 +440,9 @@ export const INSTRUCOES = {
     executar: (maquina, instrucao) => {
       maquina.memoria[maquina.topo - 1] =
         maquina.memoria[maquina.topo - 1] * maquina.memoria[maquina.topo];
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -442,8 +458,9 @@ export const INSTRUCOES = {
       maquina.memoria[maquina.topo - 1] = Math.floor(
         maquina.memoria[maquina.topo - 1] / maquina.memoria[maquina.topo]
       );
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -458,7 +475,6 @@ export const INSTRUCOES = {
     executar: (maquina, instrucao) => {
       maquina.memoria[maquina.topo] = -maquina.memoria[maquina.topo];
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -476,8 +492,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] & maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -495,8 +512,10 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] | maquina.memoria[maquina.topo]
           ? 1
           : 0;
-      maquina.memoryListener(maquina.memoria);
 
+      maquina.memoria.pop();
+      maquina.topo--;
+      maquina.memoryListener(maquina.memoria);
       maquina.pc++;
     },
   },
@@ -510,8 +529,9 @@ export const INSTRUCOES = {
     descricao: () => "Faz o NOT lógico do valor do topo da pilha",
     executar: (maquina, instrucao) => {
       maquina.memoria[maquina.topo] = 1 - maquina.memoria[maquina.topo];
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -530,6 +550,8 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] < maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
       maquina.pc++;
     },
@@ -549,8 +571,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] > maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -568,8 +591,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] === maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -588,8 +612,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] !== maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -608,8 +633,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] <= maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
@@ -628,8 +654,9 @@ export const INSTRUCOES = {
         maquina.memoria[maquina.topo - 1] >= maquina.memoria[maquina.topo]
           ? 1
           : 0;
+      maquina.memoria.pop();
+      maquina.topo--;
       maquina.memoryListener(maquina.memoria);
-
       maquina.pc++;
     },
   },
