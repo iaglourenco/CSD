@@ -95,36 +95,56 @@ window.onload = function () {
       document.getElementById("debug").click();
     }
     // F5
-    if (e.keyCode == 116) {
+    else if (e.keyCode == 116) {
       e.preventDefault();
       document.getElementById("executar").click();
     }
     // Ctrl + L
-    if (e.ctrlKey && e.keyCode == 76) {
+    else if (e.ctrlKey && e.keyCode == 76) {
       e.preventDefault();
       document.getElementById("log").value = "";
     }
     // Ctrl + O
-    if (e.ctrlKey && e.keyCode == 79) {
+    else if (e.ctrlKey && e.keyCode == 79) {
       e.preventDefault();
       document.getElementById("abrir").click();
     }
   };
 
   document.getElementById("executar").addEventListener("click", () => {
+    if (code == "") {
+      logar("Nenhum arquivo carregado!");
+      return;
+    }
     try {
-      logar("Executando...");
-      maquina.executar();
-      logar("Execução finalizada com sucesso!");
+      if (!maquina.isRunning) {
+        logar("Execução iniciada...");
+        maquina.executar();
+        maquina.stop();
+        logar("Execução finalizada com sucesso!");
+      } else {
+        logar("A máquina já está em execução!");
+      }
     } catch (e) {
       logar(e.message);
     }
   });
   document.getElementById("debug").addEventListener("click", () => {
+    if (code == "") {
+      logar("Nenhum arquivo carregado!");
+      return;
+    }
     try {
-      logar("Depurando...");
-      maquina.debug();
-      if (!maquina.isBreak) logar("Depuração finalizada com sucesso!");
+      if (!maquina.isRunning) {
+        logar("Depuração iniciada...");
+        maquina.debug();
+        if (!maquina.isBreak) {
+          maquina.stop();
+          logar("Depuração finalizada com sucesso!");
+        }
+      } else {
+        logar("A máquina já está em execução!");
+      }
     } catch (e) {
       logar(e.message);
     }
@@ -172,9 +192,14 @@ window.onload = function () {
 
   document.getElementById("step").addEventListener("click", () => {
     maquina.next();
+    if (!maquina.isBreak) {
+      maquina.stop();
+      logar("Depuração finalizada com sucesso!");
+    }
   });
   document.getElementById("run").addEventListener("click", () => {
     maquina.resume();
+    if (!maquina.isBreak) logar("Depuração finalizada com sucesso!");
   });
   document.getElementById("stop").addEventListener("click", () => {
     maquina.stop();
@@ -257,7 +282,7 @@ function load2Table(code) {
 
   let table = document.getElementById("code_table_body");
   table.innerHTML = "";
-  for (let i = 0; i < maquina.instrucoes.length - 1; i++) {
+  for (let i = 0; i < maquina.instrucoes.length; i++) {
     let ins = maquina.instrucoes[i];
     let row = table.insertRow(i);
     row.id = "linha_" + i;
@@ -308,6 +333,7 @@ function setupPrank() {
 
 function closeDoc() {
   code = "";
+  updateMemory([]);
   document.getElementById("code_table_body").innerHTML = "";
   document.getElementById("input").value = "";
   document.getElementById("output").value = "";
