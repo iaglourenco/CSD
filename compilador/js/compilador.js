@@ -8,6 +8,9 @@ const tabs = [];
 var activeTab = 0;
 var editor;
 
+// Import da VM
+import { Maquina } from "../../maquina-virtual/js/maquina.js";
+
 var filename = "Novo.lpd";
 
 async function loadLocalFile(files, editor) {
@@ -73,6 +76,39 @@ function logar(msg) {
     document.getElementById("log").scrollHeight;
 }
 
+function runCode() {
+  var code = editor.getValue();
+  let log = document.getElementById("log");
+  log.value = "";
+
+  try {
+    var start = performance.now();
+    if (code.length > 0) {
+      let vm = new Maquina(
+        editor.getValue(),
+        (val) => logar(`[ENTRADA] - ${val}`),
+        (val) => logar(`[SAIDA] - ${val}`),
+        () => {},
+        () => {}
+      );
+      logar("Executando arquivo...");
+      vm.executar();
+      logar(`SUCESSO!`);
+    } else {
+      throw new Error("Nenhum código inserido!");
+    }
+  } catch (e) {
+    console.error(e);
+    logar(e.message);
+  } finally {
+    // Tempo de execução do compilador
+    var end = performance.now();
+    log.value += `\n\n---\nTempo de execução: ${
+      Math.round((end - start) * 100) / 100
+    }ms\n`;
+  }
+}
+
 function compileCode() {
   var code = editor.getValue();
   let log = document.getElementById("log");
@@ -105,7 +141,7 @@ function compileCode() {
   } finally {
     // Tempo de execução do compilador
     var end = performance.now();
-    log.value += `\n\n---\nTempo de execução: ${
+    log.value += `\n\n---\nTempo de compilação: ${
       Math.round((end - start) * 100) / 100
     }ms\n`;
   }
@@ -164,6 +200,15 @@ function activateTab(index) {
   document.getElementById(`tab${index}`).classList.add("active");
   activeTab = index;
   filename = tabs[index].name;
+
+  // Show run button if the file is a .lpdo, otherwise hide it and show build button
+  if (filename.endsWith(".lpdo")) {
+    document.getElementById("run").style.display = "flex";
+    document.getElementById("compilar").style.display = "none";
+  } else {
+    document.getElementById("run").style.display = "none";
+    document.getElementById("compilar").style.display = "flex";
+  }
 }
 function setTabName(index, name) {
   tabs[index].name = name;
@@ -258,7 +303,11 @@ window.onload = function () {
     // F5
     if (e.keyCode == 116) {
       e.preventDefault();
-      document.getElementById("compilar").click();
+      if (filename.endsWith(".lpdo")) {
+        document.getElementById("run").click();
+      } else {
+        document.getElementById("compilar").click();
+      }
     }
     // Ctrl + L
     if (e.ctrlKey && e.keyCode == 76) {
@@ -293,6 +342,14 @@ window.onload = function () {
         createTab(`${tabs[activeTab].name.split(".")[0]}.lpdo`);
         editor.setValue(code);
       }
+    }
+  });
+
+  document.getElementById("run").addEventListener("click", function () {
+    if (tabs[activeTab].name.split(".").pop() == "lpdo") {
+      runCode();
+    } else {
+      logar("Não é possível executar um arquivo não compilado!");
     }
   });
 
