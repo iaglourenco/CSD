@@ -120,7 +120,7 @@
      color: var(--foreground);
      font-family: var(--mono);
      background: var(--current-line);
-     font-size: 14px;
+     font-size: 1.2rem;
      border: none;
      text-decoration: none;
      resize: none;
