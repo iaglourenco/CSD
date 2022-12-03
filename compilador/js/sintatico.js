@@ -720,7 +720,7 @@ function analisaComandoEscrita() {
         } else {
           // Identificador com tipo invalido, esperado inteiro
           throw new ErroSemantico(
-            "sem6",
+            "sem9",
             lexico.tokenAtual.lexema,
             lexico.tokenAtual.linha,
             lexico.tokenAtual.coluna

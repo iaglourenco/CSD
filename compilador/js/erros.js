@@ -29,6 +29,7 @@ export const messages = {
   sem6: "[SEM6] Erro semântico: Esperado tipo 'inteiro'",
   sem7: "[SEM7] Erro semântico: Esperado tipo 'booleano'",
   sem8: "[SEM8] Erro semântico: Atribuição de função em outro escopo",
+  sem9: "[SEM9] Erro semântico: Esperado variavel tipo 'inteiro'",
 };
 
 export class ErroLexico extends Error {
